@@ -3,58 +3,80 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/services.dart';
-import '../widgets/cognix_widgets.dart';
-import '../utils/firebase_auth_errors.dart';
-import '../utils/google_sign_in_errors.dart';
+import '../../widgets/cognix_widgets.dart';
+import '../../utils/firebase_auth_errors.dart';
+import '../../utils/google_sign_in_errors.dart';
 
-class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+class SignUp extends StatefulWidget {
+  const SignUp({super.key});
 
   @override
-  State<SignIn> createState() => _SignInState();
+  State<SignUp> createState() => _SignUpState();
 }
 
-class _SignInState extends State<SignIn> {
+class _SignUpState extends State<SignUp> {
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmController = TextEditingController();
+  final FocusNode _nameFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
+  final FocusNode _confirmFocus = FocusNode();
+
   bool _obscurePassword = true;
+  bool _obscureConfirm = true;
   bool _isLoading = false;
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmController.dispose();
+    _nameFocus.dispose();
     _emailFocus.dispose();
     _passwordFocus.dispose();
+    _confirmFocus.dispose();
     super.dispose();
   }
 
-  Future<void> _handleSignIn() async {
+  Future<void> _handleSignUp() async {
+    final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text;
+    final confirm = _confirmController.text;
 
+    if (name.isEmpty) {
+      _showMessage('Informe seu nome completo.');
+      return;
+    }
     if (email.isEmpty || !email.contains('@')) {
       _showMessage('Informe um e-mail válido.');
       return;
     }
     if (password.length < 6) {
-      _showMessage('Informe sua senha com ao menos 6 caracteres.');
+      _showMessage('A senha deve ter no mínimo 6 caracteres.');
+      return;
+    }
+    if (password != confirm) {
+      _showMessage('As senhas não coincidem.');
       return;
     }
 
     setState(() => _isLoading = true);
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      final credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      if (name.isNotEmpty) {
+        await credential.user?.updateDisplayName(name);
+      }
       if (mounted) {
-        Navigator.of(context).pushReplacementNamed('home');
+        _showMessage('Cadastro realizado com sucesso.');
+        Navigator.of(context).pushReplacementNamed('login');
       }
     } on FirebaseAuthException catch (e) {
-      _showMessage(authErrorMessage(e.code, action: AuthAction.signIn));
+      _showMessage(authErrorMessage(e.code, action: AuthAction.signUp));
     } catch (_) {
       _showMessage('Algo deu errado. Tente novamente.');
     } finally {
@@ -66,6 +88,7 @@ class _SignInState extends State<SignIn> {
     try {
       setState(() => _isLoading = true);
       final googleSignIn = GoogleSignIn();
+      // Force account chooser instead of auto-signing last account.
       await googleSignIn.signOut();
       final googleUser = await googleSignIn.signIn();
       if (googleUser == null) {
@@ -86,7 +109,7 @@ class _SignInState extends State<SignIn> {
         Navigator.of(context).pushReplacementNamed('home');
       }
     } on FirebaseAuthException catch (e) {
-      _showMessage(authErrorMessage(e.code, action: AuthAction.signIn));
+      _showMessage(authErrorMessage(e.code, action: AuthAction.signUp));
     } on PlatformException catch (e) {
       _showMessage(googleSignInErrorMessage(e.code));
     } catch (_) {
@@ -122,7 +145,7 @@ class _SignInState extends State<SignIn> {
           children: [
             Positioned(
               top: -120,
-              right: -80,
+              right: -90,
               child: CognixGradientBlob(
                 size: 260,
                 colorA: secondaryDim.withOpacity(0.35),
@@ -130,12 +153,12 @@ class _SignInState extends State<SignIn> {
               ),
             ),
             Positioned(
-              bottom: -140,
-              left: -100,
+              bottom: -150,
+              left: -110,
               child: CognixGradientBlob(
-                size: 300,
-                colorA: primaryDim.withOpacity(0.25),
-                colorB: secondaryDim.withOpacity(0.15),
+                size: 320,
+                colorA: primaryDim.withOpacity(0.22),
+                colorB: secondaryDim.withOpacity(0.12),
               ),
             ),
             Center(
@@ -149,7 +172,7 @@ class _SignInState extends State<SignIn> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 24,
-                      vertical: 28,
+                      vertical: 26,
                     ),
                     decoration: BoxDecoration(
                       color: surfaceContainer,
@@ -165,19 +188,29 @@ class _SignInState extends State<SignIn> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Align(
-                          alignment: Alignment.center,
-                          child: CognixGlassBadge(
-                            child: Icon(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
                               Icons.auto_awesome_rounded,
                               color: primary,
-                              size: 20,
+                              size: 16,
                             ),
-                          ),
+                            const SizedBox(width: 6),
+                            Text(
+                              'Cognix',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: onSurfaceMuted,
+                                fontSize: 12.5,
+                                letterSpacing: 1.2,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 16),
                         Text(
-                          'Bem-vindo de volta,\nMestre',
+                          'Inicie sua Jornada\nIntelectual',
                           textAlign: TextAlign.center,
                           style: GoogleFonts.manrope(
                             color: onSurface,
@@ -188,17 +221,28 @@ class _SignInState extends State<SignIn> {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          'Sua jornada rumo ao conhecimento continua aqui. '
-                          'Prepare-se para elevar seu nivel hoje.',
+                          'Junte-se a uma comunidade de estudiosos dedicados e '
+                          'transforme sua maneira de aprender.',
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
                             color: onSurfaceMuted,
-                            fontSize: 14.5,
-                            height: 1.45,
+                            fontSize: 14.2,
+                            height: 1.5,
                           ),
                         ),
-                        const SizedBox(height: 28),
-                        CognixFieldLabel(text: 'E-MAIL', letterSpacing: 1.5),
+                        const SizedBox(height: 26),
+                        CognixFieldLabel(text: 'NOME COMPLETO'),
+                        const SizedBox(height: 8),
+                        CognixInputField(
+                          controller: _nameController,
+                          focusNode: _nameFocus,
+                          hintText: 'Seu nome',
+                          icon: Icons.person_outline_rounded,
+                          background: surfaceLow,
+                          primary: primary,
+                        ),
+                        const SizedBox(height: 16),
+                        CognixFieldLabel(text: 'E-MAIL'),
                         const SizedBox(height: 8),
                         CognixInputField(
                           controller: _emailController,
@@ -208,11 +252,8 @@ class _SignInState extends State<SignIn> {
                           background: surfaceLow,
                           primary: primary,
                         ),
-                        const SizedBox(height: 18),
-                        CognixFieldLabel(
-                          text: 'SENHA DE ACESSO',
-                          letterSpacing: 1.5,
-                        ),
+                        const SizedBox(height: 16),
+                        CognixFieldLabel(text: 'SENHA'),
                         const SizedBox(height: 8),
                         CognixInputField(
                           controller: _passwordController,
@@ -237,43 +278,47 @@ class _SignInState extends State<SignIn> {
                             ),
                           ),
                         ),
+                        const SizedBox(height: 16),
+                        CognixFieldLabel(text: 'CONFIRMAR SENHA'),
                         const SizedBox(height: 8),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
+                        CognixInputField(
+                          controller: _confirmController,
+                          focusNode: _confirmFocus,
+                          hintText: '********',
+                          icon: Icons.verified_user_outlined,
+                          background: surfaceLow,
+                          primary: primary,
+                          obscure: _obscureConfirm,
+                          suffix: IconButton(
                             onPressed: () {
-                              Navigator.of(context).pushNamed('forgot');
+                              setState(() {
+                                _obscureConfirm = !_obscureConfirm;
+                              });
                             },
-                            style: TextButton.styleFrom(
-                              foregroundColor: primary,
-                              padding: EdgeInsets.zero,
-                              minimumSize: const Size(0, 0),
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: Text(
-                              'Esqueceu?',
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 12.5,
-                                fontWeight: FontWeight.w600,
-                              ),
+                            icon: Icon(
+                              _obscureConfirm
+                                  ? Icons.visibility_off_rounded
+                                  : Icons.visibility_rounded,
+                              color: onSurfaceMuted,
+                              size: 20,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 22),
                         CognixPrimaryButton(
-                          text: 'Entrar',
+                          text: 'Criar Conta',
                           gradient: const LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [primaryDim, primary],
                           ),
-                          onPressed: _isLoading ? null : _handleSignIn,
+                          onPressed: _isLoading ? null : _handleSignUp,
                           isLoading: _isLoading,
                         ),
-                        const SizedBox(height: 22),
+                        const SizedBox(height: 18),
                         Center(
                           child: Text(
-                            'OU ACESSE COM',
+                            'OU CONTINUE COM',
                             style: GoogleFonts.plusJakartaSans(
                               color: onSurfaceMuted.withOpacity(0.7),
                               fontSize: 11,
@@ -291,6 +336,7 @@ class _SignInState extends State<SignIn> {
                                 label: 'Google',
                                 background: surfaceHighest,
                                 textColor: onSurface,
+                                height: 44,
                                 onPressed: _isLoading
                                     ? () {}
                                     : _handleGoogleSignIn,
@@ -298,14 +344,14 @@ class _SignInState extends State<SignIn> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 22),
+                        const SizedBox(height: 18),
                         Center(
                           child: Wrap(
                             alignment: WrapAlignment.center,
                             crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
                               Text(
-                                'Novo por aqui?',
+                                'Ja tem uma conta?',
                                 style: GoogleFonts.inter(
                                   color: onSurfaceMuted,
                                   fontSize: 12.5,
@@ -313,9 +359,8 @@ class _SignInState extends State<SignIn> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  Navigator.of(
-                                    context,
-                                  ).pushReplacementNamed('register');
+                                  Navigator.of(context)
+                                      .pushReplacementNamed('login');
                                 },
                                 style: TextButton.styleFrom(
                                   foregroundColor: primary,
@@ -327,7 +372,7 @@ class _SignInState extends State<SignIn> {
                                       MaterialTapTargetSize.shrinkWrap,
                                 ),
                                 child: Text(
-                                  'Criar conta',
+                                  'Entre agora',
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 12.5,
                                     fontWeight: FontWeight.w600,

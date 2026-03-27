@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../widgets/cognix_widgets.dart';
-import '../utils/firebase_auth_errors.dart';
+import '../../widgets/cognix_widgets.dart';
+import '../../utils/firebase_auth_errors.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
