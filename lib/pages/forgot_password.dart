@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../widgets/aura_widgets.dart';
+import '../widgets/cognix_widgets.dart';
 import '../utils/firebase_auth_errors.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -64,7 +64,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   }
 
   void _showMessage(String text) {
-    showAuraMessage(context, text);
+    showCognixMessage(context, text);
   }
 
   @override
@@ -89,7 +89,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             Positioned(
               top: -120,
               right: -90,
-              child: AuraGradientBlob(
+              child: CognixGradientBlob(
                 size: 260,
                 colorA: secondaryDim.withOpacity(0.35),
                 colorB: primaryDim.withOpacity(0.15),
@@ -98,7 +98,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             Positioned(
               bottom: -150,
               left: -110,
-              child: AuraGradientBlob(
+              child: CognixGradientBlob(
                 size: 320,
                 colorA: primaryDim.withOpacity(0.22),
                 colorB: secondaryDim.withOpacity(0.12),
@@ -133,7 +133,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       children: [
                         Align(
                           alignment: Alignment.center,
-                          child: AuraGlassBadge(
+                          child: CognixGlassBadge(
                             child: Icon(
                               Icons.lock_reset_rounded,
                               color: primary,
@@ -164,9 +164,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           ),
                         ),
                         const SizedBox(height: 26),
-                        AuraFieldLabel(text: 'E-MAIL'),
+                        CognixFieldLabel(text: 'E-MAIL'),
                         const SizedBox(height: 8),
-                        AuraInputField(
+                        CognixInputField(
                           controller: _emailController,
                           focusNode: _emailFocus,
                           hintText: 'seu@email.com',
@@ -175,7 +175,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           primary: primary,
                         ),
                         const SizedBox(height: 22),
-                        AuraPrimaryButton(
+                        CognixPrimaryButton(
                           text: 'Enviar Instrucoes',
                           gradient: const LinearGradient(
                             begin: Alignment.topLeft,

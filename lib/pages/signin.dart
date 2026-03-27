@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/services.dart';
-import '../widgets/aura_widgets.dart';
+import '../widgets/cognix_widgets.dart';
 import '../utils/firebase_auth_errors.dart';
 import '../utils/google_sign_in_errors.dart';
 
@@ -66,7 +66,6 @@ class _SignInState extends State<SignIn> {
     try {
       setState(() => _isLoading = true);
       final googleSignIn = GoogleSignIn();
-      // Force account chooser instead of auto-signing last account.
       await googleSignIn.signOut();
       final googleUser = await googleSignIn.signIn();
       if (googleUser == null) {
@@ -98,7 +97,7 @@ class _SignInState extends State<SignIn> {
   }
 
   void _showMessage(String text) {
-    showAuraMessage(context, text);
+    showCognixMessage(context, text);
   }
 
   @override
@@ -124,7 +123,7 @@ class _SignInState extends State<SignIn> {
             Positioned(
               top: -120,
               right: -80,
-              child: AuraGradientBlob(
+              child: CognixGradientBlob(
                 size: 260,
                 colorA: secondaryDim.withOpacity(0.35),
                 colorB: primaryDim.withOpacity(0.15),
@@ -133,7 +132,7 @@ class _SignInState extends State<SignIn> {
             Positioned(
               bottom: -140,
               left: -100,
-              child: AuraGradientBlob(
+              child: CognixGradientBlob(
                 size: 300,
                 colorA: primaryDim.withOpacity(0.25),
                 colorB: secondaryDim.withOpacity(0.15),
@@ -168,7 +167,7 @@ class _SignInState extends State<SignIn> {
                       children: [
                         Align(
                           alignment: Alignment.center,
-                          child: AuraGlassBadge(
+                          child: CognixGlassBadge(
                             child: Icon(
                               Icons.auto_awesome_rounded,
                               color: primary,
@@ -199,12 +198,9 @@ class _SignInState extends State<SignIn> {
                           ),
                         ),
                         const SizedBox(height: 28),
-                        AuraFieldLabel(
-                          text: 'E-MAIL INSTITUCIONAL',
-                          letterSpacing: 1.5,
-                        ),
+                        CognixFieldLabel(text: 'E-MAIL', letterSpacing: 1.5),
                         const SizedBox(height: 8),
-                        AuraInputField(
+                        CognixInputField(
                           controller: _emailController,
                           focusNode: _emailFocus,
                           hintText: 'seu@email.com',
@@ -213,12 +209,12 @@ class _SignInState extends State<SignIn> {
                           primary: primary,
                         ),
                         const SizedBox(height: 18),
-                        AuraFieldLabel(
+                        CognixFieldLabel(
                           text: 'SENHA DE ACESSO',
                           letterSpacing: 1.5,
                         ),
                         const SizedBox(height: 8),
-                        AuraInputField(
+                        CognixInputField(
                           controller: _passwordController,
                           focusNode: _passwordFocus,
                           hintText: '********',
@@ -264,7 +260,7 @@ class _SignInState extends State<SignIn> {
                           ),
                         ),
                         const SizedBox(height: 24),
-                        AuraPrimaryButton(
+                        CognixPrimaryButton(
                           text: 'Entrar',
                           gradient: const LinearGradient(
                             begin: Alignment.topLeft,
@@ -290,13 +286,14 @@ class _SignInState extends State<SignIn> {
                         Row(
                           children: [
                             Expanded(
-                              child: AuraSocialButton(
+                              child: CognixSocialButton(
                                 icon: 'G',
                                 label: 'Google',
                                 background: surfaceHighest,
                                 textColor: onSurface,
-                                onPressed:
-                                    _isLoading ? () {} : _handleGoogleSignIn,
+                                onPressed: _isLoading
+                                    ? () {}
+                                    : _handleGoogleSignIn,
                               ),
                             ),
                           ],

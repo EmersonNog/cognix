@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/services.dart';
-import '../widgets/aura_widgets.dart';
+import '../widgets/cognix_widgets.dart';
 import '../utils/firebase_auth_errors.dart';
 import '../utils/google_sign_in_errors.dart';
 
@@ -120,7 +120,7 @@ class _SignUpState extends State<SignUp> {
   }
 
   void _showMessage(String text) {
-    showAuraMessage(context, text);
+    showCognixMessage(context, text);
   }
 
   @override
@@ -146,7 +146,7 @@ class _SignUpState extends State<SignUp> {
             Positioned(
               top: -120,
               right: -90,
-              child: AuraGradientBlob(
+              child: CognixGradientBlob(
                 size: 260,
                 colorA: secondaryDim.withOpacity(0.35),
                 colorB: primaryDim.withOpacity(0.15),
@@ -155,7 +155,7 @@ class _SignUpState extends State<SignUp> {
             Positioned(
               bottom: -150,
               left: -110,
-              child: AuraGradientBlob(
+              child: CognixGradientBlob(
                 size: 320,
                 colorA: primaryDim.withOpacity(0.22),
                 colorB: secondaryDim.withOpacity(0.12),
@@ -198,7 +198,7 @@ class _SignUpState extends State<SignUp> {
                             ),
                             const SizedBox(width: 6),
                             Text(
-                              'Aura Academy',
+                              'Cognix',
                               style: GoogleFonts.plusJakartaSans(
                                 color: onSurfaceMuted,
                                 fontSize: 12.5,
@@ -231,9 +231,9 @@ class _SignUpState extends State<SignUp> {
                           ),
                         ),
                         const SizedBox(height: 26),
-                        AuraFieldLabel(text: 'NOME COMPLETO'),
+                        CognixFieldLabel(text: 'NOME COMPLETO'),
                         const SizedBox(height: 8),
-                        AuraInputField(
+                        CognixInputField(
                           controller: _nameController,
                           focusNode: _nameFocus,
                           hintText: 'Seu nome',
@@ -242,9 +242,9 @@ class _SignUpState extends State<SignUp> {
                           primary: primary,
                         ),
                         const SizedBox(height: 16),
-                        AuraFieldLabel(text: 'E-MAIL'),
+                        CognixFieldLabel(text: 'E-MAIL'),
                         const SizedBox(height: 8),
-                        AuraInputField(
+                        CognixInputField(
                           controller: _emailController,
                           focusNode: _emailFocus,
                           hintText: 'seu@email.com',
@@ -253,9 +253,9 @@ class _SignUpState extends State<SignUp> {
                           primary: primary,
                         ),
                         const SizedBox(height: 16),
-                        AuraFieldLabel(text: 'SENHA'),
+                        CognixFieldLabel(text: 'SENHA'),
                         const SizedBox(height: 8),
-                        AuraInputField(
+                        CognixInputField(
                           controller: _passwordController,
                           focusNode: _passwordFocus,
                           hintText: '********',
@@ -279,9 +279,9 @@ class _SignUpState extends State<SignUp> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        AuraFieldLabel(text: 'CONFIRMAR SENHA'),
+                        CognixFieldLabel(text: 'CONFIRMAR SENHA'),
                         const SizedBox(height: 8),
-                        AuraInputField(
+                        CognixInputField(
                           controller: _confirmController,
                           focusNode: _confirmFocus,
                           hintText: '********',
@@ -305,7 +305,7 @@ class _SignUpState extends State<SignUp> {
                           ),
                         ),
                         const SizedBox(height: 22),
-                        AuraPrimaryButton(
+                        CognixPrimaryButton(
                           text: 'Criar Conta',
                           gradient: const LinearGradient(
                             begin: Alignment.topLeft,
@@ -331,14 +331,15 @@ class _SignUpState extends State<SignUp> {
                         Row(
                           children: [
                             Expanded(
-                              child: AuraSocialButton(
+                              child: CognixSocialButton(
                                 icon: 'G',
                                 label: 'Google',
                                 background: surfaceHighest,
                                 textColor: onSurface,
                                 height: 44,
-                                onPressed:
-                                    _isLoading ? () {} : _handleGoogleSignIn,
+                                onPressed: _isLoading
+                                    ? () {}
+                                    : _handleGoogleSignIn,
                               ),
                             ),
                           ],
