@@ -10,6 +10,7 @@ class HomeDailyRhythmCard extends StatelessWidget {
     required this.onSurfaceMuted,
     required this.primary,
     required this.primaryDim,
+    required this.userName,
   });
 
   final Color surfaceContainer;
@@ -18,6 +19,7 @@ class HomeDailyRhythmCard extends StatelessWidget {
   final Color onSurfaceMuted;
   final Color primary;
   final Color primaryDim;
+  final String userName;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +55,7 @@ class HomeDailyRhythmCard extends StatelessWidget {
                   ),
                 ),
                 TextSpan(
-                  text: 'Alex Chen.',
+                  text: '$userName.',
                   style: GoogleFonts.manrope(
                     color: primary,
                     fontSize: 22,
@@ -122,7 +124,7 @@ class HomeDailyRhythmCard extends StatelessWidget {
             width: double.infinity,
             height: 48,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () => Navigator.of(context).pushNamed('plan'),
               style: ElevatedButton.styleFrom(
                 elevation: 0,
                 backgroundColor: surfaceContainerHigh,
@@ -131,7 +133,7 @@ class HomeDailyRhythmCard extends StatelessWidget {
                 ),
               ),
               child: Text(
-                'Ver Plano',
+                'Ver Planos',
                 style: GoogleFonts.plusJakartaSans(
                   color: onSurface,
                   fontSize: 13,

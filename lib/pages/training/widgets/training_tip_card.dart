@@ -36,7 +36,7 @@ class TrainingTipCard extends StatelessWidget {
                 ),
                 children: [
                   TextSpan(
-                    text: 'Dica do Acadêmico: ',
+                    text: 'Dica do Cognix: ',
                     style: TextStyle(
                       color: primary,
                       fontWeight: FontWeight.w600,

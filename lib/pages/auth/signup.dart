@@ -88,7 +88,6 @@ class _SignUpState extends State<SignUp> {
     try {
       setState(() => _isLoading = true);
       final googleSignIn = GoogleSignIn();
-      // Force account chooser instead of auto-signing last account.
       await googleSignIn.signOut();
       final googleUser = await googleSignIn.signIn();
       if (googleUser == null) {
@@ -97,7 +96,7 @@ class _SignUpState extends State<SignUp> {
       }
       final googleAuth = await googleUser.authentication;
       if (googleAuth.idToken == null) {
-        _showMessage('Nao foi possivel autenticar com o Google.');
+        _showMessage('Não foi possivel autenticar com o Google.');
         return;
       }
       final credential = GoogleAuthProvider.credential(
@@ -359,8 +358,9 @@ class _SignUpState extends State<SignUp> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  Navigator.of(context)
-                                      .pushReplacementNamed('login');
+                                  Navigator.of(
+                                    context,
+                                  ).pushReplacementNamed('login');
                                 },
                                 style: TextButton.styleFrom(
                                   foregroundColor: primary,

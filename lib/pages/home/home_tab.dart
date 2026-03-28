@@ -13,6 +13,7 @@ class HomeTab extends StatelessWidget {
     required this.onSurfaceMuted,
     required this.primary,
     required this.primaryDim,
+    required this.userName,
   });
 
   final Color surfaceContainer;
@@ -21,6 +22,7 @@ class HomeTab extends StatelessWidget {
   final Color onSurfaceMuted;
   final Color primary;
   final Color primaryDim;
+  final String userName;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,7 @@ class HomeTab extends StatelessWidget {
           onSurfaceMuted: onSurfaceMuted,
           primary: primary,
           primaryDim: primaryDim,
+          userName: userName,
         ),
         const SizedBox(height: 18),
         HomeMasterStreakCard(

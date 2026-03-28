@@ -154,8 +154,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          'Nao se preocupe, mestre. Insira seu e-mail cadastrado e '
-                          'enviaremos as instrucoes para recuperar seu acesso.',
+                          'Não se preocupe, mestre. Insira seu e-mail cadastrado e '
+                          'enviaremos as instruções para recuperar seu acesso.',
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
                             color: onSurfaceMuted,
@@ -176,7 +176,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         ),
                         const SizedBox(height: 22),
                         CognixPrimaryButton(
-                          text: 'Enviar Instrucoes',
+                          text: 'Enviar Instruções',
                           gradient: const LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,

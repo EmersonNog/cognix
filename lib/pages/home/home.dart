@@ -40,6 +40,9 @@ class _HomeState extends State<Home> {
     const primary = Color(0xFFA3A6FF);
     const secondaryDim = Color(0xFF8455EF);
 
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final userName = currentUser?.displayName ?? 'Usuário';
+
     final Widget content = switch (_currentIndex) {
       0 => HomeTab(
         surfaceContainer: surfaceContainer,
@@ -48,6 +51,7 @@ class _HomeState extends State<Home> {
         onSurfaceMuted: onSurfaceMuted,
         primary: primary,
         primaryDim: primaryDim,
+        userName: userName,
       ),
       1 => SubjectsTab(
         surfaceContainer: surfaceContainer,

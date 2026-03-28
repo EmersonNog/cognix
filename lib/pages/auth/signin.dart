@@ -74,7 +74,7 @@ class _SignInState extends State<SignIn> {
       }
       final googleAuth = await googleUser.authentication;
       if (googleAuth.idToken == null) {
-        _showMessage('Nao foi possivel autenticar com o Google.');
+        _showMessage('Não foi possivel autenticar com o Google.');
         return;
       }
       final credential = GoogleAuthProvider.credential(
@@ -313,8 +313,9 @@ class _SignInState extends State<SignIn> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  Navigator.of(context)
-                                      .pushReplacementNamed('register');
+                                  Navigator.of(
+                                    context,
+                                  ).pushReplacementNamed('register');
                                 },
                                 style: TextButton.styleFrom(
                                   foregroundColor: primary,

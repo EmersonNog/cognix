@@ -44,7 +44,7 @@ class TrainingHeader extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             _GhostChip(
-              label: 'PASSAR',
+              label: 'PAUSAR',
               surfaceContainerHigh: surfaceContainerHigh,
               primary: primary,
             ),
