@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home_tab.dart';
 import '../subjects/subjects_tab.dart';
+import '../training/training_tab.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -49,6 +50,13 @@ class _HomeState extends State<Home> {
         primaryDim: primaryDim,
       ),
       1 => SubjectsTab(
+        surfaceContainer: surfaceContainer,
+        surfaceContainerHigh: surfaceContainerHigh,
+        onSurface: onSurface,
+        onSurfaceMuted: onSurfaceMuted,
+        primary: primary,
+      ),
+      2 => TrainingTab(
         surfaceContainer: surfaceContainer,
         surfaceContainerHigh: surfaceContainerHigh,
         onSurface: onSurface,
@@ -141,7 +149,7 @@ class _HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _NavItem(
-                label: 'Home',
+                label: 'Início',
                 icon: Icons.grid_view_rounded,
                 selected: _currentIndex == 0,
                 onTap: () => setState(() => _currentIndex = 0),
@@ -150,7 +158,7 @@ class _HomeState extends State<Home> {
                 selectedBackground: surfaceContainerHigh,
               ),
               _NavItem(
-                label: 'Subjects',
+                label: 'Matérias',
                 icon: Icons.menu_book_rounded,
                 selected: _currentIndex == 1,
                 onTap: () => setState(() => _currentIndex = 1),
