@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'home_tab.dart';
 import '../subjects/subjects_tab.dart';
 import '../training/training_tab.dart';
+import '../profile/profile.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -66,6 +67,15 @@ class _HomeState extends State<Home> {
         onSurface: onSurface,
         onSurfaceMuted: onSurfaceMuted,
         primary: primary,
+      ),
+      3 => ProfileTab(
+        surfaceContainer: surfaceContainer,
+        surfaceContainerHigh: surfaceContainerHigh,
+        onSurface: onSurface,
+        onSurfaceMuted: onSurfaceMuted,
+        primary: primary,
+        primaryDim: primaryDim,
+        userName: userName,
       ),
       _ => const SizedBox.shrink(),
     };

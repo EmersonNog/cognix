@@ -74,14 +74,25 @@ class _SignInState extends State<SignIn> {
       }
       final googleAuth = await googleUser.authentication;
       if (googleAuth.idToken == null) {
-        _showMessage('Não foi possivel autenticar com o Google.');
+        _showMessage('Não foi possível autenticar com o Google.');
         return;
       }
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
+
+      if (userCredential.user?.displayName == null ||
+          userCredential.user!.displayName!.isEmpty) {
+        final displayName =
+            googleUser.displayName ?? googleUser.email.split('@').first;
+        await userCredential.user?.updateDisplayName(displayName);
+        await userCredential.user?.reload();
+      }
+
       if (mounted) {
         Navigator.of(context).pushReplacementNamed('home');
       }
