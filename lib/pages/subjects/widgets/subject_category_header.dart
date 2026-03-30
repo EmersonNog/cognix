@@ -53,10 +53,7 @@ class SubjectCategoryHeader extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               subtitle,
-              style: GoogleFonts.inter(
-                color: onSurfaceMuted,
-                fontSize: 11.5,
-              ),
+              style: GoogleFonts.inter(color: onSurfaceMuted, fontSize: 11.5),
             ),
           ],
         ),

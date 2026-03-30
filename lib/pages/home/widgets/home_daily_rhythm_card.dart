@@ -46,7 +46,7 @@ class HomeDailyRhythmCard extends StatelessWidget {
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: 'Bom ver voce de\nnovo, ',
+                  text: 'Bom ver você de\nnovo, ',
                   style: GoogleFonts.manrope(
                     color: onSurface,
                     fontSize: 22,

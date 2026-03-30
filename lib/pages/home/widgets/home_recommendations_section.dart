@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../training/training_detail_screen.dart';
 
 class HomeRecommendationsSection extends StatelessWidget {
   const HomeRecommendationsSection({
@@ -109,94 +110,113 @@ class _RecommendedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: badgeColor.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(14),
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => TrainingDetailScreen(
+              title: title,
+              description: description,
+              badgeLabel: badgeLabel,
+              badgeColor: badgeColor,
+              countLabel: countLabel,
+              surfaceContainerHigh: surfaceContainerHigh,
+              onSurface: onSurface,
+              onSurfaceMuted: onSurfaceMuted,
+              primary: primary,
             ),
-            child: Icon(icon, color: badgeColor, size: 20),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: GoogleFonts.manrope(
-                          color: onSurface,
-                          fontSize: 14.5,
-                          fontWeight: FontWeight.w700,
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: surfaceContainerHigh,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: badgeColor.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(icon, color: badgeColor, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: GoogleFonts.manrope(
+                            color: onSurface,
+                            fontSize: 14.5,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: badgeColor.withOpacity(0.18),
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text(
-                        badgeLabel.toUpperCase(),
-                        style: GoogleFonts.plusJakartaSans(
-                          color: badgeColor,
-                          fontSize: 9.5,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.8,
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: badgeColor.withOpacity(0.18),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          badgeLabel.toUpperCase(),
+                          style: GoogleFonts.plusJakartaSans(
+                            color: badgeColor,
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.8,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  description,
-                  style: GoogleFonts.inter(
-                    color: onSurfaceMuted,
-                    fontSize: 12.2,
-                    height: 1.35,
+                    ],
                   ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.schedule_rounded,
-                      size: 14,
+                  const SizedBox(height: 6),
+                  Text(
+                    description,
+                    style: GoogleFonts.inter(
                       color: onSurfaceMuted,
+                      fontSize: 12.2,
+                      height: 1.35,
                     ),
-                    const SizedBox(width: 6),
-                    Text(
-                      countLabel,
-                      style: GoogleFonts.inter(
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.schedule_rounded,
+                        size: 14,
                         color: onSurfaceMuted,
-                        fontSize: 11.5,
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      const SizedBox(width: 6),
+                      Text(
+                        countLabel,
+                        style: GoogleFonts.inter(
+                          color: onSurfaceMuted,
+                          fontSize: 11.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(width: 8),
-          Icon(Icons.chevron_right_rounded, color: primary, size: 22),
-        ],
+            const SizedBox(width: 8),
+            Icon(Icons.chevron_right_rounded, color: primary, size: 22),
+          ],
+        ),
       ),
     );
   }

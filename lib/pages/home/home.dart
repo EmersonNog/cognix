@@ -54,21 +54,14 @@ class _HomeState extends State<Home> {
         primaryDim: primaryDim,
         userName: userName,
       ),
-      1 => SubjectsTab(
+      1 => TrainingTab(
         surfaceContainer: surfaceContainer,
         surfaceContainerHigh: surfaceContainerHigh,
         onSurface: onSurface,
         onSurfaceMuted: onSurfaceMuted,
         primary: primary,
       ),
-      2 => TrainingTab(
-        surfaceContainer: surfaceContainer,
-        surfaceContainerHigh: surfaceContainerHigh,
-        onSurface: onSurface,
-        onSurfaceMuted: onSurfaceMuted,
-        primary: primary,
-      ),
-      3 => ProfileTab(
+      2 => ProfileTab(
         surfaceContainer: surfaceContainer,
         surfaceContainerHigh: surfaceContainerHigh,
         onSurface: onSurface,
@@ -172,8 +165,8 @@ class _HomeState extends State<Home> {
                 selectedBackground: surfaceContainerHigh,
               ),
               _NavItem(
-                label: 'Matérias',
-                icon: Icons.menu_book_rounded,
+                label: 'Treino',
+                icon: Icons.timer_rounded,
                 selected: _currentIndex == 1,
                 onTap: () => setState(() => _currentIndex = 1),
                 primary: primary,
@@ -181,19 +174,10 @@ class _HomeState extends State<Home> {
                 selectedBackground: surfaceContainerHigh,
               ),
               _NavItem(
-                label: 'Treino',
-                icon: Icons.timer_rounded,
-                selected: _currentIndex == 2,
-                onTap: () => setState(() => _currentIndex = 2),
-                primary: primary,
-                muted: onSurfaceMuted,
-                selectedBackground: surfaceContainerHigh,
-              ),
-              _NavItem(
                 label: 'Perfil',
                 icon: Icons.person_rounded,
-                selected: _currentIndex == 3,
-                onTap: () => setState(() => _currentIndex = 3),
+                selected: _currentIndex == 2,
+                onTap: () => setState(() => _currentIndex = 2),
                 primary: primary,
                 muted: onSurfaceMuted,
                 selectedBackground: surfaceContainerHigh,

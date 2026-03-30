@@ -6,26 +6,24 @@ class SubjectCard extends StatelessWidget {
     super.key,
     required this.title,
     required this.description,
-    required this.progress,
-    required this.progressLabel,
     required this.icon,
     required this.surfaceContainer,
     required this.surfaceContainerHigh,
     required this.onSurface,
     required this.onSurfaceMuted,
     required this.primary,
+    required this.footerText,
   });
 
   final String title;
   final String description;
-  final double progress;
-  final String progressLabel;
   final IconData icon;
   final Color surfaceContainer;
   final Color surfaceContainerHigh;
   final Color onSurface;
   final Color onSurfaceMuted;
   final Color primary;
+  final String footerText;
 
   @override
   Widget build(BuildContext context) {
@@ -77,35 +75,64 @@ class SubjectCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(999),
-                  child: Container(
-                    height: 5,
-                    color: surfaceContainerHigh,
-                    child: FractionallySizedBox(
-                      widthFactor: progress.clamp(0, 1),
-                      alignment: Alignment.centerLeft,
-                      child: Container(color: primary),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Icon(Icons.arrow_forward_ios_rounded, color: primary, size: 14),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            progressLabel,
-            style: GoogleFonts.inter(
-              color: onSurfaceMuted,
-              fontSize: 10.5,
-            ),
+          _FooterRow(
+            text: footerText,
+            primary: primary,
+            onSurfaceMuted: onSurfaceMuted,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _FooterRow extends StatelessWidget {
+  const _FooterRow({
+    required this.text,
+    required this.primary,
+    required this.onSurfaceMuted,
+  });
+
+  final String text;
+  final Color primary;
+  final Color onSurfaceMuted;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        _AvatarDot(color: primary.withOpacity(0.85)),
+        const SizedBox(width: 6),
+        _AvatarDot(color: primary.withOpacity(0.6)),
+        const SizedBox(width: 6),
+        _AvatarDot(color: primary.withOpacity(0.4)),
+        const SizedBox(width: 10),
+        Text(
+          text,
+          style: GoogleFonts.inter(
+            color: onSurfaceMuted,
+            fontSize: 10.5,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AvatarDot extends StatelessWidget {
+  const _AvatarDot({required this.color});
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 18,
+      height: 18,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white.withOpacity(0.08), width: 1),
       ),
     );
   }
