@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home_tab.dart';
-import '../subjects/subjects_tab.dart';
 import '../training/training_tab.dart';
 import '../profile/profile.dart';
 
