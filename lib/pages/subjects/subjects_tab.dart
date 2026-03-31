@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+import '../../services/questions_api.dart';
 import 'subjects_data.dart';
 import 'widgets/subject_card.dart';
 import 'widgets/subject_category_header.dart';
 import 'widgets/subjects_hero_card.dart';
 
-class SubjectsTab extends StatelessWidget {
+class SubjectsTab extends StatefulWidget {
   const SubjectsTab({
     super.key,
     required this.surfaceContainer,
@@ -24,73 +26,184 @@ class SubjectsTab extends StatelessWidget {
   final SubjectsArea area;
 
   @override
+  State<SubjectsTab> createState() => _SubjectsTabState();
+}
+
+class _SubjectsTabState extends State<SubjectsTab> {
+  late final Future<List<SubcategoryItem>> _subcategoriesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _subcategoriesFuture = fetchSubcategories(subjectsAreaTitle(widget.area));
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return _AreaSubjectsList(
-      area: area,
-      surfaceContainer: surfaceContainer,
-      surfaceContainerHigh: surfaceContainerHigh,
-      onSurface: onSurface,
-      onSurfaceMuted: onSurfaceMuted,
-      primary: primary,
+    final title = subjectsAreaTitle(widget.area);
+
+    return FutureBuilder<List<SubcategoryItem>>(
+      future: _subcategoriesFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _LoadingState(
+            surfaceContainer: widget.surfaceContainer,
+            onSurfaceMuted: widget.onSurfaceMuted,
+            primary: widget.primary,
+          );
+        }
+
+        if (snapshot.hasError) {
+          return _ErrorState(
+            message: 'Não foi possível carregar as disciplinas.',
+            onSurfaceMuted: widget.onSurfaceMuted,
+          );
+        }
+
+        final items = snapshot.data ?? [];
+
+        return ListView(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
+          children: [
+            SubjectsHeroCard(
+              surfaceContainer: widget.surfaceContainer,
+              surfaceContainerHigh: widget.surfaceContainerHigh,
+              onSurface: widget.onSurface,
+              onSurfaceMuted: widget.onSurfaceMuted,
+              primary: widget.primary,
+            ),
+            const SizedBox(height: 20),
+            SubjectCategoryHeader(
+              title: title,
+              subtitle: '${items.length} Matérias Disponíveis',
+              onSurface: widget.onSurface,
+              onSurfaceMuted: widget.onSurfaceMuted,
+              primary: widget.primary,
+            ),
+            const SizedBox(height: 14),
+            if (items.isEmpty)
+              _EmptyState(onSurfaceMuted: widget.onSurfaceMuted)
+            else
+              for (final subcategory in items) ...[
+                SubjectCard(
+                  title: subcategory.name,
+                  description: _descriptionFor(subcategory.name),
+                  footerText: '${subcategory.total} questões',
+                  icon: _iconFor(subcategory.name),
+                  surfaceContainer: widget.surfaceContainer,
+                  surfaceContainerHigh: widget.surfaceContainerHigh,
+                  onSurface: widget.onSurface,
+                  onSurfaceMuted: widget.onSurfaceMuted,
+                  primary: widget.primary,
+                ),
+                const SizedBox(height: 12),
+              ],
+          ],
+        );
+      },
     );
   }
 }
 
-class _AreaSubjectsList extends StatelessWidget {
-  const _AreaSubjectsList({
-    required this.area,
+class _LoadingState extends StatelessWidget {
+  const _LoadingState({
     required this.surfaceContainer,
-    required this.surfaceContainerHigh,
-    required this.onSurface,
     required this.onSurfaceMuted,
     required this.primary,
   });
 
-  final SubjectsArea area;
   final Color surfaceContainer;
-  final Color surfaceContainerHigh;
-  final Color onSurface;
   final Color onSurfaceMuted;
   final Color primary;
 
   @override
   Widget build(BuildContext context) {
-    final content = subjectsAreaContent(area);
-
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
-      children: [
-        SubjectsHeroCard(
-          surfaceContainer: surfaceContainer,
-          surfaceContainerHigh: surfaceContainerHigh,
-          onSurface: onSurface,
-          onSurfaceMuted: onSurfaceMuted,
-          primary: primary,
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        decoration: BoxDecoration(
+          color: surfaceContainer,
+          borderRadius: BorderRadius.circular(18),
         ),
-        const SizedBox(height: 20),
-        SubjectCategoryHeader(
-          title: content.title,
-          subtitle: '${content.items.length} Matérias Disponíveis',
-          onSurface: onSurface,
-          onSurfaceMuted: onSurfaceMuted,
-          primary: primary,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(
+                strokeWidth: 2.2,
+                valueColor: AlwaysStoppedAnimation<Color>(primary),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              'Carregando disciplinas...',
+              style: GoogleFonts.inter(color: onSurfaceMuted, fontSize: 12.5),
+            ),
+          ],
         ),
-        const SizedBox(height: 14),
-        for (final item in content.items) ...[
-          SubjectCard(
-            title: item.title,
-            description: item.description,
-            footerText: item.footerText,
-            icon: item.icon,
-            surfaceContainer: surfaceContainer,
-            surfaceContainerHigh: surfaceContainerHigh,
-            onSurface: onSurface,
-            onSurfaceMuted: onSurfaceMuted,
-            primary: primary,
-          ),
-          const SizedBox(height: 12),
-        ],
-      ],
+      ),
     );
   }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState({required this.onSurfaceMuted});
+
+  final Color onSurfaceMuted;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Text(
+        'Nenhuma disciplina encontrada.',
+        style: GoogleFonts.inter(color: onSurfaceMuted, fontSize: 12.5),
+      ),
+    );
+  }
+}
+
+class _ErrorState extends StatelessWidget {
+  const _ErrorState({required this.message, required this.onSurfaceMuted});
+
+  final String message;
+  final Color onSurfaceMuted;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        message,
+        style: GoogleFonts.inter(color: onSurfaceMuted, fontSize: 12.5),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+}
+
+IconData _iconFor(String discipline) {
+  final text = discipline.toLowerCase();
+  if (text.contains('matem')) return Icons.calculate_rounded;
+  if (text.contains('físic') || text.contains('fisic')) {
+    return Icons.science_rounded;
+  }
+  if (text.contains('quím') || text.contains('quim')) {
+    return Icons.biotech_rounded;
+  }
+  if (text.contains('biolog')) return Icons.bubble_chart_rounded;
+  if (text.contains('hist')) return Icons.public_rounded;
+  if (text.contains('geo')) return Icons.map_rounded;
+  if (text.contains('filos')) return Icons.psychology_rounded;
+  if (text.contains('socio')) return Icons.groups_rounded;
+  if (text.contains('port')) return Icons.menu_book_rounded;
+  if (text.contains('liter')) return Icons.book_rounded;
+  if (text.contains('ingl')) return Icons.language_rounded;
+  if (text.contains('arte')) return Icons.palette_rounded;
+  return Icons.auto_awesome_rounded;
+}
+
+String _descriptionFor(String discipline) {
+  return 'Conteúdo disponível para treino e revisão.';
 }

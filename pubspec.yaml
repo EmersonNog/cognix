@@ -17,6 +17,7 @@ dependencies:
   google_sign_in: ^6.2.1
   random_avatar: ^0.0.8
   shared_preferences: ^2.2.2
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:

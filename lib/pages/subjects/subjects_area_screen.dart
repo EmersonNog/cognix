@@ -28,7 +28,7 @@ class SubjectsAreaScreen extends StatelessWidget {
       backgroundColor: const Color(0xFF060E20),
       appBar: AppBar(
         title: Text(
-          subjectsAreaTitle(area),
+          'Exercícios',
           style: GoogleFonts.manrope(
             color: onSurface,
             fontWeight: FontWeight.w700,

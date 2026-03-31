@@ -39,8 +39,8 @@ class SubjectCategoryHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title,
@@ -50,7 +50,7 @@ class SubjectCategoryHeader extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(height: 4),
             Text(
               subtitle,
               style: GoogleFonts.inter(color: onSurfaceMuted, fontSize: 11.5),

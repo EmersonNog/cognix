@@ -1,5 +1,6 @@
 import 'package:cognix/widgets/cognix_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home_tab.dart';
@@ -16,6 +17,30 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   bool _isLoading = false;
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _logCurrentUserToken();
+  }
+
+  Future<void> _logCurrentUserToken() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      debugPrint('Nenhum usuario logado');
+      return;
+    }
+
+    final token = await user.getIdToken();
+    if (token == null || token.isEmpty) {
+      debugPrint('Nao foi possivel obter o Firebase ID Token');
+      return;
+    }
+
+    await Clipboard.setData(ClipboardData(text: token));
+    debugPrint('Firebase ID Token copiado para a area de transferencia');
+  }
 
   Future<void> _handleLogout() async {
     setState(() => _isLoading = true);

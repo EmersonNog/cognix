@@ -109,10 +109,7 @@ class _FooterRow extends StatelessWidget {
         const SizedBox(width: 10),
         Text(
           text,
-          style: GoogleFonts.inter(
-            color: onSurfaceMuted,
-            fontSize: 10.5,
-          ),
+          style: GoogleFonts.inter(color: onSurfaceMuted, fontSize: 10.5),
         ),
       ],
     );
