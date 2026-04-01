@@ -13,6 +13,9 @@ class SubjectCard extends StatelessWidget {
     required this.onSurfaceMuted,
     required this.primary,
     required this.footerText,
+    this.statusLabel,
+    this.statusColor,
+    this.statusBackgroundColor,
     this.onTap,
   });
 
@@ -25,6 +28,9 @@ class SubjectCard extends StatelessWidget {
   final Color onSurfaceMuted;
   final Color primary;
   final String footerText;
+  final String? statusLabel;
+  final Color? statusColor;
+  final Color? statusBackgroundColor;
   final VoidCallback? onTap;
 
   @override
@@ -59,13 +65,28 @@ class SubjectCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          title,
-                          style: GoogleFonts.manrope(
-                            color: onSurface,
-                            fontSize: 14.5,
-                            fontWeight: FontWeight.w700,
-                          ),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Text(
+                              title,
+                              style: GoogleFonts.manrope(
+                                color: onSurface,
+                                fontSize: 14.5,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            if (statusLabel != null &&
+                                statusColor != null &&
+                                statusBackgroundColor != null)
+                              _StatusTag(
+                                label: statusLabel!,
+                                foregroundColor: statusColor!,
+                                backgroundColor: statusBackgroundColor!,
+                              ),
+                          ],
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -89,6 +110,39 @@ class SubjectCard extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StatusTag extends StatelessWidget {
+  const _StatusTag({
+    required this.label,
+    required this.foregroundColor,
+    required this.backgroundColor,
+  });
+
+  final String label;
+  final Color foregroundColor;
+  final Color backgroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: foregroundColor.withOpacity(0.24)),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.inter(
+          color: foregroundColor,
+          fontSize: 10.5,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.1,
         ),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../services/questions/questions_api.dart';
+import '../../services/summaries/summaries_api.dart';
 import '../training/training_detail_screen.dart';
 import 'subjects_data.dart';
 import 'widgets/subject_card.dart';
@@ -31,19 +32,51 @@ class SubjectsTab extends StatefulWidget {
 }
 
 class _SubjectsTabState extends State<SubjectsTab> {
-  late final Future<List<SubcategoryItem>> _subcategoriesFuture;
+  late Future<List<_SubjectCardData>> _subcategoriesFuture;
 
   @override
   void initState() {
     super.initState();
-    _subcategoriesFuture = fetchSubcategories(subjectsAreaTitle(widget.area));
+    _subcategoriesFuture = _loadSubjectCards();
+  }
+
+  void _refreshSubjectCards() {
+    if (!mounted) return;
+    setState(() {
+      _subcategoriesFuture = _loadSubjectCards();
+    });
+  }
+
+  Future<List<_SubjectCardData>> _loadSubjectCards() async {
+    final discipline = subjectsAreaTitle(widget.area);
+    final items = await fetchSubcategories(discipline);
+
+    return Future.wait(
+      items.map((item) async {
+        try {
+          final progress = await fetchTrainingProgress(
+            discipline: discipline,
+            subcategory: item.name,
+          );
+          return _SubjectCardData(
+            item: item,
+            status: _statusFromProgress(progress),
+          );
+        } catch (_) {
+          return _SubjectCardData(
+            item: item,
+            status: const _SubjectCardStatus.available(),
+          );
+        }
+      }),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final title = subjectsAreaTitle(widget.area);
 
-    return FutureBuilder<List<SubcategoryItem>>(
+    return FutureBuilder<List<_SubjectCardData>>(
       future: _subcategoriesFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -64,7 +97,7 @@ class _SubjectsTabState extends State<SubjectsTab> {
         final items = snapshot.data ?? [];
         final totalQuestionsInArea = items.fold<int>(
           0,
-          (sum, item) => sum + item.total,
+          (sum, item) => sum + item.item.total,
         );
 
         return ListView(
@@ -91,22 +124,25 @@ class _SubjectsTabState extends State<SubjectsTab> {
             else
               for (final subcategory in items) ...[
                 SubjectCard(
-                  title: subcategory.name,
-                  description: _descriptionFor(subcategory.name),
-                  footerText: '${subcategory.total} questões',
-                  icon: _iconFor(subcategory.name),
-                  onTap: () {
-                    Navigator.of(context).push(
+                  title: subcategory.item.name,
+                  description: _descriptionFor(subcategory.item.name),
+                  footerText: '${subcategory.item.total} questões',
+                  icon: _iconFor(subcategory.item.name),
+                  statusLabel: subcategory.status.label,
+                  statusColor: subcategory.status.foregroundColor,
+                  statusBackgroundColor: subcategory.status.backgroundColor,
+                  onTap: () async {
+                    await Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => TrainingDetailScreen(
-                          title: subcategory.name,
+                          title: subcategory.item.name,
                           discipline: title,
                           area: widget.area,
                           description: 'Subcategoria de $title',
                           badgeLabel: 'Subcategoria',
                           badgeColor: widget.primary,
                           countLabel:
-                              '${subcategory.total} questões disponíveis',
+                              '${subcategory.item.total} questões disponíveis',
                           areaTotalQuestions: totalQuestionsInArea,
                           surfaceContainerHigh: widget.surfaceContainerHigh,
                           onSurface: widget.onSurface,
@@ -115,6 +151,7 @@ class _SubjectsTabState extends State<SubjectsTab> {
                         ),
                       ),
                     );
+                    _refreshSubjectCards();
                   },
                   surfaceContainer: widget.surfaceContainer,
                   surfaceContainerHigh: widget.surfaceContainerHigh,
@@ -129,6 +166,43 @@ class _SubjectsTabState extends State<SubjectsTab> {
       },
     );
   }
+}
+
+class _SubjectCardData {
+  const _SubjectCardData({
+    required this.item,
+    required this.status,
+  });
+
+  final SubcategoryItem item;
+  final _SubjectCardStatus status;
+}
+
+class _SubjectCardStatus {
+  const _SubjectCardStatus({
+    required this.label,
+    required this.foregroundColor,
+    required this.backgroundColor,
+  });
+
+  const _SubjectCardStatus.completed()
+    : label = 'Concluída',
+      foregroundColor = const Color(0xFF31C48D),
+      backgroundColor = const Color(0x1431C48D);
+
+  const _SubjectCardStatus.inProgress()
+    : label = 'Em andamento',
+      foregroundColor = const Color(0xFFF5B942),
+      backgroundColor = const Color(0x14F5B942);
+
+  const _SubjectCardStatus.available()
+    : label = 'Disponível',
+      foregroundColor = const Color(0xFF8FA7FF),
+      backgroundColor = const Color(0x148FA7FF);
+
+  final String label;
+  final Color foregroundColor;
+  final Color backgroundColor;
 }
 
 class _LoadingState extends StatelessWidget {
@@ -207,6 +281,16 @@ class _ErrorState extends StatelessWidget {
       ),
     );
   }
+}
+
+_SubjectCardStatus _statusFromProgress(TrainingProgressData progress) {
+  if (progress.hasCompletedSession) {
+    return const _SubjectCardStatus.completed();
+  }
+  if (progress.answeredQuestions > 0) {
+    return const _SubjectCardStatus.inProgress();
+  }
+  return const _SubjectCardStatus.available();
 }
 
 IconData _iconFor(String discipline) {
