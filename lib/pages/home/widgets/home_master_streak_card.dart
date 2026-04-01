@@ -39,7 +39,7 @@ class HomeMasterStreakCard extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           Text(
-            'Sequencia de Mestre',
+            'Sequência de Mestre',
             style: GoogleFonts.manrope(
               color: onSurface,
               fontSize: 16,
@@ -48,7 +48,7 @@ class HomeMasterStreakCard extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'Voce dominou 12 conceitos esta semana.\nContinue assim!',
+            'Você dominou 12 conceitos esta semana.\nContinue assim!',
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
               color: onSurfaceMuted,

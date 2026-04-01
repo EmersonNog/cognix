@@ -10,6 +10,8 @@ class TrainingHeader extends StatelessWidget {
     required this.onSurfaceMuted,
     required this.primary,
     required this.surfaceContainerHigh,
+    this.paused = false,
+    this.onPauseToggle,
   });
 
   final String title;
@@ -18,6 +20,8 @@ class TrainingHeader extends StatelessWidget {
   final Color onSurfaceMuted;
   final Color primary;
   final Color surfaceContainerHigh;
+  final bool paused;
+  final VoidCallback? onPauseToggle;
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +48,10 @@ class TrainingHeader extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             _GhostChip(
-              label: 'PAUSAR',
+              label: paused ? 'RETOMAR' : 'PAUSAR',
               surfaceContainerHigh: surfaceContainerHigh,
               primary: primary,
+              onTap: onPauseToggle,
             ),
           ],
         ),
@@ -99,27 +104,36 @@ class _GhostChip extends StatelessWidget {
     required this.label,
     required this.surfaceContainerHigh,
     required this.primary,
+    this.onTap,
   });
 
   final String label;
   final Color surfaceContainerHigh;
   final Color primary;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-      decoration: BoxDecoration(
-        color: surfaceContainerHigh.withOpacity(0.4),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        label,
-        style: GoogleFonts.plusJakartaSans(
-          color: primary,
-          fontSize: 10.5,
-          letterSpacing: 1.1,
-          fontWeight: FontWeight.w700,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: surfaceContainerHigh.withOpacity(0.4),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            label,
+            style: GoogleFonts.plusJakartaSans(
+              color: primary,
+              fontSize: 10.5,
+              letterSpacing: 1.1,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         ),
       ),
     );

@@ -1,8 +1,8 @@
 import 'package:cognix/widgets/cognix_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../../services/auth/auth_api.dart';
 import 'home_tab.dart';
 import '../training/training_tab.dart';
 import '../profile/profile.dart';
@@ -21,25 +21,13 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    _logCurrentUserToken();
+    _syncUserAfterLogin();
   }
 
-  Future<void> _logCurrentUserToken() async {
-    final user = FirebaseAuth.instance.currentUser;
-
-    if (user == null) {
-      debugPrint('Nenhum usuario logado');
-      return;
-    }
-
-    final token = await user.getIdToken();
-    if (token == null || token.isEmpty) {
-      debugPrint('Nao foi possivel obter o Firebase ID Token');
-      return;
-    }
-
-    await Clipboard.setData(ClipboardData(text: token));
-    debugPrint('Firebase ID Token copiado para a area de transferencia');
+  Future<void> _syncUserAfterLogin() async {
+    try {
+      await syncCurrentUserToBackend();
+    } catch (_) {}
   }
 
   Future<void> _handleLogout() async {
@@ -120,7 +108,9 @@ class _HomeState extends State<Home> {
                     height: 16,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.white,
+                      ),
                     ),
                   )
                 : const Icon(Icons.logout_rounded),

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../navigation/app_route_observer.dart';
+import '../../services/questions/questions_api.dart';
 import '../subjects/subjects_area_screen.dart';
 import '../subjects/subjects_data.dart';
+import 'models/training_tab_models.dart';
+import 'widgets/training_area_card.dart';
+import 'widgets/training_rhythm_card.dart';
 
-class TrainingTab extends StatelessWidget {
+class TrainingTab extends StatefulWidget {
   const TrainingTab({
     super.key,
     required this.surfaceContainer,
@@ -20,38 +25,131 @@ class TrainingTab extends StatelessWidget {
   final Color primary;
 
   @override
-  Widget build(BuildContext context) {
-    final areas = [
-      _AreaItem(
-        area: SubjectsArea.natureza,
-        title: 'Ciências da Natureza e suas Tecnologias',
-        subtitle: 'Física, Química e Biologia',
-        icon: Icons.eco_rounded,
-        accent: const Color(0xFF7ED6C5),
-      ),
-      _AreaItem(
-        area: SubjectsArea.humanas,
-        title: 'Ciências Humanas e suas Tecnologias',
-        subtitle: 'História, Geografia e Sociologia',
-        icon: Icons.public_rounded,
-        accent: const Color(0xFFF4A261),
-      ),
-      _AreaItem(
-        area: SubjectsArea.linguagens,
-        title: 'Linguagens, Códigos e suas Tecnologias',
-        subtitle: 'Português, Inglês e Artes',
-        icon: Icons.record_voice_over_rounded,
-        accent: const Color(0xFF8AB6F9),
-      ),
-      _AreaItem(
-        area: SubjectsArea.matematica,
-        title: 'Matemática e suas Tecnologias',
-        subtitle: 'Álgebra, Geometria e Estatística',
-        icon: Icons.calculate_rounded,
-        accent: const Color(0xFFE76F51),
-      ),
-    ];
+  State<TrainingTab> createState() => _TrainingTabState();
+}
 
+class _TrainingTabState extends State<TrainingTab> with RouteAware {
+  late Future<TrainingRhythmData> _rhythmFuture;
+  late Future<Map<SubjectsArea, int>> _areaTotalsFuture;
+  bool _isRouteObserverSubscribed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scheduleRefresh();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isRouteObserverSubscribed) return;
+    final route = ModalRoute.of(context);
+    if (route is PageRoute<dynamic>) {
+      appRouteObserver.subscribe(this, route);
+      _isRouteObserverSubscribed = true;
+    }
+  }
+
+  void _scheduleRefresh() {
+    _rhythmFuture = _loadRhythmData();
+    _areaTotalsFuture = _loadAreaTotals();
+  }
+
+  Future<TrainingRhythmData> _loadRhythmData() async {
+    try {
+      final overview = await fetchTrainingSessionsOverview();
+      final latest = overview.latestSession;
+      if (latest == null) {
+        return const TrainingRhythmData.empty();
+      }
+
+      final completedCountLabel =
+          '${overview.completedSessions} '
+          '${overview.completedSessions == 1 ? 'simulado concluído' : 'simulados concluídos'}';
+
+      if (latest.completed) {
+        final percent = latest.totalQuestions <= 0
+            ? 0
+            : ((latest.answeredQuestions / latest.totalQuestions) * 100)
+                  .round();
+        return TrainingRhythmData(
+          subtitle: latest.subcategory.isEmpty
+              ? 'Último simulado concluído'
+              : 'Último simulado concluído em ${latest.subcategory}',
+          badgeLabel: '$percent%',
+          completedCountLabel: completedCountLabel,
+        );
+      }
+
+      return TrainingRhythmData(
+        subtitle: latest.subcategory.isEmpty
+            ? 'Simulado em andamento'
+            : 'Continuando ${latest.subcategory}',
+        badgeLabel: latest.totalQuestions <= 0
+            ? '${latest.answeredQuestions}'
+            : '${latest.answeredQuestions}/${latest.totalQuestions}',
+        completedCountLabel: completedCountLabel,
+      );
+    } catch (_) {
+      return const TrainingRhythmData.empty();
+    }
+  }
+
+  Future<Map<SubjectsArea, int>> _loadAreaTotals() async {
+    final totals = <SubjectsArea, int>{};
+
+    for (final item in trainingAreas) {
+      try {
+        final subcategories = await fetchSubcategories(
+          subjectsAreaTitle(item.area),
+        );
+        totals[item.area] = subcategories.fold<int>(
+          0,
+          (sum, subcategory) => sum + subcategory.total,
+        );
+      } catch (_) {
+        totals[item.area] = 0;
+      }
+    }
+
+    return totals;
+  }
+
+  Future<void> _refreshData() async {
+    if (!mounted) return;
+    setState(_scheduleRefresh);
+  }
+
+  void _openArea(TrainingAreaItem item) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => SubjectsAreaScreen(
+          area: item.area,
+          surfaceContainer: widget.surfaceContainer,
+          surfaceContainerHigh: widget.surfaceContainerHigh,
+          onSurface: widget.onSurface,
+          onSurfaceMuted: widget.onSurfaceMuted,
+          primary: widget.primary,
+        ),
+      ),
+    );
+  }
+
+  @override
+  void didPopNext() {
+    _refreshData();
+  }
+
+  @override
+  void dispose() {
+    if (_isRouteObserverSubscribed) {
+      appRouteObserver.unsubscribe(this);
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 28),
       child: Column(
@@ -60,7 +158,7 @@ class TrainingTab extends StatelessWidget {
           Text(
             'Áreas de Conhecimento',
             style: GoogleFonts.manrope(
-              color: onSurface,
+              color: widget.onSurface,
               fontSize: 26,
               fontWeight: FontWeight.w800,
               height: 1.05,
@@ -69,247 +167,61 @@ class TrainingTab extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             'Escolha uma área para iniciar seu treino personalizado.',
-            style: GoogleFonts.inter(color: onSurfaceMuted, fontSize: 13),
+            style: GoogleFonts.inter(
+              color: widget.onSurfaceMuted,
+              fontSize: 13,
+            ),
           ),
           const SizedBox(height: 18),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: surfaceContainerHigh,
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 46,
-                  height: 46,
-                  decoration: BoxDecoration(
-                    color: primary.withOpacity(0.18),
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Icon(
-                    Icons.auto_graph_rounded,
-                    color: primary,
-                    size: 22,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Seu ritmo hoje',
-                        style: GoogleFonts.manrope(
-                          color: onSurface,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        'Foco em consistência • 2 treinos concluídos',
-                        style: GoogleFonts.inter(
-                          color: onSurfaceMuted,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: primary.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    '65%',
-                    style: GoogleFonts.plusJakartaSans(
-                      color: primary,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          FutureBuilder<TrainingRhythmData>(
+            future: _rhythmFuture,
+            builder: (context, snapshot) {
+              final rhythm = snapshot.data ?? const TrainingRhythmData.empty();
+
+              return TrainingRhythmCard(
+                data: rhythm,
+                surfaceContainerHigh: widget.surfaceContainerHigh,
+                primary: widget.primary,
+                onSurface: widget.onSurface,
+                onSurfaceMuted: widget.onSurfaceMuted,
+              );
+            },
           ),
           const SizedBox(height: 20),
           Text(
-            'LISTA DE ÁREAS',
+            'LISTA DE AREAS',
             style: GoogleFonts.plusJakartaSans(
-              color: onSurfaceMuted,
+              color: widget.onSurfaceMuted,
               fontSize: 11,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.0,
             ),
           ),
           const SizedBox(height: 10),
-          for (final area in areas) ...[
-            _AreaCard(
-              item: area,
-              surfaceContainer: surfaceContainer,
-              surfaceContainerHigh: surfaceContainerHigh,
-              onSurface: onSurface,
-              onSurfaceMuted: onSurfaceMuted,
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => SubjectsAreaScreen(
-                      area: area.area,
-                      surfaceContainer: surfaceContainer,
-                      surfaceContainerHigh: surfaceContainerHigh,
-                      onSurface: onSurface,
-                      onSurfaceMuted: onSurfaceMuted,
-                      primary: primary,
+          FutureBuilder<Map<SubjectsArea, int>>(
+            future: _areaTotalsFuture,
+            builder: (context, snapshot) {
+              final totals = snapshot.data ?? const <SubjectsArea, int>{};
+
+              return Column(
+                children: [
+                  for (final area in trainingAreas) ...[
+                    TrainingAreaCard(
+                      item: area,
+                      totalQuestions: totals[area.area] ?? 0,
+                      surfaceContainer: widget.surfaceContainer,
+                      surfaceContainerHigh: widget.surfaceContainerHigh,
+                      onSurface: widget.onSurface,
+                      onSurfaceMuted: widget.onSurfaceMuted,
+                      onTap: () => _openArea(area),
                     ),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 12),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _AreaItem {
-  const _AreaItem({
-    required this.area,
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.accent,
-  });
-
-  final SubjectsArea area;
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final Color accent;
-}
-
-class _AreaCard extends StatelessWidget {
-  const _AreaCard({
-    required this.item,
-    required this.surfaceContainer,
-    required this.surfaceContainerHigh,
-    required this.onSurface,
-    required this.onSurfaceMuted,
-    required this.onTap,
-  });
-
-  final _AreaItem item;
-  final Color surfaceContainer;
-  final Color surfaceContainerHigh;
-  final Color onSurface;
-  final Color onSurfaceMuted;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(18),
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: surfaceContainer,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: surfaceContainerHigh),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 46,
-                height: 46,
-                decoration: BoxDecoration(
-                  color: item.accent.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Icon(item.icon, color: item.accent, size: 22),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.title,
-                      style: GoogleFonts.manrope(
-                        color: onSurface,
-                        fontSize: 14.5,
-                        fontWeight: FontWeight.w700,
-                        height: 1.15,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      item.subtitle,
-                      style: GoogleFonts.inter(
-                        color: onSurfaceMuted,
-                        fontSize: 12,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: surfaceContainerHigh,
-                            borderRadius: BorderRadius.circular(999),
-                          ),
-                          child: Text(
-                            '40 questões',
-                            style: GoogleFonts.plusJakartaSans(
-                              color: onSurfaceMuted,
-                              fontSize: 10.5,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: item.accent.withOpacity(0.12),
-                            borderRadius: BorderRadius.circular(999),
-                          ),
-                          child: Text(
-                            'Nível médio',
-                            style: GoogleFonts.plusJakartaSans(
-                              color: item.accent,
-                              fontSize: 10.5,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    const SizedBox(height: 12),
                   ],
-                ),
-              ),
-              const SizedBox(width: 10),
-              Icon(Icons.chevron_right_rounded, color: onSurfaceMuted),
-            ],
+                ],
+              );
+            },
           ),
-        ),
+        ],
       ),
     );
   }

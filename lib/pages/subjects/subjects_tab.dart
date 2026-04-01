@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../services/questions_api.dart';
+import '../../services/questions/questions_api.dart';
+import '../training/training_detail_screen.dart';
 import 'subjects_data.dart';
 import 'widgets/subject_card.dart';
 import 'widgets/subject_category_header.dart';
@@ -61,6 +62,10 @@ class _SubjectsTabState extends State<SubjectsTab> {
         }
 
         final items = snapshot.data ?? [];
+        final totalQuestionsInArea = items.fold<int>(
+          0,
+          (sum, item) => sum + item.total,
+        );
 
         return ListView(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
@@ -75,7 +80,7 @@ class _SubjectsTabState extends State<SubjectsTab> {
             const SizedBox(height: 20),
             SubjectCategoryHeader(
               title: title,
-              subtitle: '${items.length} Matérias Disponíveis',
+              subtitle: '${items.length} Materias Disponiveis',
               onSurface: widget.onSurface,
               onSurfaceMuted: widget.onSurfaceMuted,
               primary: widget.primary,
@@ -90,6 +95,27 @@ class _SubjectsTabState extends State<SubjectsTab> {
                   description: _descriptionFor(subcategory.name),
                   footerText: '${subcategory.total} questões',
                   icon: _iconFor(subcategory.name),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => TrainingDetailScreen(
+                          title: subcategory.name,
+                          discipline: subjectsAreaTitle(widget.area),
+                          description:
+                              'Subcategoria de ${subjectsAreaTitle(widget.area)}',
+                          badgeLabel: 'Subcategoria',
+                          badgeColor: widget.primary,
+                          countLabel:
+                              '${subcategory.total} questões disponíveis',
+                          areaTotalQuestions: totalQuestionsInArea,
+                          surfaceContainerHigh: widget.surfaceContainerHigh,
+                          onSurface: widget.onSurface,
+                          onSurfaceMuted: widget.onSurfaceMuted,
+                          primary: widget.primary,
+                        ),
+                      ),
+                    );
+                  },
                   surfaceContainer: widget.surfaceContainer,
                   surfaceContainerHigh: widget.surfaceContainerHigh,
                   onSurface: widget.onSurface,
@@ -186,12 +212,8 @@ class _ErrorState extends StatelessWidget {
 IconData _iconFor(String discipline) {
   final text = discipline.toLowerCase();
   if (text.contains('matem')) return Icons.calculate_rounded;
-  if (text.contains('físic') || text.contains('fisic')) {
-    return Icons.science_rounded;
-  }
-  if (text.contains('quím') || text.contains('quim')) {
-    return Icons.biotech_rounded;
-  }
+  if (text.contains('fisic')) return Icons.science_rounded;
+  if (text.contains('quim')) return Icons.biotech_rounded;
   if (text.contains('biolog')) return Icons.bubble_chart_rounded;
   if (text.contains('hist')) return Icons.public_rounded;
   if (text.contains('geo')) return Icons.map_rounded;

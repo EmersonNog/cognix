@@ -30,7 +30,7 @@ class ProfileTab extends StatelessWidget {
         children: [
           ProfileHeader(
             userName: userName,
-            level: 'ACADÉMICO AVANÇADO',
+            level: 'ACADÊMICO AVANÇADO',
             questionsCount: '1500',
             studyHours: '45h',
             improvementPercentage: '78%',

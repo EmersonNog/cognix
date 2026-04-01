@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../../training/training_detail_screen.dart';
 
 class HomeRecommendationsSection extends StatelessWidget {
@@ -48,27 +49,27 @@ class HomeRecommendationsSection extends StatelessWidget {
           ],
         ),
         Text(
-          'Priorizando topicos de peso para seu exame',
+          'Priorizando tópicos de peso para seu exame',
           style: GoogleFonts.inter(color: onSurfaceMuted, fontSize: 12.5),
         ),
         const SizedBox(height: 14),
         _RecommendedCard(
-          title: 'Calculo Avancado',
+          title: 'Cálculo Avançado',
           description:
-              'Aplicacoes de derivadas e integrais em sistemas fisicos.',
-          badgeLabel: 'Critico',
+              'Aplicações de derivadas e integrais em sistemas físicos.',
+          badgeLabel: 'Crítico',
           badgeColor: const Color(0xFFA3A6FF),
           icon: Icons.functions_rounded,
           primary: primary,
           onSurface: onSurface,
           onSurfaceMuted: onSurfaceMuted,
           surfaceContainerHigh: surfaceContainerHigh,
-          countLabel: '12 licoes',
+          countLabel: '12 lições',
         ),
         const SizedBox(height: 12),
         _RecommendedCard(
-          title: 'Revolucoes Modernas',
-          description: 'Impacto dos movimentos sociais na governanca global.',
+          title: 'Revoluções Modernas',
+          description: 'Impacto dos movimentos sociais na governança global.',
           badgeLabel: 'Moderado',
           badgeColor: const Color(0xFF7ED6C5),
           icon: Icons.public_rounded,
@@ -76,7 +77,7 @@ class HomeRecommendationsSection extends StatelessWidget {
           onSurface: onSurface,
           onSurfaceMuted: onSurfaceMuted,
           surfaceContainerHigh: surfaceContainerHigh,
-          countLabel: '8 licoes',
+          countLabel: '8 lições',
         ),
       ],
     );
@@ -116,10 +117,12 @@ class _RecommendedCard extends StatelessWidget {
           MaterialPageRoute(
             builder: (_) => TrainingDetailScreen(
               title: title,
+              discipline: title,
               description: description,
               badgeLabel: badgeLabel,
               badgeColor: badgeColor,
               countLabel: countLabel,
+              areaTotalQuestions: null,
               surfaceContainerHigh: surfaceContainerHigh,
               onSurface: onSurface,
               onSurfaceMuted: onSurfaceMuted,

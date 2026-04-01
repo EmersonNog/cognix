@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CognixGradientBlob extends StatelessWidget {
-  const CognixGradientBlob({
+class GradientBlob extends StatelessWidget {
+  const GradientBlob({
     super.key,
     required this.size,
     required this.colorA,
@@ -25,8 +25,8 @@ class CognixGradientBlob extends StatelessWidget {
   }
 }
 
-class CognixGlassBadge extends StatelessWidget {
-  const CognixGlassBadge({super.key, required this.child});
+class GlassBadge extends StatelessWidget {
+  const GlassBadge({super.key, required this.child});
 
   final Widget child;
 

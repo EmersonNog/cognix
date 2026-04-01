@@ -19,12 +19,29 @@ class SubjectItem {
 String subjectsAreaTitle(SubjectsArea area) {
   switch (area) {
     case SubjectsArea.natureza:
-      return 'Ciências da natureza e suas tecnologias';
+      return 'Ciências da Natureza e suas Tecnologias';
     case SubjectsArea.humanas:
-      return 'Ciências humanas e suas tecnologias';
+      return 'Ciências Humanas e suas Tecnologias';
     case SubjectsArea.linguagens:
-      return 'Linguagens, códigos e suas tecnologias';
+      return 'Linguagens, Códigos e suas Tecnologias';
     case SubjectsArea.matematica:
-      return 'Matemática e suas tecnologias';
+      return 'Matemática e suas Tecnologias';
   }
+}
+
+SubjectsArea? subjectsAreaFromTitle(String title) {
+  final value = title.toLowerCase();
+  if (value.contains('natureza')) {
+    return SubjectsArea.natureza;
+  }
+  if (value.contains('humanas')) {
+    return SubjectsArea.humanas;
+  }
+  if (value.contains('linguagens')) {
+    return SubjectsArea.linguagens;
+  }
+  if (value.contains('matemat')) {
+    return SubjectsArea.matematica;
+  }
+  return null;
 }

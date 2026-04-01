@@ -40,8 +40,8 @@ class HomeRecentPerformanceCard extends StatelessWidget {
           child: Column(
             children: [
               _PerformanceRow(
-                title: 'Quimica Organica I',
-                subtitle: 'Concluido ha 2h',
+                title: 'Química Orgânica I',
+                subtitle: 'Concluído há 2h',
                 percent: 92,
                 correctLabel: '18/20 corretas',
                 accent: primary,
@@ -51,8 +51,8 @@ class HomeRecentPerformanceCard extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               _PerformanceRow(
-                title: 'Gravitacao Universal',
-                subtitle: 'Concluido ontem',
+                title: 'Gravitação Universal',
+                subtitle: 'Concluído ontem',
                 percent: 75,
                 correctLabel: '15/20 corretas',
                 accent: const Color(0xFF7ED6C5),
@@ -63,7 +63,7 @@ class HomeRecentPerformanceCard extends StatelessWidget {
               const SizedBox(height: 12),
               _PerformanceRow(
                 title: 'Literatura: O Iluminismo',
-                subtitle: 'Concluido ha 2 dias',
+                subtitle: 'Concluído há 2 dias',
                 percent: 58,
                 correctLabel: '7/12 corretas',
                 accent: const Color(0xFFEF6A6A),

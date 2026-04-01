@@ -59,8 +59,7 @@ class SubjectsHeroCard extends StatelessWidget {
           SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.65,
             child: Text(
-              'Escolha uma área de conhecimento para explorar conteúdos '
-              'focados no Vestibular e ENEM. Sua aprovação começa aqui.',
+              'Escolha uma área de conhecimento para explorar conteúdos focados no Vestibular e ENEM. Sua aprovação começa aqui.',
               style: GoogleFonts.inter(
                 color: onSurfaceMuted,
                 fontSize: 13.5,

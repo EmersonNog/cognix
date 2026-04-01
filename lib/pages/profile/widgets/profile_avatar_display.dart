@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:random_avatar/random_avatar.dart';
-import '../../../services/avatar_service.dart';
+import '../../../services/local/avatar_service.dart';
 
 class ProfileAvatarDisplay extends StatefulWidget {
   const ProfileAvatarDisplay({

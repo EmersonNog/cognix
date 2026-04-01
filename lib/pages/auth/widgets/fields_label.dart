@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class CognixFieldLabel extends StatelessWidget {
-  const CognixFieldLabel({
+class FieldLabel extends StatelessWidget {
+  const FieldLabel({
     super.key,
     required this.text,
     this.color = const Color(0xFF9AA6C5),
@@ -31,8 +31,8 @@ class CognixFieldLabel extends StatelessWidget {
   }
 }
 
-class CognixInputField extends StatelessWidget {
-  const CognixInputField({
+class InputField extends StatelessWidget {
+  const InputField({
     super.key,
     required this.focusNode,
     required this.hintText,
@@ -66,12 +66,7 @@ class CognixInputField extends StatelessWidget {
               color: background,
               borderRadius: BorderRadius.circular(16),
               boxShadow: isFocused
-                  ? [
-                      BoxShadow(
-                        color: primary.withOpacity(0.25),
-                        blurRadius: 8,
-                      ),
-                    ]
+                  ? [BoxShadow(color: primary.withOpacity(0.25), blurRadius: 8)]
                   : [],
               border: isFocused
                   ? Border.all(color: primary.withOpacity(0.4), width: 1)

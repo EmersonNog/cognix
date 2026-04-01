@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 class TrainingResultsTopIconButton extends StatelessWidget {
   const TrainingResultsTopIconButton({
     super.key,
-    required this.icon,
+    this.icon,
     required this.background,
     required this.iconColor,
   });
 
-  final IconData icon;
+  final IconData? icon;
   final Color background;
   final Color iconColor;
 

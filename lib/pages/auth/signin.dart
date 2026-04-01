@@ -1,11 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../widgets/cognix_widgets.dart';
 import '../../utils/firebase_auth_errors.dart';
 import '../../utils/google_sign_in_errors.dart';
+import '../../widgets/cognix_widgets.dart';
+import 'helpers/auth_google_sign_in.dart';
+import 'auth_theme.dart';
+import 'widgets/auth_inline_prompt.dart';
+import 'widgets/auth_intro.dart';
+import 'widgets/auth_shell.dart';
+import 'widgets/auth_social_section.dart';
+import 'widgets/fields_label.dart';
+import 'widgets/primary_buttons.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -63,41 +69,22 @@ class _SignInState extends State<SignIn> {
   }
 
   Future<void> _handleGoogleSignIn() async {
+    setState(() => _isLoading = true);
     try {
-      setState(() => _isLoading = true);
-      final googleSignIn = GoogleSignIn();
-      await googleSignIn.signOut();
-      final googleUser = await googleSignIn.signIn();
-      if (googleUser == null) {
+      final userCredential = await signInWithGoogle(ensureDisplayName: true);
+      if (userCredential == null) {
         _showMessage('Login cancelado.');
         return;
       }
-      final googleAuth = await googleUser.authentication;
-      if (googleAuth.idToken == null) {
-        _showMessage('Não foi possível autenticar com o Google.');
-        return;
-      }
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(
-        credential,
-      );
-
-      if (userCredential.user?.displayName == null ||
-          userCredential.user!.displayName!.isEmpty) {
-        final displayName =
-            googleUser.displayName ?? googleUser.email.split('@').first;
-        await userCredential.user?.updateDisplayName(displayName);
-        await userCredential.user?.reload();
-      }
-
       if (mounted) {
         Navigator.of(context).pushReplacementNamed('home');
       }
     } on FirebaseAuthException catch (e) {
-      _showMessage(authErrorMessage(e.code, action: AuthAction.signIn));
+      if (e.code == 'missing-google-id-token') {
+      _showMessage('Não foi possível autenticar com o Google.');
+      } else {
+        _showMessage(authErrorMessage(e.code, action: AuthAction.signIn));
+      }
     } on PlatformException catch (e) {
       _showMessage(googleSignInErrorMessage(e.code));
     } catch (_) {
@@ -113,249 +100,86 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    const surface = Color(0xFF060E20);
-    const surfaceLow = Color(0xFF091328);
-    const surfaceContainer = Color(0xFF0F1930);
-    const surfaceHighest = Color(0xFF192540);
-    const onSurface = Color(0xFFDEE5FF);
-    const onSurfaceMuted = Color(0xFF9AA6C5);
-    const primaryDim = Color(0xFF6063EE);
-    const primary = Color(0xFFA3A6FF);
-    const secondaryDim = Color(0xFF8455EF);
-
-    final media = MediaQuery.of(context);
-    final cardWidth = media.size.width.clamp(0, 420).toDouble();
-
-    return Scaffold(
-      backgroundColor: surface,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Positioned(
-              top: -120,
-              right: -80,
-              child: CognixGradientBlob(
-                size: 260,
-                colorA: secondaryDim.withOpacity(0.35),
-                colorB: primaryDim.withOpacity(0.15),
+    return AuthShell(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const AuthIntro(
+            icon: Icons.auto_awesome_rounded,
+            title: 'Bem-vindo de volta,\nMestre',
+            subtitle:
+                'Sua jornada rumo ao conhecimento continua aqui. Prepare-se para elevar seu nível hoje.',
+          ),
+          const SizedBox(height: 28),
+          const FieldLabel(text: 'E-MAIL', letterSpacing: 1.5),
+          const SizedBox(height: 8),
+          InputField(
+            controller: _emailController,
+            focusNode: _emailFocus,
+            hintText: 'seu@email.com',
+            icon: Icons.mail_outline_rounded,
+            background: AuthTheme.surfaceLow,
+            primary: AuthTheme.primary,
+          ),
+          const SizedBox(height: 18),
+          const FieldLabel(text: 'SENHA DE ACESSO', letterSpacing: 1.5),
+          const SizedBox(height: 8),
+          InputField(
+            controller: _passwordController,
+            focusNode: _passwordFocus,
+            hintText: '********',
+            icon: Icons.lock_outline_rounded,
+            background: AuthTheme.surfaceLow,
+            primary: AuthTheme.primary,
+            obscure: _obscurePassword,
+            suffix: IconButton(
+              onPressed: () {
+                setState(() => _obscurePassword = !_obscurePassword);
+              },
+              icon: Icon(
+                _obscurePassword
+                    ? Icons.visibility_off_rounded
+                    : Icons.visibility_rounded,
+                color: AuthTheme.onSurfaceMuted,
+                size: 20,
               ),
             ),
-            Positioned(
-              bottom: -140,
-              left: -100,
-              child: CognixGradientBlob(
-                size: 300,
-                colorA: primaryDim.withOpacity(0.25),
-                colorB: secondaryDim.withOpacity(0.15),
+          ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () => Navigator.of(context).pushNamed('forgot'),
+              style: TextButton.styleFrom(
+                foregroundColor: AuthTheme.primary,
+                padding: EdgeInsets.zero,
+                minimumSize: const Size(0, 0),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
+              child: const Text('Esqueceu?'),
             ),
-            Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 24,
-                ),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: cardWidth),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 28,
-                    ),
-                    decoration: BoxDecoration(
-                      color: surfaceContainer,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: onSurface.withOpacity(0.06),
-                          blurRadius: 32,
-                          offset: const Offset(0, 16),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Align(
-                          alignment: Alignment.center,
-                          child: CognixGlassBadge(
-                            child: Icon(
-                              Icons.auto_awesome_rounded,
-                              color: primary,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Text(
-                          'Bem-vindo de volta,\nMestre',
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.manrope(
-                            color: onSurface,
-                            fontSize: 26,
-                            fontWeight: FontWeight.w700,
-                            height: 1.2,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          'Sua jornada rumo ao conhecimento continua aqui. '
-                          'Prepare-se para elevar seu nivel hoje.',
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
-                            color: onSurfaceMuted,
-                            fontSize: 14.5,
-                            height: 1.45,
-                          ),
-                        ),
-                        const SizedBox(height: 28),
-                        CognixFieldLabel(text: 'E-MAIL', letterSpacing: 1.5),
-                        const SizedBox(height: 8),
-                        CognixInputField(
-                          controller: _emailController,
-                          focusNode: _emailFocus,
-                          hintText: 'seu@email.com',
-                          icon: Icons.mail_outline_rounded,
-                          background: surfaceLow,
-                          primary: primary,
-                        ),
-                        const SizedBox(height: 18),
-                        CognixFieldLabel(
-                          text: 'SENHA DE ACESSO',
-                          letterSpacing: 1.5,
-                        ),
-                        const SizedBox(height: 8),
-                        CognixInputField(
-                          controller: _passwordController,
-                          focusNode: _passwordFocus,
-                          hintText: '********',
-                          icon: Icons.lock_outline_rounded,
-                          background: surfaceLow,
-                          primary: primary,
-                          obscure: _obscurePassword,
-                          suffix: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _obscurePassword = !_obscurePassword;
-                              });
-                            },
-                            icon: Icon(
-                              _obscurePassword
-                                  ? Icons.visibility_off_rounded
-                                  : Icons.visibility_rounded,
-                              color: onSurfaceMuted,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pushNamed('forgot');
-                            },
-                            style: TextButton.styleFrom(
-                              foregroundColor: primary,
-                              padding: EdgeInsets.zero,
-                              minimumSize: const Size(0, 0),
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: Text(
-                              'Esqueceu?',
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 12.5,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        CognixPrimaryButton(
-                          text: 'Entrar',
-                          gradient: const LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [primaryDim, primary],
-                          ),
-                          onPressed: _isLoading ? null : _handleSignIn,
-                          isLoading: _isLoading,
-                        ),
-                        const SizedBox(height: 22),
-                        Center(
-                          child: Text(
-                            'OU ACESSE COM',
-                            style: GoogleFonts.plusJakartaSans(
-                              color: onSurfaceMuted.withOpacity(0.7),
-                              fontSize: 11,
-                              letterSpacing: 2,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: CognixSocialButton(
-                                icon: 'G',
-                                label: 'Google',
-                                background: surfaceHighest,
-                                textColor: onSurface,
-                                onPressed: _isLoading
-                                    ? () {}
-                                    : _handleGoogleSignIn,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 22),
-                        Center(
-                          child: Wrap(
-                            alignment: WrapAlignment.center,
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              Text(
-                                'Novo por aqui?',
-                                style: GoogleFonts.inter(
-                                  color: onSurfaceMuted,
-                                  fontSize: 12.5,
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(
-                                    context,
-                                  ).pushReplacementNamed('register');
-                                },
-                                style: TextButton.styleFrom(
-                                  foregroundColor: primary,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6,
-                                  ),
-                                  minimumSize: const Size(0, 0),
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                child: Text(
-                                  'Criar conta',
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 12.5,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 24),
+          PrimaryButton(
+            text: 'Entrar',
+            gradient: AuthTheme.primaryGradient,
+            onPressed: _isLoading ? null : _handleSignIn,
+            isLoading: _isLoading,
+          ),
+          const SizedBox(height: 22),
+          AuthSocialSection(
+            title: 'OU ACESSE COM',
+            onGooglePressed: _isLoading ? () {} : _handleGoogleSignIn,
+          ),
+          const SizedBox(height: 22),
+          AuthInlinePrompt(
+            prefix: 'Novo por aqui?',
+            actionLabel: 'Criar conta',
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed('register');
+            },
+          ),
+        ],
       ),
     );
   }

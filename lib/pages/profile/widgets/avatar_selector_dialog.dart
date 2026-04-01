@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:random_avatar/random_avatar.dart';
-import '../../../services/avatar_service.dart';
+import '../../../services/local/avatar_service.dart';
 
 class AvatarSelectorDialog extends StatefulWidget {
   const AvatarSelectorDialog({
