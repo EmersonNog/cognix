@@ -9,6 +9,8 @@ class TrainingSummaryMapCard extends StatelessWidget {
     required this.onSurface,
     required this.onSurfaceMuted,
     required this.primary,
+    this.isLocked = false,
+    this.lockedMessage,
   });
 
   final bool isCompact;
@@ -16,6 +18,8 @@ class TrainingSummaryMapCard extends StatelessWidget {
   final Color onSurface;
   final Color onSurfaceMuted;
   final Color primary;
+  final bool isLocked;
+  final String? lockedMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +60,10 @@ class TrainingSummaryMapCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  isCompact
+                  isLocked
+                      ? (lockedMessage ??
+                          'Conclua o simulado para liberar seu mapa mental personalizado.')
+                      : isCompact
                       ? 'Comeca focado no tema principal. Arraste e aproxime para explorar.'
                       : 'Mapa mental interativo para revisar pontos-chave com zoom e arraste.',
                   style: GoogleFonts.inter(

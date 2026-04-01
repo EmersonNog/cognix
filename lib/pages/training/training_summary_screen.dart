@@ -82,8 +82,9 @@ class _TrainingSummaryScreenState extends State<TrainingSummaryScreen> {
           }
 
           final summary = snapshot.data;
+          final isLocked = summary?.lockedUntilComplete ?? false;
           final nodes = summary?.nodes ?? const <SummaryNode>[];
-          if (summary == null || nodes.isEmpty) {
+          if (summary == null || (nodes.isEmpty && !isLocked)) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -141,6 +142,7 @@ class _TrainingSummaryScreenState extends State<TrainingSummaryScreen> {
                           onSurface: widget.onSurface,
                           onSurfaceMuted: widget.onSurfaceMuted,
                           primary: widget.primary,
+                          isLocked: isLocked,
                         ),
                         const SizedBox(height: 12),
                         TrainingSummaryMapCard(
@@ -149,6 +151,8 @@ class _TrainingSummaryScreenState extends State<TrainingSummaryScreen> {
                           onSurface: widget.onSurface,
                           onSurfaceMuted: widget.onSurfaceMuted,
                           primary: widget.primary,
+                          isLocked: isLocked,
+                          lockedMessage: summary.lockedMessage,
                         ),
                       ],
                     ),
@@ -162,7 +166,9 @@ class _TrainingSummaryScreenState extends State<TrainingSummaryScreen> {
                       surfaceContainer: widget.surfaceContainer,
                       surfaceContainerHigh: widget.surfaceContainerHigh,
                       onSurface: widget.onSurface,
+                      onSurfaceMuted: widget.onSurfaceMuted,
                       primary: widget.primary,
+                      lockedMessage: summary.lockedMessage,
                     ),
                   ),
                 ],

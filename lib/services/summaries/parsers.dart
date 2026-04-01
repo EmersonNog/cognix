@@ -14,6 +14,8 @@ SummaryData parseSummaryData(
     subcategory: payload['subcategory']?.toString() ?? fallbackSubcategory,
     nodes: parseSummaryNodes(payload['nodes']),
     stats: parseSummaryStats(payload['stats']),
+    lockedUntilComplete: payload['locked_until_complete'] == true,
+    lockedMessage: payload['locked_message']?.toString(),
   );
 }
 

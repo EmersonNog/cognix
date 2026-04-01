@@ -12,6 +12,8 @@ class SummaryData {
     required this.subcategory,
     required this.nodes,
     required this.stats,
+    required this.lockedUntilComplete,
+    required this.lockedMessage,
   });
 
   final String title;
@@ -19,6 +21,8 @@ class SummaryData {
   final String subcategory;
   final List<SummaryNode> nodes;
   final SummaryStats stats;
+  final bool lockedUntilComplete;
+  final String? lockedMessage;
 }
 
 class SummaryStats {

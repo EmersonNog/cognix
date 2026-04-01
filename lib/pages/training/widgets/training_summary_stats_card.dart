@@ -12,6 +12,7 @@ class TrainingSummaryStatsCard extends StatelessWidget {
     required this.onSurface,
     required this.onSurfaceMuted,
     required this.primary,
+    this.isLocked = false,
   });
 
   final SummaryStats stats;
@@ -19,6 +20,7 @@ class TrainingSummaryStatsCard extends StatelessWidget {
   final Color onSurface;
   final Color onSurfaceMuted;
   final Color primary;
+  final bool isLocked;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +38,16 @@ class TrainingSummaryStatsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            isLocked
+                ? 'Estatisticas liberadas ao concluir o simulado.'
+                : 'Dados do seu historico nesta subcategoria.',
+            style: GoogleFonts.inter(
+              color: onSurfaceMuted,
+              fontSize: 11.5,
+            ),
+          ),
+          const SizedBox(height: 10),
           Wrap(
             spacing: 10,
             runSpacing: 10,
@@ -46,6 +58,7 @@ class TrainingSummaryStatsCard extends StatelessWidget {
                 accent: primary,
                 onSurface: onSurface,
                 onSurfaceMuted: onSurfaceMuted,
+                isLocked: isLocked,
               ),
               _SummaryStatBadge(
                 label: 'Acertos',
@@ -53,6 +66,7 @@ class TrainingSummaryStatsCard extends StatelessWidget {
                 accent: primary.withOpacity(0.8),
                 onSurface: onSurface,
                 onSurfaceMuted: onSurfaceMuted,
+                isLocked: isLocked,
               ),
               _SummaryStatBadge(
                 label: 'Tentativas',
@@ -60,20 +74,41 @@ class TrainingSummaryStatsCard extends StatelessWidget {
                 accent: primary.withOpacity(0.65),
                 onSurface: onSurface,
                 onSurfaceMuted: onSurfaceMuted,
+                isLocked: isLocked,
               ),
             ],
           ),
           const SizedBox(height: 12),
           Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              'Ultima tentativa: $lastAttempt',
-              style: GoogleFonts.inter(
-                color: onSurfaceMuted,
-                fontSize: 11.5,
-              ),
-              textAlign: TextAlign.right,
-            ),
+            alignment: Alignment.centerLeft,
+            child: isLocked
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.lock_outline_rounded,
+                        color: onSurfaceMuted,
+                        size: 14,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Atividade recente bloqueada',
+                        style: GoogleFonts.inter(
+                          color: onSurfaceMuted,
+                          fontSize: 11.5,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ],
+                  )
+                : Text(
+                    'Atividade recente: $lastAttempt',
+                    style: GoogleFonts.inter(
+                      color: onSurfaceMuted,
+                      fontSize: 11.5,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
           ),
         ],
       ),
@@ -88,6 +123,7 @@ class _SummaryStatBadge extends StatelessWidget {
     required this.accent,
     required this.onSurface,
     required this.onSurfaceMuted,
+    required this.isLocked,
   });
 
   final String label;
@@ -95,6 +131,7 @@ class _SummaryStatBadge extends StatelessWidget {
   final Color accent;
   final Color onSurface;
   final Color onSurfaceMuted;
+  final bool isLocked;
 
   @override
   Widget build(BuildContext context) {
@@ -117,14 +154,21 @@ class _SummaryStatBadge extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            value,
-            style: GoogleFonts.manrope(
+          if (isLocked)
+            Icon(
+              Icons.lock_outline_rounded,
               color: onSurface,
-              fontSize: 13.5,
-              fontWeight: FontWeight.w700,
+              size: 15,
+            )
+          else
+            Text(
+              value,
+              style: GoogleFonts.manrope(
+                color: onSurface,
+                fontSize: 13.5,
+                fontWeight: FontWeight.w700,
+              ),
             ),
-          ),
         ],
       ),
     );
