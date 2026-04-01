@@ -250,7 +250,7 @@ Future<QuestionsPage> loadQuestionsPageWithFallback({
       limit: limit,
       offset: offset,
     );
-    if (originalPage.items.isNotEmpty || offset > 0) {
+    if (originalPage.items.isNotEmpty) {
       return originalPage;
     }
   } catch (error) {
@@ -279,7 +279,7 @@ Future<QuestionsPage> loadQuestionsPageWithFallback({
         limit: limit,
         offset: offset,
       );
-      if (canonicalPage.items.isNotEmpty || offset > 0) {
+      if (canonicalPage.items.isNotEmpty) {
         return canonicalPage;
       }
       originalPage ??= canonicalPage;
