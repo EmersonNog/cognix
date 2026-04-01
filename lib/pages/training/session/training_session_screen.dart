@@ -344,31 +344,43 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
   }
 
   Future<void> _restoreOrLoad() async {
-    final restored = await _restoreSessionState();
-    if (_completedSessionResult != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted || _completedSessionResult == null) return;
-        final result = _completedSessionResult!;
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (_) => TrainingResultsScreen(
-              discipline: widget.discipline,
-              subcategory: widget.subcategory,
-              totalQuestions: result.totalQuestions,
-              answeredQuestions: result.answeredQuestions,
-              correctAnswers: result.correctAnswers,
-              wrongAnswers: result.wrongAnswers,
-              elapsed: Duration(seconds: result.elapsedSeconds),
+    try {
+      final restored = await _restoreSessionState();
+      if (_completedSessionResult != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted || _completedSessionResult == null) return;
+          final result = _completedSessionResult!;
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => TrainingResultsScreen(
+                discipline: widget.discipline,
+                subcategory: widget.subcategory,
+                totalQuestions: result.totalQuestions,
+                answeredQuestions: result.answeredQuestions,
+                correctAnswers: result.correctAnswers,
+                wrongAnswers: result.wrongAnswers,
+                elapsed: Duration(seconds: result.elapsedSeconds),
+              ),
             ),
-          ),
+          );
+        });
+        return;
+      }
+      if (!restored) {
+        await _loadInitialQuestions();
+      }
+      _startTimer();
+    } catch (error) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        showCognixMessage(
+          context,
+          error.toString(),
+          type: CognixMessageType.error,
         );
       });
-      return;
+      rethrow;
     }
-    if (!restored) {
-      await _loadInitialQuestions();
-    }
-    _startTimer();
   }
 
   Map<String, dynamic> _buildSessionPayload({required bool includeQuestions}) {

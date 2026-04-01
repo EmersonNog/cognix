@@ -18,6 +18,7 @@ class TrainingDetailScreen extends StatefulWidget {
     super.key,
     required this.title,
     required this.discipline,
+    this.area,
     required this.description,
     required this.badgeLabel,
     required this.badgeColor,
@@ -31,6 +32,7 @@ class TrainingDetailScreen extends StatefulWidget {
 
   final String title;
   final String discipline;
+  final SubjectsArea? area;
   final String description;
   final String badgeLabel;
   final Color badgeColor;
@@ -147,7 +149,7 @@ class _TrainingDetailScreenState extends State<TrainingDetailScreen>
   }
 
   void _openSubjectsArea() {
-    final area = subjectsAreaFromTitle(widget.discipline);
+    final area = widget.area ?? subjectsAreaFromTitle(widget.discipline);
     if (area == null) {
       showCognixMessage(
         context,

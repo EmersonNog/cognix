@@ -3,10 +3,14 @@ import 'dart:convert';
 import '../../utils/api_datetime.dart';
 import 'models.dart';
 
-SubcategoryItem parseSubcategoryItem(Map item) {
+SubcategoryItem parseSubcategoryItem(
+  Map item, {
+  String fallbackDiscipline = '',
+}) {
   return SubcategoryItem(
     name: item['name']?.toString() ?? '',
     total: int.tryParse(item['total']?.toString() ?? '') ?? 0,
+    discipline: item['discipline']?.toString() ?? fallbackDiscipline,
   );
 }
 

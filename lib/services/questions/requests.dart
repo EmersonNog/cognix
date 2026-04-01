@@ -1,6 +1,7 @@
 import 'core.dart';
 import 'models.dart';
 import 'parsers.dart';
+import 'request_helpers.dart';
 
 Future<AttemptResult> submitAttempt({
   required int questionId,
@@ -35,12 +36,15 @@ Future<List<SubcategoryItem>> fetchSubcategories(String discipline) async {
     errorMessage: 'Erro ao carregar subcategorias',
   );
 
-  final parsed = _parseSubcategoryItems(payload);
+  final parsed = parseSubcategoryItems(
+    payload,
+    fallbackDiscipline: discipline,
+  );
   if (parsed.isNotEmpty) {
     return parsed;
   }
 
-  final canonicalDiscipline = await _findCanonicalDisciplineName(discipline);
+  final canonicalDiscipline = await tryFindCanonicalDisciplineName(discipline);
   if (canonicalDiscipline == null || canonicalDiscipline == discipline) {
     return parsed;
   }
@@ -51,7 +55,10 @@ Future<List<SubcategoryItem>> fetchSubcategories(String discipline) async {
     ),
     errorMessage: 'Erro ao carregar subcategorias',
   );
-  return _parseSubcategoryItems(fallbackPayload);
+  return parseSubcategoryItems(
+    fallbackPayload,
+    fallbackDiscipline: canonicalDiscipline,
+  );
 }
 
 Future<List<QuestionItem>> fetchQuestionsBySubcategory({
@@ -93,25 +100,77 @@ Future<QuestionsPage> fetchQuestionsPageBySubcategory({
   int limit = 20,
   int offset = 0,
 }) async {
-  final payload = await getJson(
-    Uri.parse('${apiBaseUrl()}/questions').replace(
-      queryParameters: {
-        'subject': discipline,
-        'subcategory': subcategory,
-        'limit': '$limit',
-        'offset': '$offset',
-        'include_total': 'true',
-      },
-    ),
-    errorMessage: 'Erro ao carregar questões',
-  );
+  QuestionsPage? originalPage;
+  Object? originalError;
 
-  return parseQuestionsPage(
-    payload,
-    fallbackLimit: limit,
-    fallbackOffset: offset,
-    fallbackDiscipline: discipline,
-    fallbackSubcategory: subcategory,
+  try {
+    originalPage = await requestQuestionsPage(
+      discipline: discipline,
+      subcategory: subcategory,
+      limit: limit,
+      offset: offset,
+    );
+    if (originalPage.items.isNotEmpty || offset > 0) {
+      return originalPage;
+    }
+  } catch (error) {
+    originalError = error;
+  }
+
+  final canonicalDiscipline = await tryFindCanonicalDisciplineName(discipline);
+  final effectiveDiscipline = canonicalDiscipline ?? discipline;
+  final canonicalSubcategory = await tryFindCanonicalSubcategoryName(
+    discipline: effectiveDiscipline,
+    subcategory: subcategory,
+  );
+  final effectiveSubcategory = canonicalSubcategory ?? subcategory;
+
+  if (effectiveDiscipline != discipline || effectiveSubcategory != subcategory) {
+    try {
+      final canonicalPage = await requestQuestionsPage(
+        discipline: effectiveDiscipline,
+        subcategory: effectiveSubcategory,
+        limit: limit,
+        offset: offset,
+      );
+      if (canonicalPage.items.isNotEmpty || offset > 0) {
+        return canonicalPage;
+      }
+      originalPage ??= canonicalPage;
+    } catch (error) {
+      originalError ??= error;
+    }
+  }
+
+  if (offset == 0) {
+    try {
+      final subcategoryOnlyPage = await requestQuestionsPage(
+        discipline: null,
+        subcategory: effectiveSubcategory,
+        limit: limit,
+        offset: offset,
+      );
+      if (subcategoryOnlyPage.items.isNotEmpty) {
+        return subcategoryOnlyPage;
+      }
+      originalPage ??= subcategoryOnlyPage;
+    } catch (error) {
+      originalError ??= error;
+    }
+  }
+
+  if (originalPage != null) {
+    return originalPage;
+  }
+  if (originalError != null) {
+    throw originalError;
+  }
+
+  return QuestionsPage(
+    items: const [],
+    limit: limit,
+    offset: offset,
+    total: 0,
   );
 }
 
@@ -172,99 +231,4 @@ Future<TrainingSessionsOverview> fetchTrainingSessionsOverview() async {
     errorMessage: 'Erro ao carregar overview de sessões',
   );
   return parseTrainingSessionsOverview(payload);
-}
-
-List<SubcategoryItem> _parseSubcategoryItems(Map<String, dynamic> payload) {
-  final items = payload['items'];
-  if (items is! List) {
-    return [];
-  }
-
-  return items
-      .whereType<Map>()
-      .map(parseSubcategoryItem)
-      .where((item) => item.name.trim().isNotEmpty)
-      .toList();
-}
-
-Future<String?> _findCanonicalDisciplineName(String discipline) async {
-  final payload = await getJson(
-    Uri.parse('${apiBaseUrl()}/questions/disciplines'),
-    errorMessage: 'Erro ao carregar disciplinas',
-  );
-
-  final items = payload['items'];
-  if (items is! List) {
-    return null;
-  }
-
-  final expected = _normalizeDiscipline(discipline);
-  for (final item in items) {
-    final value = item?.toString().trim();
-    if (value == null || value.isEmpty) {
-      continue;
-    }
-    if (_normalizeDiscipline(value) == expected) {
-      return value;
-    }
-  }
-  return null;
-}
-
-String _normalizeDiscipline(String value) {
-  const replacements = {
-    'á': 'a',
-    'à': 'a',
-    'ã': 'a',
-    'â': 'a',
-    'ä': 'a',
-    'Á': 'a',
-    'À': 'a',
-    'Ã': 'a',
-    'Â': 'a',
-    'Ä': 'a',
-    'é': 'e',
-    'è': 'e',
-    'ê': 'e',
-    'ë': 'e',
-    'É': 'e',
-    'È': 'e',
-    'Ê': 'e',
-    'Ë': 'e',
-    'í': 'i',
-    'ì': 'i',
-    'î': 'i',
-    'ï': 'i',
-    'Í': 'i',
-    'Ì': 'i',
-    'Î': 'i',
-    'Ï': 'i',
-    'ó': 'o',
-    'ò': 'o',
-    'õ': 'o',
-    'ô': 'o',
-    'ö': 'o',
-    'Ó': 'o',
-    'Ò': 'o',
-    'Õ': 'o',
-    'Ô': 'o',
-    'Ö': 'o',
-    'ú': 'u',
-    'ù': 'u',
-    'û': 'u',
-    'ü': 'u',
-    'Ú': 'u',
-    'Ù': 'u',
-    'Û': 'u',
-    'Ü': 'u',
-    'ç': 'c',
-    'Ç': 'c',
-  };
-
-  final buffer = StringBuffer();
-  for (final rune in value.runes) {
-    final char = String.fromCharCode(rune);
-    buffer.write(replacements[char] ?? char.toLowerCase());
-  }
-  return buffer.toString().trim();
 }

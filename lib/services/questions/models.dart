@@ -1,8 +1,13 @@
 class SubcategoryItem {
-  const SubcategoryItem({required this.name, required this.total});
+  const SubcategoryItem({
+    required this.name,
+    required this.total,
+    required this.discipline,
+  });
 
   final String name;
   final int total;
+  final String discipline;
 }
 
 class QuestionItem {

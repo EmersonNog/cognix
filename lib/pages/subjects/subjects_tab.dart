@@ -101,6 +101,7 @@ class _SubjectsTabState extends State<SubjectsTab> {
                         builder: (_) => TrainingDetailScreen(
                           title: subcategory.name,
                           discipline: title,
+                          area: widget.area,
                           description: 'Subcategoria de $title',
                           badgeLabel: 'Subcategoria',
                           badgeColor: widget.primary,
