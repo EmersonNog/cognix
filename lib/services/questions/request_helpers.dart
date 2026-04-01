@@ -13,15 +13,15 @@ List<SubcategoryItem> parseSubcategoryItems(
 
   return items
       .whereType<Map>()
-      .map((item) => parseSubcategoryItem(
-            item,
-            fallbackDiscipline: fallbackDiscipline,
-          ))
+      .map(
+        (item) =>
+            parseSubcategoryItem(item, fallbackDiscipline: fallbackDiscipline),
+      )
       .where((item) => item.name.trim().isNotEmpty)
       .toList();
 }
 
-Future<String?> findCanonicalDisciplineName(String discipline) async {
+Future<String?> _findCanonicalDisciplineName(String discipline) async {
   final payload = await getJson(
     Uri.parse('${apiBaseUrl()}/questions/disciplines'),
     errorMessage: 'Erro ao carregar disciplinas',
@@ -32,35 +32,35 @@ Future<String?> findCanonicalDisciplineName(String discipline) async {
     return null;
   }
 
-  final expected = normalizeText(discipline);
+  final expected = _normalizeText(discipline);
   for (final item in items) {
     final value = item?.toString().trim();
     if (value == null || value.isEmpty) {
       continue;
     }
-    if (normalizeText(value) == expected) {
+    if (_normalizeText(value) == expected) {
       return value;
     }
   }
   return null;
 }
 
-Future<String?> tryFindCanonicalDisciplineName(String discipline) async {
+Future<String?> _tryFindCanonicalDisciplineName(String discipline) async {
   try {
-    return await findCanonicalDisciplineName(discipline);
+    return await _findCanonicalDisciplineName(discipline);
   } catch (_) {
     return null;
   }
 }
 
-Future<String?> findCanonicalSubcategoryName({
+Future<String?> _findCanonicalSubcategoryName({
   required String discipline,
   required String subcategory,
 }) async {
   final payload = await getJson(
-    Uri.parse('${apiBaseUrl()}/questions/subcategories').replace(
-      queryParameters: {'discipline': discipline},
-    ),
+    Uri.parse(
+      '${apiBaseUrl()}/questions/subcategories',
+    ).replace(queryParameters: {'discipline': discipline}),
     errorMessage: 'Erro ao carregar subcategorias',
   );
 
@@ -69,25 +69,25 @@ Future<String?> findCanonicalSubcategoryName({
     return null;
   }
 
-  final expected = normalizeText(subcategory);
+  final expected = _normalizeText(subcategory);
   for (final item in items.whereType<Map>()) {
     final value = item['name']?.toString().trim();
     if (value == null || value.isEmpty) {
       continue;
     }
-    if (normalizeText(value) == expected) {
+    if (_normalizeText(value) == expected) {
       return value;
     }
   }
   return null;
 }
 
-Future<String?> tryFindCanonicalSubcategoryName({
+Future<String?> _tryFindCanonicalSubcategoryName({
   required String discipline,
   required String subcategory,
 }) async {
   try {
-    return await findCanonicalSubcategoryName(
+    return await _findCanonicalSubcategoryName(
       discipline: discipline,
       subcategory: subcategory,
     );
@@ -96,7 +96,7 @@ Future<String?> tryFindCanonicalSubcategoryName({
   }
 }
 
-String normalizeText(String value) {
+String _normalizeText(String value) {
   const replacements = {
     '\u00E1': 'a',
     '\u00E0': 'a',
@@ -171,9 +171,9 @@ Future<QuestionsPage> requestQuestionsPage({
   }
 
   final payload = await getJson(
-    Uri.parse('${apiBaseUrl()}/questions').replace(
-      queryParameters: queryParameters,
-    ),
+    Uri.parse(
+      '${apiBaseUrl()}/questions',
+    ).replace(queryParameters: queryParameters),
     errorMessage: 'Erro ao carregar questões',
   );
 
@@ -184,4 +184,133 @@ Future<QuestionsPage> requestQuestionsPage({
     fallbackDiscipline: discipline ?? '',
     fallbackSubcategory: subcategory,
   );
+}
+
+Future<List<SubcategoryItem>> loadSubcategoriesWithFallback(
+  String discipline,
+) async {
+  final payload = await getJson(
+    Uri.parse(
+      '${apiBaseUrl()}/questions/subcategories',
+    ).replace(queryParameters: {'discipline': discipline}),
+    errorMessage: 'Erro ao carregar subcategorias',
+  );
+
+  final parsed = parseSubcategoryItems(payload, fallbackDiscipline: discipline);
+  if (parsed.isNotEmpty) {
+    return parsed;
+  }
+
+  final canonicalDiscipline = await _tryFindCanonicalDisciplineName(discipline);
+  if (canonicalDiscipline == null || canonicalDiscipline == discipline) {
+    return parsed;
+  }
+
+  final fallbackPayload = await getJson(
+    Uri.parse(
+      '${apiBaseUrl()}/questions/subcategories',
+    ).replace(queryParameters: {'discipline': canonicalDiscipline}),
+    errorMessage: 'Erro ao carregar subcategorias',
+  );
+  return parseSubcategoryItems(
+    fallbackPayload,
+    fallbackDiscipline: canonicalDiscipline,
+  );
+}
+
+Future<String?> _findCanonicalSubcategoryFromDiscipline(
+  String discipline,
+  String subcategory,
+) async {
+  try {
+    final items = await loadSubcategoriesWithFallback(discipline);
+    final expected = _normalizeText(subcategory);
+    for (final item in items) {
+      if (_normalizeText(item.name) == expected) {
+        return item.name;
+      }
+    }
+  } catch (_) {}
+  return null;
+}
+
+Future<QuestionsPage> loadQuestionsPageWithFallback({
+  required String discipline,
+  required String subcategory,
+  required int limit,
+  required int offset,
+}) async {
+  QuestionsPage? originalPage;
+  Object? originalError;
+
+  try {
+    originalPage = await requestQuestionsPage(
+      discipline: discipline,
+      subcategory: subcategory,
+      limit: limit,
+      offset: offset,
+    );
+    if (originalPage.items.isNotEmpty || offset > 0) {
+      return originalPage;
+    }
+  } catch (error) {
+    originalError = error;
+  }
+
+  final canonicalDiscipline = await _tryFindCanonicalDisciplineName(discipline);
+  final effectiveDiscipline = canonicalDiscipline ?? discipline;
+  final canonicalSubcategory =
+      await _findCanonicalSubcategoryFromDiscipline(
+        effectiveDiscipline,
+        subcategory,
+      ) ??
+      await _tryFindCanonicalSubcategoryName(
+        discipline: effectiveDiscipline,
+        subcategory: subcategory,
+      );
+  final effectiveSubcategory = canonicalSubcategory ?? subcategory;
+
+  if (effectiveDiscipline != discipline ||
+      effectiveSubcategory != subcategory) {
+    try {
+      final canonicalPage = await requestQuestionsPage(
+        discipline: effectiveDiscipline,
+        subcategory: effectiveSubcategory,
+        limit: limit,
+        offset: offset,
+      );
+      if (canonicalPage.items.isNotEmpty || offset > 0) {
+        return canonicalPage;
+      }
+      originalPage ??= canonicalPage;
+    } catch (error) {
+      originalError ??= error;
+    }
+  }
+
+  if (offset == 0) {
+    try {
+      final subcategoryOnlyPage = await requestQuestionsPage(
+        discipline: null,
+        subcategory: effectiveSubcategory,
+        limit: limit,
+        offset: offset,
+      );
+      if (subcategoryOnlyPage.items.isNotEmpty) {
+        return subcategoryOnlyPage;
+      }
+      originalPage ??= subcategoryOnlyPage;
+    } catch (error) {
+      originalError ??= error;
+    }
+  }
+
+  if (originalPage != null) {
+    return originalPage;
+  }
+  if (originalError != null) {
+    throw originalError;
+  }
+
+  return QuestionsPage(items: const [], limit: limit, offset: offset, total: 0);
 }

@@ -127,69 +127,69 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
         body: FutureBuilder<void>(
           future: _initialLoadFuture,
           builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const TrainingSessionLoadingState();
-          }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const TrainingSessionLoadingState();
+            }
 
-          if (_restoringSession) {
-            return TrainingSessionRestoringState(
-              onSurfaceMuted: widget.onSurfaceMuted,
-            );
-          }
+            if (_restoringSession) {
+              return TrainingSessionRestoringState(
+                onSurfaceMuted: widget.onSurfaceMuted,
+              );
+            }
 
-          if (_completedSessionResult != null) {
-            return const TrainingSessionLoadingState();
-          }
+            if (_completedSessionResult != null) {
+              return const TrainingSessionLoadingState();
+            }
 
-          if (snapshot.hasError) {
-            return TrainingSessionMessageState(
-              message: 'Não foi possível carregar as questões.',
-              onSurfaceMuted: widget.onSurfaceMuted,
-            );
-          }
+            if (snapshot.hasError) {
+              return TrainingSessionMessageState(
+                message: 'Não foi possível carregar as questões.',
+                onSurfaceMuted: widget.onSurfaceMuted,
+              );
+            }
 
-          final questions = _questions;
-          if (questions.isEmpty) {
-            return TrainingSessionMessageState(
-              message: 'Nenhuma questão encontrada para esta subcategoria.',
-              onSurfaceMuted: widget.onSurfaceMuted,
-            );
-          }
+            final questions = _questions;
+            if (questions.isEmpty) {
+              return TrainingSessionMessageState(
+                message: 'Nenhuma questão encontrada para esta subcategoria.',
+                onSurfaceMuted: widget.onSurfaceMuted,
+              );
+            }
 
-          final index = _currentIndex.clamp(0, questions.length - 1);
-          final question = questions[index];
-          final selectedIndex = _selections[question.id];
-          return TrainingSessionBody(
-            subcategory: widget.subcategory,
-            discipline: widget.discipline,
-            question: question,
-            currentIndex: index,
-            totalQuestions: _totalAvailable ?? questions.length,
-            selectedIndex: selectedIndex,
-            hasMore: _hasMoreQuestions(),
-            isLoadingMore: _loadingMore,
-            isSubmitting: _submitting,
-            isPaused: _paused,
-            timeLabel: _formatElapsed(_currentElapsed()),
-            surfaceContainer: widget.surfaceContainer,
-            surfaceContainerHigh: widget.surfaceContainerHigh,
-            onSurface: widget.onSurface,
-            onSurfaceMuted: widget.onSurfaceMuted,
-            primary: widget.primary,
-            onPauseToggle: _togglePause,
-            onSelectOption: (selectedOptionIndex) {
-              setState(() => _selections[question.id] = selectedOptionIndex);
-              _saveSessionState();
-            },
-            onNext: () => _handleNextQuestion(
+            final index = _currentIndex.clamp(0, questions.length - 1);
+            final question = questions[index];
+            final selectedIndex = _selections[question.id];
+            return TrainingSessionBody(
+              subcategory: widget.subcategory,
+              discipline: widget.discipline,
               question: question,
-              visibleQuestionsCount: questions.length,
-            ),
-            onPrevious: () {
-              setState(() => _currentIndex -= 1);
-              _saveSessionState();
-            },
-          );
+              currentIndex: index,
+              totalQuestions: _totalAvailable ?? questions.length,
+              selectedIndex: selectedIndex,
+              hasMore: _hasMoreQuestions(),
+              isLoadingMore: _loadingMore,
+              isSubmitting: _submitting,
+              isPaused: _paused,
+              timeLabel: _formatElapsed(_currentElapsed()),
+              surfaceContainer: widget.surfaceContainer,
+              surfaceContainerHigh: widget.surfaceContainerHigh,
+              onSurface: widget.onSurface,
+              onSurfaceMuted: widget.onSurfaceMuted,
+              primary: widget.primary,
+              onPauseToggle: _togglePause,
+              onSelectOption: (selectedOptionIndex) {
+                setState(() => _selections[question.id] = selectedOptionIndex);
+                _saveSessionState();
+              },
+              onNext: () => _handleNextQuestion(
+                question: question,
+                visibleQuestionsCount: questions.length,
+              ),
+              onPrevious: () {
+                setState(() => _currentIndex -= 1);
+                _saveSessionState();
+              },
+            );
           },
         ),
       ),
@@ -415,7 +415,9 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
   }
 
   Future<void> _persistSessionImmediately() async {
-    if (_questions.isEmpty || _completedSessionResult != null || _sessionCompleted) {
+    if (_questions.isEmpty ||
+        _completedSessionResult != null ||
+        _sessionCompleted) {
       return;
     }
     final payload = _buildSessionPayload(includeQuestions: true);

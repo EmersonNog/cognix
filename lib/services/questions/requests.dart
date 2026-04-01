@@ -23,42 +23,14 @@ Future<AttemptResult> submitAttempt({
   return AttemptResult(
     questionId: int.tryParse('${payload['question_id']}') ?? questionId,
     selectedLetter: payload['selected_letter']?.toString() ?? selectedLetter,
-    isCorrect:
-        payload['is_correct'] is bool ? payload['is_correct'] as bool : null,
+    isCorrect: payload['is_correct'] is bool
+        ? payload['is_correct'] as bool
+        : null,
   );
 }
 
 Future<List<SubcategoryItem>> fetchSubcategories(String discipline) async {
-  final payload = await getJson(
-    Uri.parse('${apiBaseUrl()}/questions/subcategories').replace(
-      queryParameters: {'discipline': discipline},
-    ),
-    errorMessage: 'Erro ao carregar subcategorias',
-  );
-
-  final parsed = parseSubcategoryItems(
-    payload,
-    fallbackDiscipline: discipline,
-  );
-  if (parsed.isNotEmpty) {
-    return parsed;
-  }
-
-  final canonicalDiscipline = await tryFindCanonicalDisciplineName(discipline);
-  if (canonicalDiscipline == null || canonicalDiscipline == discipline) {
-    return parsed;
-  }
-
-  final fallbackPayload = await getJson(
-    Uri.parse('${apiBaseUrl()}/questions/subcategories').replace(
-      queryParameters: {'discipline': canonicalDiscipline},
-    ),
-    errorMessage: 'Erro ao carregar subcategorias',
-  );
-  return parseSubcategoryItems(
-    fallbackPayload,
-    fallbackDiscipline: canonicalDiscipline,
-  );
+  return loadSubcategoriesWithFallback(discipline);
 }
 
 Future<List<QuestionItem>> fetchQuestionsBySubcategory({
@@ -80,9 +52,9 @@ Future<List<QuestionItem>> fetchQuestionsByIds(List<int> ids) async {
   if (ids.isEmpty) return [];
 
   final payload = await getJson(
-    Uri.parse('${apiBaseUrl()}/questions/by_ids').replace(
-      queryParameters: {'ids': ids.join(',')},
-    ),
+    Uri.parse(
+      '${apiBaseUrl()}/questions/by_ids',
+    ).replace(queryParameters: {'ids': ids.join(',')}),
     errorMessage: 'Erro ao carregar questões',
   );
 
@@ -100,77 +72,11 @@ Future<QuestionsPage> fetchQuestionsPageBySubcategory({
   int limit = 20,
   int offset = 0,
 }) async {
-  QuestionsPage? originalPage;
-  Object? originalError;
-
-  try {
-    originalPage = await requestQuestionsPage(
-      discipline: discipline,
-      subcategory: subcategory,
-      limit: limit,
-      offset: offset,
-    );
-    if (originalPage.items.isNotEmpty || offset > 0) {
-      return originalPage;
-    }
-  } catch (error) {
-    originalError = error;
-  }
-
-  final canonicalDiscipline = await tryFindCanonicalDisciplineName(discipline);
-  final effectiveDiscipline = canonicalDiscipline ?? discipline;
-  final canonicalSubcategory = await tryFindCanonicalSubcategoryName(
-    discipline: effectiveDiscipline,
+  return loadQuestionsPageWithFallback(
+    discipline: discipline,
     subcategory: subcategory,
-  );
-  final effectiveSubcategory = canonicalSubcategory ?? subcategory;
-
-  if (effectiveDiscipline != discipline || effectiveSubcategory != subcategory) {
-    try {
-      final canonicalPage = await requestQuestionsPage(
-        discipline: effectiveDiscipline,
-        subcategory: effectiveSubcategory,
-        limit: limit,
-        offset: offset,
-      );
-      if (canonicalPage.items.isNotEmpty || offset > 0) {
-        return canonicalPage;
-      }
-      originalPage ??= canonicalPage;
-    } catch (error) {
-      originalError ??= error;
-    }
-  }
-
-  if (offset == 0) {
-    try {
-      final subcategoryOnlyPage = await requestQuestionsPage(
-        discipline: null,
-        subcategory: effectiveSubcategory,
-        limit: limit,
-        offset: offset,
-      );
-      if (subcategoryOnlyPage.items.isNotEmpty) {
-        return subcategoryOnlyPage;
-      }
-      originalPage ??= subcategoryOnlyPage;
-    } catch (error) {
-      originalError ??= error;
-    }
-  }
-
-  if (originalPage != null) {
-    return originalPage;
-  }
-  if (originalError != null) {
-    throw originalError;
-  }
-
-  return QuestionsPage(
-    items: const [],
     limit: limit,
     offset: offset,
-    total: 0,
   );
 }
 
@@ -196,10 +102,7 @@ Future<TrainingSessionState?> fetchTrainingSession({
 }) async {
   final payload = await getJsonOrNullOn404(
     Uri.parse('${apiBaseUrl()}/sessions').replace(
-      queryParameters: {
-        'discipline': discipline,
-        'subcategory': subcategory,
-      },
+      queryParameters: {'discipline': discipline, 'subcategory': subcategory},
     ),
     errorMessage: 'Erro ao carregar sessão',
   );
@@ -216,10 +119,7 @@ Future<void> clearTrainingSession({
 }) async {
   await deleteJson(
     Uri.parse('${apiBaseUrl()}/sessions').replace(
-      queryParameters: {
-        'discipline': discipline,
-        'subcategory': subcategory,
-      },
+      queryParameters: {'discipline': discipline, 'subcategory': subcategory},
     ),
     errorMessage: 'Erro ao limpar sessão',
   );
