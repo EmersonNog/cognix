@@ -26,6 +26,7 @@ Future<AttemptResult> submitAttempt({
     isCorrect: payload['is_correct'] is bool
         ? payload['is_correct'] as bool
         : null,
+    correctLetter: payload['correct_letter']?.toString(),
   );
 }
 

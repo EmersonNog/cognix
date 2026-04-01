@@ -52,6 +52,11 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
   final Map<int, int> _selections = {};
   final Map<int, String> _lastSubmittedLetterByQuestionId = {};
   final Map<int, bool?> _isCorrectByQuestionId = {};
+  final Map<int, int> _correctOptionIndexByQuestionId = {};
+  bool _showingAnswerFeedback = false;
+  int? _feedbackQuestionId;
+  int? _correctOptionIndex;
+  bool? _lastAnswerWasCorrect;
   bool _submitting = false;
   final Stopwatch _stopwatch = Stopwatch();
   Timer? _ticker;
@@ -159,6 +164,12 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
             final index = _currentIndex.clamp(0, questions.length - 1);
             final question = questions[index];
             final selectedIndex = _selections[question.id];
+            final isSubmitted =
+                selectedIndex != null &&
+                _lastSubmittedLetterByQuestionId[question.id] ==
+                    _optionLetter(selectedIndex);
+            final isFreshAnswerFeedback =
+                _showingAnswerFeedback && _feedbackQuestionId == question.id;
             return TrainingSessionBody(
               subcategory: widget.subcategory,
               discipline: widget.discipline,
@@ -169,6 +180,14 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
               hasMore: _hasMoreQuestions(),
               isLoadingMore: _loadingMore,
               isSubmitting: _submitting,
+              isShowingAnswerFeedback: isFreshAnswerFeedback || isSubmitted,
+              isFreshAnswerFeedback: isFreshAnswerFeedback,
+              correctOptionIndex: isFreshAnswerFeedback
+                  ? _correctOptionIndex
+                  : _correctOptionIndexByQuestionId[question.id],
+              lastAnswerWasCorrect: isFreshAnswerFeedback
+                  ? _lastAnswerWasCorrect
+                  : _isCorrectByQuestionId[question.id],
               isPaused: _paused,
               timeLabel: _formatElapsed(_currentElapsed()),
               surfaceContainer: widget.surfaceContainer,
@@ -392,11 +411,16 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
       selections: _selections,
       lastSubmittedByQuestionId: _lastSubmittedLetterByQuestionId,
       isCorrectByQuestionId: _isCorrectByQuestionId,
+      correctOptionIndexByQuestionId: _correctOptionIndexByQuestionId,
       elapsedSeconds: _currentElapsed().inSeconds,
       paused: _paused,
       totalAvailable: _totalAvailable,
       offset: _offset,
       includeQuestions: includeQuestions,
+      showingAnswerFeedback: _showingAnswerFeedback,
+      feedbackQuestionId: _feedbackQuestionId,
+      correctOptionIndex: _correctOptionIndex,
+      lastAnswerWasCorrect: _lastAnswerWasCorrect,
     );
   }
 
@@ -521,8 +545,15 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
     _isCorrectByQuestionId
       ..clear()
       ..addAll(restored.isCorrectByQuestionId);
+    _correctOptionIndexByQuestionId
+      ..clear()
+      ..addAll(restored.correctOptionIndexByQuestionId);
 
     _paused = restored.paused;
+    _showingAnswerFeedback = restored.showingAnswerFeedback;
+    _feedbackQuestionId = restored.feedbackQuestionId;
+    _correctOptionIndex = restored.correctOptionIndex;
+    _lastAnswerWasCorrect = restored.lastAnswerWasCorrect;
     _elapsedOffset = Duration(seconds: restored.elapsedSeconds);
     _stopwatch
       ..stop()
@@ -563,6 +594,7 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
     final lastSubmitted = _lastSubmittedLetterByQuestionId[question.id];
 
     if (lastSubmitted == letter) {
+      _clearAnswerFeedback();
       await _advanceAfterAnswer(visibleQuestionsCount);
       return;
     }
@@ -577,7 +609,21 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
       );
       _isCorrectByQuestionId[question.id] = result.isCorrect;
       _lastSubmittedLetterByQuestionId[question.id] = letter;
-      await _advanceAfterAnswer(visibleQuestionsCount);
+      final correctOptionIndex = _optionIndexFromLetter(
+        result.correctLetter,
+        question.alternatives.length,
+      );
+      if (correctOptionIndex != null) {
+        _correctOptionIndexByQuestionId[question.id] = correctOptionIndex;
+      }
+      if (mounted) {
+        setState(() {
+          _showingAnswerFeedback = true;
+          _feedbackQuestionId = question.id;
+          _correctOptionIndex = correctOptionIndex;
+          _lastAnswerWasCorrect = result.isCorrect;
+        });
+      }
       if (!_sessionCompleted) {
         _saveSessionState();
       }
@@ -636,5 +682,29 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
       return letters[index];
     }
     return '${index + 1}';
+  }
+
+  int? _optionIndexFromLetter(String? letter, int optionsCount) {
+    if (letter == null || letter.trim().isEmpty) {
+      return null;
+    }
+
+    final normalized = letter.trim().toUpperCase();
+    for (var i = 0; i < optionsCount; i++) {
+      if (_optionLetter(i) == normalized) {
+        return i;
+      }
+    }
+    return null;
+  }
+
+  void _clearAnswerFeedback() {
+    if (!mounted) return;
+    setState(() {
+      _showingAnswerFeedback = false;
+      _feedbackQuestionId = null;
+      _correctOptionIndex = null;
+      _lastAnswerWasCorrect = null;
+    });
   }
 }

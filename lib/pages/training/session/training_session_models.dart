@@ -25,8 +25,13 @@ class TrainingRestoredSessionData {
     required this.selections,
     required this.lastSubmittedByQuestionId,
     required this.isCorrectByQuestionId,
+    required this.correctOptionIndexByQuestionId,
     required this.paused,
     required this.elapsedSeconds,
+    required this.showingAnswerFeedback,
+    required this.feedbackQuestionId,
+    required this.correctOptionIndex,
+    required this.lastAnswerWasCorrect,
   });
 
   final List<QuestionItem> questions;
@@ -36,8 +41,13 @@ class TrainingRestoredSessionData {
   final Map<int, int> selections;
   final Map<int, String> lastSubmittedByQuestionId;
   final Map<int, bool?> isCorrectByQuestionId;
+  final Map<int, int> correctOptionIndexByQuestionId;
   final bool paused;
   final int elapsedSeconds;
+  final bool showingAnswerFeedback;
+  final int? feedbackQuestionId;
+  final int? correctOptionIndex;
+  final bool? lastAnswerWasCorrect;
 }
 
 class TrainingSessionRestoreOutcome {

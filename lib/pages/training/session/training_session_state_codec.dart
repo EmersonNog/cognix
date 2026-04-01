@@ -9,11 +9,16 @@ Map<String, dynamic> buildTrainingSessionPayload({
   required Map<int, int> selections,
   required Map<int, String> lastSubmittedByQuestionId,
   required Map<int, bool?> isCorrectByQuestionId,
+  required Map<int, int> correctOptionIndexByQuestionId,
   required int elapsedSeconds,
   required bool paused,
   required int? totalAvailable,
   required int offset,
   required bool includeQuestions,
+  required bool showingAnswerFeedback,
+  required int? feedbackQuestionId,
+  required int? correctOptionIndex,
+  required bool? lastAnswerWasCorrect,
 }) {
   return <String, dynamic>{
     'discipline': discipline,
@@ -25,10 +30,17 @@ Map<String, dynamic> buildTrainingSessionPayload({
     'isCorrect': isCorrectByQuestionId.map(
       (k, v) => MapEntry('$k', v ?? 'null'),
     ),
+    'correctOptionIndexByQuestionId': correctOptionIndexByQuestionId.map(
+      (k, v) => MapEntry('$k', v),
+    ),
     'elapsedSeconds': elapsedSeconds,
     'paused': paused,
     'totalAvailable': totalAvailable,
     'offset': offset,
+    'showingAnswerFeedback': showingAnswerFeedback,
+    'feedbackQuestionId': feedbackQuestionId,
+    'currentCorrectOptionIndex': correctOptionIndex,
+    'lastAnswerWasCorrect': lastAnswerWasCorrect,
     'savedAt': DateTime.now().toUtc().millisecondsSinceEpoch,
     if (includeQuestions)
       'questions': questions.map(serializeQuestionItem).toList(),
@@ -183,6 +195,21 @@ Map<int, bool?> parseTrainingCorrectMap(dynamic raw) {
   });
 }
 
+Map<int, int> parseTrainingCorrectOptionIndexMap(dynamic raw) {
+  if (raw is! Map) return <int, int>{};
+  return raw.map((k, v) {
+    final key = int.tryParse(k.toString()) ?? 0;
+    final value = int.tryParse(v.toString()) ?? 0;
+    return MapEntry(key, value);
+  });
+}
+
+int? parseTrainingCurrentCorrectOptionIndex(Map<String, dynamic> decoded) {
+  return int.tryParse(
+    '${decoded['currentCorrectOptionIndex'] ?? decoded['correctOptionIndex']}',
+  );
+}
+
 TrainingRestoredSessionData? parseTrainingRestoredSessionData(
   Map<String, dynamic> decoded, {
   required String fallbackSubcategory,
@@ -211,8 +238,17 @@ TrainingRestoredSessionData? parseTrainingRestoredSessionData(
       decoded['lastSubmitted'],
     ),
     isCorrectByQuestionId: parseTrainingCorrectMap(decoded['isCorrect']),
+    correctOptionIndexByQuestionId: parseTrainingCorrectOptionIndexMap(
+      decoded['correctOptionIndexByQuestionId'] ?? decoded['correctOptionIndex'],
+    ),
     paused: decoded['paused'] == true,
     elapsedSeconds: int.tryParse('${decoded['elapsedSeconds']}') ?? 0,
+    showingAnswerFeedback: decoded['showingAnswerFeedback'] == true,
+    feedbackQuestionId: int.tryParse('${decoded['feedbackQuestionId']}'),
+    correctOptionIndex: parseTrainingCurrentCorrectOptionIndex(decoded),
+    lastAnswerWasCorrect: decoded['lastAnswerWasCorrect'] is bool
+        ? decoded['lastAnswerWasCorrect'] as bool
+        : null,
   );
 }
 

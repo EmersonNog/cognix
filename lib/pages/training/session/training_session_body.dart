@@ -26,6 +26,10 @@ class TrainingSessionBody extends StatelessWidget {
     required this.onSurface,
     required this.onSurfaceMuted,
     required this.primary,
+    required this.isShowingAnswerFeedback,
+    required this.isFreshAnswerFeedback,
+    required this.correctOptionIndex,
+    required this.lastAnswerWasCorrect,
     required this.onPauseToggle,
     required this.onSelectOption,
     required this.onNext,
@@ -48,6 +52,10 @@ class TrainingSessionBody extends StatelessWidget {
   final Color onSurface;
   final Color onSurfaceMuted;
   final Color primary;
+  final bool isShowingAnswerFeedback;
+  final bool isFreshAnswerFeedback;
+  final int? correctOptionIndex;
+  final bool? lastAnswerWasCorrect;
   final VoidCallback onPauseToggle;
   final ValueChanged<int> onSelectOption;
   final Future<void> Function() onNext;
@@ -56,7 +64,10 @@ class TrainingSessionBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isLastVisibleQuestion = currentIndex >= totalQuestions - 1;
-    final isNextDisabled = selectedIndex == null || isSubmitting || isLoadingMore;
+    final isNextDisabled =
+        (!isShowingAnswerFeedback && selectedIndex == null) ||
+        isSubmitting ||
+        isLoadingMore;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 6, 20, 120),
@@ -83,7 +94,7 @@ class TrainingSessionBody extends StatelessWidget {
         const SizedBox(height: 14),
         for (var i = 0; i < question.alternatives.length; i++) ...[
           GestureDetector(
-            onTap: () => onSelectOption(i),
+            onTap: isShowingAnswerFeedback ? null : () => onSelectOption(i),
             child: TrainingAnswerOption(
               letter: _optionLetter(i),
               text: question.alternatives[i],
@@ -93,6 +104,19 @@ class TrainingSessionBody extends StatelessWidget {
               onSurface: onSurface,
               primary: primary,
               selected: selectedIndex == i,
+              isDisabled: isShowingAnswerFeedback,
+              showSelectedCorrect:
+                  isShowingAnswerFeedback &&
+                  selectedIndex == i &&
+                  lastAnswerWasCorrect == true,
+              showSelectedIncorrect:
+                  isShowingAnswerFeedback &&
+                  selectedIndex == i &&
+                  lastAnswerWasCorrect == false,
+              showCorrectReveal:
+                  isShowingAnswerFeedback &&
+                  lastAnswerWasCorrect == false &&
+                  correctOptionIndex == i,
             ),
           ),
           const SizedBox(height: 10),
@@ -109,6 +133,7 @@ class TrainingSessionBody extends StatelessWidget {
                   isLastVisibleQuestion: isLastVisibleQuestion,
                   hasMore: hasMore,
                   isLoadingMore: isLoadingMore,
+                  isShowingAnswerFeedback: isShowingAnswerFeedback,
                 ),
                 primary: primary,
               ),
@@ -118,7 +143,7 @@ class TrainingSessionBody extends StatelessWidget {
         const SizedBox(height: 10),
         if (currentIndex > 0)
           GestureDetector(
-            onTap: onPrevious,
+            onTap: isFreshAnswerFeedback ? null : onPrevious,
             child: TrainingGhostButton(
               label: 'Questao Anterior',
               surfaceContainerHigh: surfaceContainerHigh,
@@ -139,13 +164,18 @@ class TrainingSessionBody extends StatelessWidget {
     required bool isLastVisibleQuestion,
     required bool hasMore,
     required bool isLoadingMore,
+    required bool isShowingAnswerFeedback,
   }) {
-    if (isLastVisibleQuestion && hasMore) {
-      return isLoadingMore ? 'Carregando...' : 'Proxima Questao';
+    if (isShowingAnswerFeedback) {
+      if (isLastVisibleQuestion && !hasMore) {
+        return 'Finalizar Simulado';
+      }
+      return 'Proxima Questao';
     }
-    return currentIndex < totalQuestions - 1
-        ? 'Proxima Questao'
-        : 'Finalizar Simulado';
+    if (isLoadingMore) {
+      return 'Carregando...';
+    }
+    return 'Responder';
   }
 
   String _optionLetter(int index) {

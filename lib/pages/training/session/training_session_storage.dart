@@ -102,6 +102,17 @@ Future<Map<String, dynamic>?> hydrateTrainingSessionState(
       decoded['isCorrect'],
       returnedIds,
     ),
+    'correctOptionIndexByQuestionId': filterTrainingSessionMapByIds(
+      decoded['correctOptionIndexByQuestionId'] ?? decoded['correctOptionIndex'],
+      returnedIds,
+    ),
+    'feedbackQuestionId': (() {
+      final raw = int.tryParse('${decoded['feedbackQuestionId']}');
+      if (raw == null || !returnedIds.contains(raw)) {
+        return null;
+      }
+      return raw;
+    })(),
     'questions': items.map(serializeQuestionItem).toList(),
   };
 }

@@ -86,9 +86,11 @@ class AttemptResult {
     required this.questionId,
     required this.selectedLetter,
     required this.isCorrect,
+    required this.correctLetter,
   });
 
   final int questionId;
   final String selectedLetter;
   final bool? isCorrect;
+  final String? correctLetter;
 }
