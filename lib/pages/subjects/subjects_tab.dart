@@ -80,7 +80,7 @@ class _SubjectsTabState extends State<SubjectsTab> {
             const SizedBox(height: 20),
             SubjectCategoryHeader(
               title: title,
-              subtitle: '${items.length} Materias Disponiveis',
+              subtitle: '${items.length} Matérias Disponíveis',
               onSurface: widget.onSurface,
               onSurfaceMuted: widget.onSurfaceMuted,
               primary: widget.primary,
@@ -100,9 +100,8 @@ class _SubjectsTabState extends State<SubjectsTab> {
                       MaterialPageRoute(
                         builder: (_) => TrainingDetailScreen(
                           title: subcategory.name,
-                          discipline: subjectsAreaTitle(widget.area),
-                          description:
-                              'Subcategoria de ${subjectsAreaTitle(widget.area)}',
+                          discipline: title,
+                          description: 'Subcategoria de $title',
                           badgeLabel: 'Subcategoria',
                           badgeColor: widget.primary,
                           countLabel:

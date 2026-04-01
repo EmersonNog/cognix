@@ -19,13 +19,13 @@ class SubjectItem {
 String subjectsAreaTitle(SubjectsArea area) {
   switch (area) {
     case SubjectsArea.natureza:
-      return 'Ciências da Natureza e suas Tecnologias';
+      return 'Ci\u00EAncias da Natureza e suas Tecnologias';
     case SubjectsArea.humanas:
-      return 'Ciências Humanas e suas Tecnologias';
+      return 'Ci\u00EAncias Humanas e suas Tecnologias';
     case SubjectsArea.linguagens:
-      return 'Linguagens, Códigos e suas Tecnologias';
+      return 'Linguagens, C\u00F3digos e suas Tecnologias';
     case SubjectsArea.matematica:
-      return 'Matemática e suas Tecnologias';
+      return 'Matem\u00E1tica e suas Tecnologias';
   }
 }
 
