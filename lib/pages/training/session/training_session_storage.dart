@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../../services/local/shared_preferences_store.dart';
 
 import '../../../services/questions/questions_api.dart';
 import 'training_session_models.dart';
@@ -9,8 +9,8 @@ import 'training_session_state_codec.dart';
 Future<Map<String, dynamic>?> readLocalTrainingSessionState(
   String sessionKey,
 ) async {
-  final prefs = await SharedPreferences.getInstance();
-  final raw = prefs.getString(sessionKey);
+  final prefs = await SharedPreferencesStore.instance();
+  final raw = await prefs.getString(sessionKey);
   if (raw == null || raw.isEmpty) {
     return null;
   }
@@ -26,7 +26,7 @@ Future<void> writeLocalTrainingSessionState(
   String sessionKey,
   Map<String, dynamic> payload,
 ) async {
-  final prefs = await SharedPreferences.getInstance();
+  final prefs = await SharedPreferencesStore.instance();
   await prefs.setString(sessionKey, jsonEncode(payload));
 }
 
