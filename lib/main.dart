@@ -3,11 +3,14 @@ import 'pages/onboarding/onboarding_gate.dart';
 import 'navigation/app_route_observer.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'firebase_options.dart';
 import 'routes.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   );
