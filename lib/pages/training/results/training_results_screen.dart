@@ -197,6 +197,16 @@ class TrainingResultsScreen extends StatelessWidget {
                 icon: Icons.refresh_rounded,
               ),
             ),
+            const SizedBox(height: 8),
+            Text(
+              'Reinicia as questões desta sessão para praticar, mas seu histórico e score continuam iguais.',
+              textAlign: TextAlign.left,
+              style: GoogleFonts.inter(
+                color: onSurfaceMuted,
+                fontSize: 12,
+                height: 1.4,
+              ),
+            ),
             const SizedBox(height: 15),
             GestureDetector(
               onTap: () =>

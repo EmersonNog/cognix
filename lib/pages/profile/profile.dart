@@ -64,6 +64,7 @@ class _ProfileTabState extends State<ProfileTab> {
                 userName: widget.userName,
                 level: profile.level,
                 score: profile.score,
+                exactScore: profile.exactScore,
                 questionsCount: profile.questionsAnswered.toString(),
                 studyHoursLabel: _formatStudyHours(profile.totalStudySeconds),
                 accuracyLabel: '${profile.accuracyPercent.toStringAsFixed(0)}%',

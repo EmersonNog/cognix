@@ -11,6 +11,7 @@ class ProfileHeader extends StatefulWidget {
     required this.userName,
     required this.level,
     required this.score,
+    required this.exactScore,
     required this.questionsCount,
     required this.studyHoursLabel,
     required this.accuracyLabel,
@@ -29,6 +30,7 @@ class ProfileHeader extends StatefulWidget {
   final String userName;
   final String level;
   final int score;
+  final double exactScore;
   final String questionsCount;
   final String studyHoursLabel;
   final String accuracyLabel;
@@ -67,9 +69,14 @@ class _ProfileHeaderState extends State<ProfileHeader> {
   Widget build(BuildContext context) {
     final levelAccent = _levelAccent(widget.level);
     final levelEmoji = _levelEmoji(widget.level);
-    final nextLevelMessage = widget.nextLevel == null
+      final nextLevelMessage = widget.nextLevel == null
         ? 'Você já alcançou o nível máximo, parabéns!'
+        : widget.pointsToNextLevel <= 0
+        ? 'Quase lá: complete mais uma ação para subir de nível.'
         : 'Faltam ${widget.pointsToNextLevel} pontos para o seu próximo salto!';
+      final scoreLabel = widget.exactScore > 0
+          ? widget.exactScore.toStringAsFixed(1)
+          : widget.score.toString();
 
     return Column(
       children: [
@@ -167,7 +174,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                   Expanded(
                     child: _MetricPill(
                       label: 'Score',
-                      value: '${widget.score}/100',
+                      value: '$scoreLabel/100',
                       accent: levelAccent,
                       onSurface: widget.onSurface,
                     ),
