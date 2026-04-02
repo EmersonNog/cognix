@@ -9,6 +9,21 @@ import 'package:http/http.dart' as http;
 const Duration apiTimeout = Duration(seconds: 15);
 
 String apiBaseUrl() {
+  const String envBaseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: '',
+  );
+  if (envBaseUrl.isNotEmpty) {
+    if (kReleaseMode && !envBaseUrl.startsWith('https://')) {
+      throw StateError(
+        'API_BASE_URL precisa usar HTTPS em builds de produção.',
+      );
+    }
+    return envBaseUrl;
+  }
+  if (kReleaseMode) {
+    throw StateError('API_BASE_URL não configurada para build de produção.');
+  }
   if (kIsWeb) {
     return 'http://localhost:8000';
   }
@@ -31,10 +46,9 @@ Future<Map<String, dynamic>> getJson(
   required String errorMessage,
 }) async {
   final token = await requireAuthToken();
-  final response = await http.get(
-    uri,
-    headers: {'Authorization': 'Bearer $token'},
-  ).timeout(apiTimeout);
+  final response = await http
+      .get(uri, headers: {'Authorization': 'Bearer $token'})
+      .timeout(apiTimeout);
 
   if (response.statusCode != 200) {
     throw Exception('$errorMessage (${response.statusCode}).');
@@ -48,10 +62,9 @@ Future<Map<String, dynamic>?> getJsonOrNullOn404(
   required String errorMessage,
 }) async {
   final token = await requireAuthToken();
-  final response = await http.get(
-    uri,
-    headers: {'Authorization': 'Bearer $token'},
-  ).timeout(apiTimeout);
+  final response = await http
+      .get(uri, headers: {'Authorization': 'Bearer $token'})
+      .timeout(apiTimeout);
 
   if (response.statusCode == 404) {
     return null;
@@ -69,14 +82,16 @@ Future<Map<String, dynamic>> postJson(
   required String errorMessage,
 }) async {
   final token = await requireAuthToken();
-  final response = await http.post(
-    uri,
-    headers: {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    },
-    body: jsonEncode(body),
-  ).timeout(apiTimeout);
+  final response = await http
+      .post(
+        uri,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(body),
+      )
+      .timeout(apiTimeout);
 
   if (response.statusCode != 200) {
     throw Exception('$errorMessage (${response.statusCode}).');
@@ -88,15 +103,11 @@ Future<Map<String, dynamic>> postJson(
   return jsonDecode(response.body) as Map<String, dynamic>;
 }
 
-Future<void> deleteJson(
-  Uri uri, {
-  required String errorMessage,
-}) async {
+Future<void> deleteJson(Uri uri, {required String errorMessage}) async {
   final token = await requireAuthToken();
-  final response = await http.delete(
-    uri,
-    headers: {'Authorization': 'Bearer $token'},
-  ).timeout(apiTimeout);
+  final response = await http
+      .delete(uri, headers: {'Authorization': 'Bearer $token'})
+      .timeout(apiTimeout);
 
   if (response.statusCode != 200) {
     throw Exception('$errorMessage (${response.statusCode}).');

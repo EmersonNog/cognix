@@ -45,19 +45,6 @@
 		<true/>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
-		<key>NSAppTransportSecurity</key>
-		<dict>
-			<key>NSAllowsLocalNetworking</key>
-			<true/>
-			<key>NSExceptionDomains</key>
-			<dict>
-				<key>localhost</key>
-				<dict>
-					<key>NSExceptionAllowsInsecureHTTPLoads</key>
-					<true/>
-				</dict>
-			</dict>
-		</dict>
 		<key>GIDClientID</key>
 		<string>40435673368-3ll3e357fec0bmbp1fvjjibjuftojr1q.apps.googleusercontent.com</string>
 		<key>CFBundleURLTypes</key>
