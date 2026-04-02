@@ -66,8 +66,7 @@ class _ProfileTabState extends State<ProfileTab> {
                 score: profile.score,
                 questionsCount: profile.questionsAnswered.toString(),
                 studyHoursLabel: _formatStudyHours(profile.totalStudySeconds),
-                accuracyLabel:
-                    '${profile.accuracyPercent.toStringAsFixed(0)}%',
+                accuracyLabel: '${profile.accuracyPercent.toStringAsFixed(0)}%',
                 completedSessions: profile.completedSessions,
                 activeDaysLast30: profile.activeDaysLast30,
                 consistencyWindowDays: profile.consistencyWindowDays,
@@ -98,6 +97,10 @@ class _ProfileTabState extends State<ProfileTab> {
                 onSurface: widget.onSurface,
                 onSurfaceMuted: widget.onSurfaceMuted,
                 primary: widget.primary,
+                icon: Icons.dashboard_customize_rounded,
+                title: 'Abrir painel pessoal',
+                subtitle:
+                    'Acesse planos, metas de estudo e suporte em uma área mais geral da sua conta.',
               ),
             ],
           ),
@@ -187,10 +190,9 @@ class _ProfileSectionHeader extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           'Acompanhe sua distribuição de questões e a consistência da sua rotina.',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: onSurfaceMuted,
-            height: 1.4,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: onSurfaceMuted, height: 1.4),
         ),
       ],
     );

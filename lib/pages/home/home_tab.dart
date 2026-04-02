@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+
+import '../../services/profile/profile_api.dart';
+import '../profile/profile_performance_screen.dart';
 import 'widgets/home_daily_rhythm_card.dart';
 import 'widgets/home_master_streak_card.dart';
+import 'widgets/home_performance_cta_card.dart';
 import 'widgets/home_recommendations_section.dart';
 import 'widgets/home_recent_performance_card.dart';
 
-class HomeTab extends StatelessWidget {
+class HomeTab extends StatefulWidget {
   const HomeTab({
     super.key,
     required this.surfaceContainer,
@@ -25,43 +29,87 @@ class HomeTab extends StatelessWidget {
   final String userName;
 
   @override
+  State<HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
+  late final Future<ProfileScoreData> _profileFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _profileFuture = fetchProfileScore();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
       children: [
         HomeDailyRhythmCard(
-          surfaceContainer: surfaceContainer,
-          surfaceContainerHigh: surfaceContainerHigh,
-          onSurface: onSurface,
-          onSurfaceMuted: onSurfaceMuted,
-          primary: primary,
-          primaryDim: primaryDim,
-          userName: userName,
+          surfaceContainer: widget.surfaceContainer,
+          surfaceContainerHigh: widget.surfaceContainerHigh,
+          onSurface: widget.onSurface,
+          onSurfaceMuted: widget.onSurfaceMuted,
+          primary: widget.primary,
+          primaryDim: widget.primaryDim,
+          userName: widget.userName,
         ),
         const SizedBox(height: 18),
         HomeMasterStreakCard(
-          surfaceContainer: surfaceContainer,
-          surfaceContainerHigh: surfaceContainerHigh,
-          onSurface: onSurface,
-          onSurfaceMuted: onSurfaceMuted,
-          primary: primary,
+          surfaceContainer: widget.surfaceContainer,
+          surfaceContainerHigh: widget.surfaceContainerHigh,
+          onSurface: widget.onSurface,
+          onSurfaceMuted: widget.onSurfaceMuted,
+          primary: widget.primary,
+        ),
+        const SizedBox(height: 18),
+        FutureBuilder<ProfileScoreData>(
+          future: _profileFuture,
+          builder: (context, snapshot) {
+            final profile = snapshot.data;
+            if (profile == null) {
+              return const SizedBox.shrink();
+            }
+
+            return HomePerformanceCtaCard(
+              onTap: () => _openPerformance(profile),
+              onSurface: widget.onSurface,
+              onSurfaceMuted: widget.onSurfaceMuted,
+              primary: widget.primary,
+            );
+          },
         ),
         const SizedBox(height: 22),
         HomeRecommendationsSection(
-          onSurface: onSurface,
-          onSurfaceMuted: onSurfaceMuted,
-          primary: primary,
-          surfaceContainerHigh: surfaceContainerHigh,
+          onSurface: widget.onSurface,
+          onSurfaceMuted: widget.onSurfaceMuted,
+          primary: widget.primary,
+          surfaceContainerHigh: widget.surfaceContainerHigh,
         ),
         const SizedBox(height: 22),
         HomeRecentPerformanceCard(
-          surfaceContainer: surfaceContainer,
-          surfaceContainerHigh: surfaceContainerHigh,
-          onSurface: onSurface,
-          onSurfaceMuted: onSurfaceMuted,
-          primary: primary,
+          surfaceContainer: widget.surfaceContainer,
+          surfaceContainerHigh: widget.surfaceContainerHigh,
+          onSurface: widget.onSurface,
+          onSurfaceMuted: widget.onSurfaceMuted,
+          primary: widget.primary,
         ),
       ],
+    );
+  }
+
+  void _openPerformance(ProfileScoreData profile) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ProfilePerformanceScreen(
+          profile: profile,
+          surfaceContainer: widget.surfaceContainer,
+          onSurface: widget.onSurface,
+          onSurfaceMuted: widget.onSurfaceMuted,
+          primary: widget.primary,
+        ),
+      ),
     );
   }
 }

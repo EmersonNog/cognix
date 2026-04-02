@@ -23,6 +23,8 @@ class HomeDailyRhythmCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final firstName = userName.trim().split(RegExp(r'\s+')).first;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -46,7 +48,7 @@ class HomeDailyRhythmCard extends StatelessWidget {
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: 'Bom ver você de\nnovo, ',
+                  text: 'Olá, bom ver você de\nnovo, ',
                   style: GoogleFonts.manrope(
                     color: onSurface,
                     fontSize: 22,
@@ -55,7 +57,7 @@ class HomeDailyRhythmCard extends StatelessWidget {
                   ),
                 ),
                 TextSpan(
-                  text: '$userName.',
+                  text: '$firstName.',
                   style: GoogleFonts.manrope(
                     color: primary,
                     fontSize: 22,

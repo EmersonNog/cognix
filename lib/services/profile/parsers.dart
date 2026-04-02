@@ -22,6 +22,16 @@ ProfileScoreData parseProfileScoreData(Map<String, dynamic> payload) {
     questionsByDiscipline: parseProfileDisciplineStats(
       payload['questions_by_discipline'],
     ),
+    strongestSubcategory: parseProfileSubcategoryInsight(
+      payload['strongest_subcategory'],
+    ),
+    weakestSubcategory: parseProfileSubcategoryInsight(
+      payload['weakest_subcategory'],
+    ),
+    attentionSubcategoriesCount:
+        int.tryParse('${payload['attention_subcategories_count']}') ?? 0,
+    attentionAccuracyThreshold:
+        double.tryParse('${payload['attention_accuracy_threshold']}') ?? 60.0,
   );
 }
 
@@ -36,4 +46,25 @@ List<ProfileDisciplineStat> parseProfileDisciplineStats(dynamic raw) {
       count: int.tryParse('${item['count']}') ?? 0,
     );
   }).where((item) => item.discipline.trim().isNotEmpty).toList();
+}
+
+ProfileSubcategoryInsight? parseProfileSubcategoryInsight(dynamic raw) {
+  if (raw is! Map) {
+    return null;
+  }
+
+  final discipline = raw['discipline']?.toString().trim() ?? '';
+  final subcategory = raw['subcategory']?.toString().trim() ?? '';
+
+  if (discipline.isEmpty || subcategory.isEmpty) {
+    return null;
+  }
+
+  return ProfileSubcategoryInsight(
+    discipline: discipline,
+    subcategory: subcategory,
+    accuracyPercent: double.tryParse('${raw['accuracy_percent']}') ?? 0.0,
+    totalAttempts: int.tryParse('${raw['total_attempts']}') ?? 0,
+    totalCorrect: int.tryParse('${raw['total_correct']}') ?? 0,
+  );
 }

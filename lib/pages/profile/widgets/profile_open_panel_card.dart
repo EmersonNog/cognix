@@ -7,15 +7,36 @@ class ProfileOpenPanelCard extends StatelessWidget {
     required this.onSurface,
     required this.onSurfaceMuted,
     required this.primary,
+    this.icon = Icons.dashboard_customize_rounded,
+    this.title = 'Abrir painel pessoal',
+    this.subtitle =
+        'Acesse configurações, planos e suporte da sua conta em uma tela separada.',
+    this.badge,
+    this.isFeatured = false,
   });
 
   final VoidCallback onTap;
   final Color onSurface;
   final Color onSurfaceMuted;
   final Color primary;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String? badge;
+  final bool isFeatured;
 
   @override
   Widget build(BuildContext context) {
+    final backgroundColor = isFeatured
+        ? Color.alphaBlend(primary.withOpacity(0.14), const Color(0xFF141E39))
+        : const Color(0xFF141E39);
+    final borderColor = isFeatured
+        ? primary.withOpacity(0.26)
+        : Colors.white.withOpacity(0.04);
+    final iconContainerColor = primary.withOpacity(isFeatured ? 0.18 : 0.14);
+    final titleColor = isFeatured ? Colors.white : onSurface;
+    final trailingColor = isFeatured ? primary : onSurfaceMuted;
+
     return InkWell(
       borderRadius: BorderRadius.circular(24),
       onTap: onTap,
@@ -23,51 +44,99 @@ class ProfileOpenPanelCard extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: const Color(0xFF141E39),
+          color: backgroundColor,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white.withOpacity(0.04)),
+          border: Border.all(color: borderColor),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.18),
               blurRadius: 18,
               offset: const Offset(0, 10),
             ),
+            if (isFeatured)
+              BoxShadow(
+                color: primary.withOpacity(0.12),
+                blurRadius: 22,
+                offset: const Offset(0, 12),
+              ),
           ],
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 44,
-              height: 44,
+              width: isFeatured ? 48 : 44,
+              height: isFeatured ? 48 : 44,
               decoration: BoxDecoration(
-                color: primary.withOpacity(0.14),
-                borderRadius: BorderRadius.circular(14),
+                color: iconContainerColor,
+                borderRadius: BorderRadius.circular(isFeatured ? 16 : 14),
               ),
-              child: Icon(
-                Icons.dashboard_customize_rounded,
-                color: primary,
-              ),
+              child: Icon(icon, color: primary, size: isFeatured ? 24 : 22),
             ),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (badge != null) ...[
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: primary.withOpacity(0.14),
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(color: primary.withOpacity(0.18)),
+                      ),
+                      child: Text(
+                        badge!,
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: primary,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
                   Text(
-                    'Abrir painel completo',
+                    title,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: onSurface,
+                      color: titleColor,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Veja consistência, planos, desempenho detalhado e atalhos da sua conta em uma tela separada.',
+                    subtitle,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: onSurfaceMuted,
                       height: 1.4,
                     ),
                   ),
+                  if (isFeatured) ...[
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Ver agora',
+                          style: Theme.of(context).textTheme.labelLarge
+                              ?.copyWith(
+                                color: primary,
+                                fontWeight: FontWeight.w700,
+                              ),
+                        ),
+                        const SizedBox(width: 6),
+                        Icon(
+                          Icons.north_east_rounded,
+                          size: 16,
+                          color: primary,
+                        ),
+                      ],
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -75,7 +144,7 @@ class ProfileOpenPanelCard extends StatelessWidget {
             Icon(
               Icons.arrow_forward_ios_rounded,
               size: 16,
-              color: onSurfaceMuted,
+              color: trailingColor,
             ),
           ],
         ),

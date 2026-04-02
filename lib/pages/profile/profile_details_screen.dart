@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../services/profile/profile_api.dart';
-import '../../utils/api_datetime.dart';
 import 'widgets/profile_menu_item.dart';
 
 class ProfileDetailsScreen extends StatelessWidget {
@@ -35,64 +34,13 @@ class ProfileDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                color: const Color(0xFF141E39),
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: Colors.white.withOpacity(0.04)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.18),
-                    blurRadius: 18,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: primary.withOpacity(0.14),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Icon(
-                      Icons.local_fire_department_rounded,
-                      color: primary,
-                    ),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Consistência diária',
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
-                                color: onSurface,
-                                fontWeight: FontWeight.w800,
-                              ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          _buildConsistencyMessage(profile),
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: onSurfaceMuted,
-                                height: 1.4,
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+            _SectionTitle(
+              title: 'Conta e plano',
+              subtitle: 'Acesse as configurações centrais da sua jornada.',
+              onSurface: onSurface,
+              onSurfaceMuted: onSurfaceMuted,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 12),
             Column(
               children: [
                 ProfileMenuItem(
@@ -110,56 +58,78 @@ class ProfileDetailsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 ProfileMenuItem(
-                  icon: Icons.trending_up_rounded,
-                  title: 'Desempenho Detalhado',
-                  subtitle: 'Análise completa por área, constância e rendimento',
+                  icon: Icons.flag_rounded,
+                  title: 'Metas de Estudo',
+                  subtitle:
+                      'Defina objetivos de ritmo, volume e foco para guiar sua rotina',
                   onTap: () {},
                   surfaceContainer: surfaceContainer,
                   onSurface: onSurface,
                   onSurfaceMuted: onSurfaceMuted,
                   primary: primary,
-                  highlightText: 'SCORE',
-                ),
-                const SizedBox(height: 12),
-                ProfileMenuItem(
-                  icon: Icons.notifications_rounded,
-                  title: 'Configurações de Notificação',
-                  subtitle: 'Gerenciar alertas e lembretes de estudo',
-                  onTap: () {},
-                  surfaceContainer: surfaceContainer,
-                  onSurface: onSurface,
-                  onSurfaceMuted: onSurfaceMuted,
-                  primary: primary,
-                ),
-                const SizedBox(height: 12),
-                ProfileMenuItem(
-                  icon: Icons.help_rounded,
-                  title: 'Suporte e Ajuda',
-                  subtitle: 'Central de ajuda, contato e orientações',
-                  onTap: () {},
-                  surfaceContainer: surfaceContainer,
-                  onSurface: onSurface,
-                  onSurfaceMuted: onSurfaceMuted,
-                  primary: primary,
+                  highlightText: 'META',
                 ),
               ],
+            ),
+            const SizedBox(height: 24),
+            _SectionTitle(
+              title: 'Suporte',
+              subtitle: 'Encontre ajuda e orientações sempre que precisar.',
+              onSurface: onSurface,
+              onSurfaceMuted: onSurfaceMuted,
+            ),
+            const SizedBox(height: 12),
+            ProfileMenuItem(
+              icon: Icons.help_rounded,
+              title: 'Suporte e Ajuda',
+              subtitle: 'Central de ajuda, contato e orientações',
+              onTap: () {},
+              surfaceContainer: surfaceContainer,
+              onSurface: onSurface,
+              onSurfaceMuted: onSurfaceMuted,
+              primary: primary,
             ),
           ],
         ),
       ),
     );
   }
+}
 
-  String _buildConsistencyMessage(ProfileScoreData profile) {
-    final lastActivityLabel = formatShortDateTime(profile.lastActivityAt);
-    if (profile.activeDaysLast30 <= 0) {
-      return 'Nenhuma atividade registrada nos últimos ${profile.consistencyWindowDays} dias.';
-    }
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({
+    required this.title,
+    required this.subtitle,
+    required this.onSurface,
+    required this.onSurfaceMuted,
+  });
 
-    if (profile.nextLevel == null) {
-      return '${profile.activeDaysLast30} dias ativos nos últimos ${profile.consistencyWindowDays}. Última atividade: $lastActivityLabel.';
-    }
+  final String title;
+  final String subtitle;
+  final Color onSurface;
+  final Color onSurfaceMuted;
 
-    return '${profile.activeDaysLast30} dias ativos nos últimos ${profile.consistencyWindowDays}. Última atividade: $lastActivityLabel. Faltam ${profile.pointsToNextLevel} pts para ${profile.nextLevel}.';
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color: onSurface,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          subtitle,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: onSurfaceMuted,
+            height: 1.45,
+          ),
+        ),
+      ],
+    );
   }
 }

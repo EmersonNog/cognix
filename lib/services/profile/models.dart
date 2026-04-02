@@ -5,6 +5,22 @@ class ProfileDisciplineStat {
   final int count;
 }
 
+class ProfileSubcategoryInsight {
+  const ProfileSubcategoryInsight({
+    required this.discipline,
+    required this.subcategory,
+    required this.accuracyPercent,
+    required this.totalAttempts,
+    required this.totalCorrect,
+  });
+
+  final String discipline;
+  final String subcategory;
+  final double accuracyPercent;
+  final int totalAttempts;
+  final int totalCorrect;
+}
+
 class ProfileScoreData {
   const ProfileScoreData({
     required this.score,
@@ -21,6 +37,10 @@ class ProfileScoreData {
     required this.nextLevel,
     required this.pointsToNextLevel,
     required this.questionsByDiscipline,
+    required this.strongestSubcategory,
+    required this.weakestSubcategory,
+    required this.attentionSubcategoriesCount,
+    required this.attentionAccuracyThreshold,
   });
 
   const ProfileScoreData.empty()
@@ -37,7 +57,11 @@ class ProfileScoreData {
       lastActivityAt = null,
       nextLevel = 'Em Evolucao',
       pointsToNextLevel = 20,
-      questionsByDiscipline = const [];
+      questionsByDiscipline = const [],
+      strongestSubcategory = null,
+      weakestSubcategory = null,
+      attentionSubcategoriesCount = 0,
+      attentionAccuracyThreshold = 60.0;
 
   final int score;
   final double exactScore;
@@ -53,4 +77,8 @@ class ProfileScoreData {
   final String? nextLevel;
   final int pointsToNextLevel;
   final List<ProfileDisciplineStat> questionsByDiscipline;
+  final ProfileSubcategoryInsight? strongestSubcategory;
+  final ProfileSubcategoryInsight? weakestSubcategory;
+  final int attentionSubcategoriesCount;
+  final double attentionAccuracyThreshold;
 }
