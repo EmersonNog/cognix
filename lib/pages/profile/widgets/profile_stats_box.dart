@@ -25,7 +25,7 @@ class ProfileStatsBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
           color: const Color(0xFF081B3A),
           borderRadius: BorderRadius.circular(20),
@@ -50,16 +50,16 @@ class ProfileStatsBox extends StatelessWidget {
               ),
               child: Icon(icon, color: primary, size: 18),
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 10),
             Text(
               value,
               style: GoogleFonts.manrope(
                 color: onSurface,
-                fontSize: 22,
+                fontSize: 21,
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             Text(
               label,
               style: GoogleFonts.plusJakartaSans(

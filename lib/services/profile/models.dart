@@ -1,0 +1,56 @@
+class ProfileDisciplineStat {
+  const ProfileDisciplineStat({required this.discipline, required this.count});
+
+  final String discipline;
+  final int count;
+}
+
+class ProfileScoreData {
+  const ProfileScoreData({
+    required this.score,
+    required this.exactScore,
+    required this.level,
+    required this.questionsAnswered,
+    required this.totalCorrect,
+    required this.accuracyPercent,
+    required this.completedSessions,
+    required this.totalStudySeconds,
+    required this.activeDaysLast30,
+    required this.consistencyWindowDays,
+    required this.lastActivityAt,
+    required this.nextLevel,
+    required this.pointsToNextLevel,
+    required this.questionsByDiscipline,
+  });
+
+  const ProfileScoreData.empty()
+    : score = 0,
+      exactScore = 0.0,
+      level = 'Iniciante',
+      questionsAnswered = 0,
+      totalCorrect = 0,
+      accuracyPercent = 0.0,
+      completedSessions = 0,
+      totalStudySeconds = 0,
+      activeDaysLast30 = 0,
+      consistencyWindowDays = 30,
+      lastActivityAt = null,
+      nextLevel = 'Em Evolucao',
+      pointsToNextLevel = 20,
+      questionsByDiscipline = const [];
+
+  final int score;
+  final double exactScore;
+  final String level;
+  final int questionsAnswered;
+  final int totalCorrect;
+  final double accuracyPercent;
+  final int completedSessions;
+  final int totalStudySeconds;
+  final int activeDaysLast30;
+  final int consistencyWindowDays;
+  final DateTime? lastActivityAt;
+  final String? nextLevel;
+  final int pointsToNextLevel;
+  final List<ProfileDisciplineStat> questionsByDiscipline;
+}

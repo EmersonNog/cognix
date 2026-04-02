@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'widgets/profile_widgets.dart';
+import '../../services/profile/profile_api.dart';
+import 'profile_details_screen.dart';
+import 'widgets/profile_discipline_grid.dart';
+import 'widgets/profile_header.dart';
+import 'widgets/profile_open_panel_card.dart';
 
-class ProfileTab extends StatelessWidget {
+class ProfileTab extends StatefulWidget {
   const ProfileTab({
     super.key,
     required this.surfaceContainer,
@@ -23,147 +27,172 @@ class ProfileTab extends StatelessWidget {
   final String userName;
 
   @override
+  State<ProfileTab> createState() => _ProfileTabState();
+}
+
+class _ProfileTabState extends State<ProfileTab> {
+  late final Future<ProfileScoreData> _profileFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _profileFuture = fetchProfileScore();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 30),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ProfileHeader(
-            userName: userName,
-            level: 'ACADEMICO AVANCADO',
-            questionsCount: '1500',
-            studyHours: '45h',
-            improvementPercentage: '78%',
-            surfaceContainer: surfaceContainer,
-            onSurface: onSurface,
-            onSurfaceMuted: onSurfaceMuted,
-            primary: primary,
-            primaryDim: primaryDim,
-          ),
-          const SizedBox(height: 28),
-          Text(
-            'Painel pessoal',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: onSurface,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Acesse atalhos importantes e acompanhe sua evolucao com mais clareza.',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: onSurfaceMuted,
-              height: 1.4,
-            ),
-          ),
-          const SizedBox(height: 18),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(18),
-            decoration: BoxDecoration(
-              color: const Color(0xFF141E39),
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.white.withOpacity(0.04)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.18),
-                  blurRadius: 18,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: primary.withOpacity(0.14),
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Icon(Icons.workspace_premium_rounded, color: primary),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Ritmo da semana',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: onSurface,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Voce manteve uma cadencia forte. Continue revisando para transformar volume em precisao.',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: onSurfaceMuted,
-                          height: 1.4,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          Column(
+    return FutureBuilder<ProfileScoreData>(
+      future: _profileFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            !snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final profile = snapshot.data ?? const ProfileScoreData.empty();
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 30),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ProfileMenuItem(
-                icon: Icons.description_rounded,
-                title: 'Meus Planos',
-                subtitle: 'Plano atual e historico de cobranca',
-                onTap: () {
-                  Navigator.of(context).pushNamed('plan');
-                },
-                surfaceContainer: surfaceContainer,
-                onSurface: onSurface,
-                onSurfaceMuted: onSurfaceMuted,
-                primary: primary,
-                highlightText: 'PRO',
+              if (snapshot.hasError) ...[
+                _ProfileErrorBanner(onSurface: widget.onSurface),
+                const SizedBox(height: 16),
+              ],
+              ProfileHeader(
+                userName: widget.userName,
+                level: profile.level,
+                score: profile.score,
+                questionsCount: profile.questionsAnswered.toString(),
+                studyHoursLabel: _formatStudyHours(profile.totalStudySeconds),
+                accuracyLabel:
+                    '${profile.accuracyPercent.toStringAsFixed(0)}%',
+                completedSessions: profile.completedSessions,
+                activeDaysLast30: profile.activeDaysLast30,
+                consistencyWindowDays: profile.consistencyWindowDays,
+                nextLevel: profile.nextLevel,
+                pointsToNextLevel: profile.pointsToNextLevel,
+                surfaceContainer: widget.surfaceContainer,
+                onSurface: widget.onSurface,
+                onSurfaceMuted: widget.onSurfaceMuted,
+                primary: widget.primary,
+                primaryDim: widget.primaryDim,
               ),
-              const SizedBox(height: 12),
-              ProfileMenuItem(
-                icon: Icons.trending_up_rounded,
-                title: 'Desempenho Detalhado',
-                subtitle: 'Analise completa por area, constancia e rendimento',
-                onTap: () {},
-                surfaceContainer: surfaceContainer,
-                onSurface: onSurface,
-                onSurfaceMuted: onSurfaceMuted,
-                primary: primary,
-                highlightText: 'NOVO',
+              const SizedBox(height: 18),
+              _ProfileSectionHeader(
+                onSurface: widget.onSurface,
+                onSurfaceMuted: widget.onSurfaceMuted,
               ),
-              const SizedBox(height: 12),
-              ProfileMenuItem(
-                icon: Icons.notifications_rounded,
-                title: 'Configuracoes de Notificacao',
-                subtitle: 'Gerenciar alertas e lembretes de estudo',
-                onTap: () {},
-                surfaceContainer: surfaceContainer,
-                onSurface: onSurface,
-                onSurfaceMuted: onSurfaceMuted,
-                primary: primary,
-              ),
-              const SizedBox(height: 12),
-              ProfileMenuItem(
-                icon: Icons.help_rounded,
-                title: 'Suporte e Ajuda',
-                subtitle: 'Central de ajuda, contato e orientacoes',
-                onTap: () {},
-                surfaceContainer: surfaceContainer,
-                onSurface: onSurface,
-                onSurfaceMuted: onSurfaceMuted,
-                primary: primary,
+              if (profile.questionsByDiscipline.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                ProfileDisciplineGrid(
+                  items: profile.questionsByDiscipline,
+                  onSurface: widget.onSurface,
+                  onSurfaceMuted: widget.onSurfaceMuted,
+                ),
+              ],
+              const SizedBox(height: 18),
+              ProfileOpenPanelCard(
+                onTap: () => _openDetails(profile),
+                onSurface: widget.onSurface,
+                onSurfaceMuted: widget.onSurfaceMuted,
+                primary: widget.primary,
               ),
             ],
           ),
-        ],
+        );
+      },
+    );
+  }
+
+  void _openDetails(ProfileScoreData profile) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ProfileDetailsScreen(
+          profile: profile,
+          surfaceContainer: widget.surfaceContainer,
+          onSurface: widget.onSurface,
+          onSurfaceMuted: widget.onSurfaceMuted,
+          primary: widget.primary,
+        ),
       ),
+    );
+  }
+
+  String _formatStudyHours(int totalStudySeconds) {
+    if (totalStudySeconds <= 0) {
+      return '0h';
+    }
+
+    final totalMinutes = (totalStudySeconds / 60).round();
+    if (totalMinutes < 60) {
+      return '${totalMinutes}m';
+    }
+
+    final hours = totalStudySeconds / 3600;
+    final roundedHours = hours >= 10
+        ? hours.round().toString()
+        : hours.toStringAsFixed(1);
+    return '${roundedHours}h';
+  }
+}
+
+class _ProfileErrorBanner extends StatelessWidget {
+  const _ProfileErrorBanner({required this.onSurface});
+
+  final Color onSurface;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFF3A1E2D),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Colors.white.withOpacity(0.05)),
+      ),
+      child: Text(
+        'Não foi possível atualizar o score agora. Exibindo o último estado local disponível.',
+        style: Theme.of(
+          context,
+        ).textTheme.bodySmall?.copyWith(color: onSurface, height: 1.4),
+      ),
+    );
+  }
+}
+
+class _ProfileSectionHeader extends StatelessWidget {
+  const _ProfileSectionHeader({
+    required this.onSurface,
+    required this.onSurfaceMuted,
+  });
+
+  final Color onSurface;
+  final Color onSurfaceMuted;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Painel pessoal',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color: onSurface,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Acompanhe sua distribuição de questões e a consistência da sua rotina.',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: onSurfaceMuted,
+            height: 1.4,
+          ),
+        ),
+      ],
     );
   }
 }
