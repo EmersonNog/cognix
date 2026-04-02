@@ -1,0 +1,8 @@
+flutter_native_splash:
+  color: "#060E20"
+  image: assets/images/splash.png
+  ios_content_mode: scaleAspectFit
+  android_12:
+    color: "#060E20"
+    image: assets/images/splash.png
+    icon_background_color: "#060E20"
