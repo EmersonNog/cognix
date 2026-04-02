@@ -1,7 +1,13 @@
 flutter_native_splash:
   color: "#060E20"
   image: assets/splash/splash.png
+  android: true
+  ios: true
+  web: false
   ios_content_mode: scaleAspectFit
+  info_plist_files:
+    - "ios/Runner/Info.plist"
+    - "ios/Runner/Info-Release.plist"
   android_12:
     color: "#060E20"
     image: assets/splash/splash.png
