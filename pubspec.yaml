@@ -12,9 +12,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   shared_preferences: ^2.2.2
   firebase_core: ^4.6.0
-  google_fonts: ^6.3.0
   firebase_auth: ^6.3.0
   google_sign_in: ^6.2.1
+  google_fonts: ^6.3.0
   random_avatar: ^0.0.8
   reactive_mind_map: ^1.2.2
   http: ^1.2.2
