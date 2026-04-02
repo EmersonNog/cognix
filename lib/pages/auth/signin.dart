@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../utils/firebase_auth_errors.dart';
 import '../../utils/google_sign_in_errors.dart';
 import '../../widgets/cognix_widgets.dart';
@@ -85,8 +85,8 @@ class _SignInState extends State<SignIn> {
       } else {
         _showMessage(authErrorMessage(e.code, action: AuthAction.signIn));
       }
-    } on PlatformException catch (e) {
-      _showMessage(googleSignInErrorMessage(e.code));
+    } on GoogleSignInException catch (e) {
+      _showMessage(googleSignInErrorMessage(e.code.name));
     } catch (_) {
       _showMessage('Algo deu errado. Tente novamente.');
     } finally {

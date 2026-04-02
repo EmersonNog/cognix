@@ -1,18 +1,30 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+Future<void>? _googleSignInInit;
+
+Future<void> _ensureGoogleSignInInitialized() {
+  return _googleSignInInit ??= _googleSignIn.initialize();
+}
+
 Future<UserCredential?> signInWithGoogle({
   bool ensureDisplayName = false,
 }) async {
-  final googleSignIn = GoogleSignIn();
-  await googleSignIn.signOut();
+  await _ensureGoogleSignInInitialized();
+  await _googleSignIn.signOut();
 
-  final googleUser = await googleSignIn.signIn();
-  if (googleUser == null) {
-    return null;
+  GoogleSignInAccount googleUser;
+  try {
+    googleUser = await _googleSignIn.authenticate();
+  } on GoogleSignInException catch (e) {
+    if (e.code == GoogleSignInExceptionCode.canceled) {
+      return null;
+    }
+    rethrow;
   }
 
-  final googleAuth = await googleUser.authentication;
+  final googleAuth = googleUser.authentication;
   if (googleAuth.idToken == null) {
     throw FirebaseAuthException(
       code: 'missing-google-id-token',
@@ -21,7 +33,6 @@ Future<UserCredential?> signInWithGoogle({
   }
 
   final credential = GoogleAuthProvider.credential(
-    accessToken: googleAuth.accessToken,
     idToken: googleAuth.idToken,
   );
 

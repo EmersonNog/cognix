@@ -34,11 +34,25 @@ Uma plataforma de estudos focada em evolução real: autenticação segura, trei
    ```bash
    dart run flutter_native_splash:create
    ```
-3. Garanta o Firebase configurado:
+3. Gere os ícones do app (ordem correta):
+
+   ```bash
+   # Use apenas se ainda não existir flutter_launcher_icons.yaml na raiz do projeto
+   dart run flutter_launcher_icons:generate
+
+   # Depois, gere os ícones a partir do YAML
+   dart run flutter_launcher_icons -f flutter_launcher_icons.yaml
+   ```
+
+   Obs: o `generate` só é necessário quando o YAML não existe.
+
+4. Garanta o Firebase configurado:
    `lib/firebase_options.dart` deve corresponder ao projeto Firebase que você vai usar.
-4. Rode o app:
+5. Rode o app:
    ```bash
    flutter run
    ```
 
 Se você trocar a imagem ou a cor da splash, edite `flutter_native_splash.yaml` e rode o comando novamente.
+
+Se você trocar o ícone, edite `flutter_launcher_icons.yaml` e rode o comando novamente.
