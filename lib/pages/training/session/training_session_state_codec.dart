@@ -93,7 +93,7 @@ QuestionItem deserializeQuestionItem(
     subcategory: row['subcategory']?.toString() ?? fallbackSubcategory,
     discipline: row['discipline']?.toString() ?? fallbackDiscipline,
     year: int.tryParse('${row['year']}'),
-    tip: row['dica']?.toString(),
+    tip: row['tip']?.toString() ?? row['dica']?.toString(),
   );
 }
 
