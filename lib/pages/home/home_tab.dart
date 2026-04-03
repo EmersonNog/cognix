@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../services/profile/profile_api.dart';
-import '../profile/profile_performance_screen.dart';
+import '../performance/performance_screen.dart';
 import 'widgets/home_daily_rhythm_card.dart';
 import 'widgets/home_master_streak_card.dart';
 import 'widgets/home_performance_cta_card.dart';
@@ -102,9 +102,8 @@ class _HomeTabState extends State<HomeTab> {
   void _openPerformance(ProfileScoreData profile) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => ProfilePerformanceScreen(
+        builder: (_) => PerformanceScreen(
           profile: profile,
-          surfaceContainer: widget.surfaceContainer,
           onSurface: widget.onSurface,
           onSurfaceMuted: widget.onSurfaceMuted,
           primary: widget.primary,
