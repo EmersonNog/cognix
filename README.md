@@ -1,6 +1,6 @@
 # Cognix App 🚀
 
-Uma plataforma de estudos focada em evolução real: autenticação segura, treino por áreas, simulados e métricas claras de desempenho. Tudo pensado para transformar constância em resultado. ✨
+Uma plataforma de estudos focada em evolução real: autenticação segura, treino por áreas, simulados e métricas claras de desempenho. Tudo pensado para transformar constância em resultado.
 
 ## Produção (guia rápido) ✅
 
