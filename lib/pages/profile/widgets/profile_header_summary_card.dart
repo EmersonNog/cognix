@@ -1,0 +1,179 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import 'profile_avatar_display.dart';
+import 'profile_header_metric_pill.dart';
+import 'profile_header_momentum_card_native.dart';
+import 'profile_header_score_progress_hint.dart';
+import 'profile_header_utils.dart';
+
+class ProfileHeaderSummaryCard extends StatelessWidget {
+  const ProfileHeaderSummaryCard({
+    super.key,
+    required this.userName,
+    required this.displayedLevel,
+    required this.levelAccent,
+    required this.levelEmoji,
+    required this.scoreLabel,
+    required this.activeDaysLast30,
+    required this.consistencyWindowDays,
+    required this.completedSessions,
+    required this.nextLevelMessage,
+    required this.momentumView,
+    required this.onSurface,
+    required this.onSurfaceMuted,
+    required this.primaryDim,
+    required this.onAvatarTap,
+  });
+
+  final String userName;
+  final String displayedLevel;
+  final Color levelAccent;
+  final String levelEmoji;
+  final String scoreLabel;
+  final int activeDaysLast30;
+  final int consistencyWindowDays;
+  final int completedSessions;
+  final String nextLevelMessage;
+  final ProfileHeaderMomentumViewData momentumView;
+  final Color onSurface;
+  final Color onSurfaceMuted;
+  final Color primaryDim;
+  final VoidCallback onAvatarTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(20, 22, 20, 24),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        gradient: LinearGradient(
+          colors: <Color>[
+            const Color(0xFF2A275A),
+            Color.lerp(primaryDim, levelAccent, 0.35)!.withOpacity(0.28),
+            const Color(0xFF121B35),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        border: Border.all(color: Colors.white.withOpacity(0.04)),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: Colors.black.withOpacity(0.32),
+            blurRadius: 30,
+            offset: const Offset(0, 20),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              ProfileAvatarDisplay(
+                userName: userName,
+                primary: levelAccent,
+                size: 92,
+                onTap: onAvatarTap,
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: levelAccent.withOpacity(0.14),
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(
+                          color: levelAccent.withOpacity(0.24),
+                        ),
+                      ),
+                      child: Text(
+                        '$levelEmoji ${displayedLevel.toUpperCase()}',
+                        style: GoogleFonts.plusJakartaSans(
+                          color: levelAccent,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      userName,
+                      style: GoogleFonts.manrope(
+                        color: onSurface,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                        height: 1.1,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'N\u00edvel definido por quest\u00f5es, precis\u00e3o, simulados conclu\u00eddos e consist\u00eancia di\u00e1ria.',
+                      style: GoogleFonts.inter(
+                        color: onSurfaceMuted,
+                        fontSize: 13,
+                        height: 1.45,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: ProfileHeaderMetricPill(
+                  label: 'Score',
+                  value: '$scoreLabel/100',
+                  accent: levelAccent,
+                  onSurface: onSurface,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: ProfileHeaderMetricPill(
+                  label: 'Consist\u00eancia',
+                  value: '$activeDaysLast30/$consistencyWindowDays dias',
+                  accent: levelAccent,
+                  onSurface: onSurface,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: ProfileHeaderMetricPill(
+                  label: 'Simulados',
+                  value: completedSessions.toString(),
+                  accent: levelAccent,
+                  onSurface: onSurface,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ProfileHeaderScoreProgressHint(
+            message: nextLevelMessage,
+            accent: levelAccent,
+            onSurface: onSurface,
+          ),
+          const SizedBox(height: 12),
+          ProfileHeaderMomentumCardNative(
+            view: momentumView,
+            onSurface: onSurface,
+            onSurfaceMuted: onSurfaceMuted,
+          ),
+        ],
+      ),
+    );
+  }
+}

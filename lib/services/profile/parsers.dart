@@ -8,7 +8,19 @@ ProfileScoreData parseProfileScoreData(Map<String, dynamic> payload) {
     level: payload['level']?.toString().trim().isNotEmpty == true
         ? payload['level'].toString().trim()
         : 'Iniciante',
+    momentumScore: int.tryParse('${payload['momentum_score']}') ?? 0,
+    exactMomentumScore:
+        double.tryParse('${payload['exact_momentum_score']}') ?? 0.0,
+    momentumLabel: payload['momentum_label']?.toString().trim().isNotEmpty ==
+            true
+        ? payload['momentum_label'].toString().trim()
+        : 'Estavel',
     questionsAnswered: int.tryParse('${payload['questions_answered']}') ?? 0,
+    uniqueQuestionsAnswered:
+        int.tryParse('${payload['unique_questions_answered']}') ?? 0,
+    questionBankTotal: int.tryParse('${payload['question_bank_total']}') ?? 0,
+    disciplinesCovered:
+        int.tryParse('${payload['disciplines_covered']}') ?? 0,
     totalCorrect: int.tryParse('${payload['total_correct']}') ?? 0,
     accuracyPercent: double.tryParse('${payload['accuracy_percent']}') ?? 0.0,
     completedSessions: int.tryParse('${payload['completed_sessions']}') ?? 0,

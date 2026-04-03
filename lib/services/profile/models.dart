@@ -26,7 +26,13 @@ class ProfileScoreData {
     required this.score,
     required this.exactScore,
     required this.level,
+    required this.momentumScore,
+    required this.exactMomentumScore,
+    required this.momentumLabel,
     required this.questionsAnswered,
+    required this.uniqueQuestionsAnswered,
+    required this.questionBankTotal,
+    required this.disciplinesCovered,
     required this.totalCorrect,
     required this.accuracyPercent,
     required this.completedSessions,
@@ -47,7 +53,13 @@ class ProfileScoreData {
     : score = 0,
       exactScore = 0.0,
       level = 'Iniciante',
+      momentumScore = 0,
+      exactMomentumScore = 0.0,
+      momentumLabel = 'Estavel',
       questionsAnswered = 0,
+      uniqueQuestionsAnswered = 0,
+      questionBankTotal = 0,
+      disciplinesCovered = 0,
       totalCorrect = 0,
       accuracyPercent = 0.0,
       completedSessions = 0,
@@ -66,7 +78,13 @@ class ProfileScoreData {
   final int score;
   final double exactScore;
   final String level;
+  final int momentumScore;
+  final double exactMomentumScore;
+  final String momentumLabel;
   final int questionsAnswered;
+  final int uniqueQuestionsAnswered;
+  final int questionBankTotal;
+  final int disciplinesCovered;
   final int totalCorrect;
   final double accuracyPercent;
   final int completedSessions;

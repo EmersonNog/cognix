@@ -52,7 +52,7 @@ class _ProfileTabState extends State<ProfileTab> {
         final profile = snapshot.data ?? const ProfileScoreData.empty();
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 18, 20, 30),
+          padding: const EdgeInsets.fromLTRB(20, 2, 20, 30),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -65,6 +65,9 @@ class _ProfileTabState extends State<ProfileTab> {
                 level: profile.level,
                 score: profile.score,
                 exactScore: profile.exactScore,
+                momentumScore: profile.momentumScore,
+                exactMomentumScore: profile.exactMomentumScore,
+                momentumLabel: profile.momentumLabel,
                 questionsCount: profile.questionsAnswered.toString(),
                 studyHoursLabel: _formatStudyHours(profile.totalStudySeconds),
                 accuracyLabel: '${profile.accuracyPercent.toStringAsFixed(0)}%',

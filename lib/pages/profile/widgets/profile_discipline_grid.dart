@@ -2,6 +2,37 @@ import 'package:flutter/material.dart';
 
 import '../../../services/profile/profile_api.dart';
 
+const List<String> _disciplineOrder = <String>[
+  'linguagens',
+  'ciencias_humanas',
+  'ciencias_natureza',
+  'matematica',
+];
+
+const Map<String, _DisciplineDefinition> _disciplineDefinitionsByKey =
+    <String, _DisciplineDefinition>{
+      'linguagens': _DisciplineDefinition(
+        label: 'Linguagens',
+        accent: Color(0xFF7C9BFF),
+        icon: Icons.menu_book_rounded,
+      ),
+      'ciencias_humanas': _DisciplineDefinition(
+        label: 'Ci\u00eancias Humanas',
+        accent: Color(0xFFFF8A65),
+        icon: Icons.public_rounded,
+      ),
+      'ciencias_natureza': _DisciplineDefinition(
+        label: 'Ci\u00eancias da Natureza',
+        accent: Color(0xFF49D7A8),
+        icon: Icons.eco_rounded,
+      ),
+      'matematica': _DisciplineDefinition(
+        label: 'Matem\u00e1tica',
+        accent: Color(0xFFFFC857),
+        icon: Icons.calculate_rounded,
+      ),
+    };
+
 class ProfileDisciplineGrid extends StatelessWidget {
   const ProfileDisciplineGrid({
     super.key,
@@ -17,6 +48,7 @@ class ProfileDisciplineGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final visibleItems = _buildVisibleItems(items);
+
     return GridView.builder(
       itemCount: visibleItems.length,
       shrinkWrap: true,
@@ -30,7 +62,7 @@ class ProfileDisciplineGrid extends StatelessWidget {
       itemBuilder: (context, index) {
         final item = visibleItems[index];
         return _DisciplineChip(
-          label: item.discipline,
+          definition: item.definition,
           count: item.count,
           onSurface: onSurface,
           onSurfaceMuted: onSurfaceMuted,
@@ -39,10 +71,11 @@ class ProfileDisciplineGrid extends StatelessWidget {
     );
   }
 
-  List<ProfileDisciplineStat> _buildVisibleItems(
-    List<ProfileDisciplineStat> source,
-  ) {
-    final counts = <String, int>{};
+  List<_DisciplineTileData> _buildVisibleItems(List<ProfileDisciplineStat> source) {
+    final counts = <String, int>{
+      for (final key in _disciplineOrder) key: 0,
+    };
+
     for (final item in source) {
       final key = _canonicalDisciplineKey(item.discipline);
       if (key == null) {
@@ -51,74 +84,26 @@ class ProfileDisciplineGrid extends StatelessWidget {
       counts[key] = (counts[key] ?? 0) + item.count;
     }
 
-    return [
-      ProfileDisciplineStat(
-        discipline: 'Linguagens',
-        count: counts['linguagens'] ?? 0,
-      ),
-      ProfileDisciplineStat(
-        discipline: 'Ciencias Humanas',
-        count: counts['ciencias_humanas'] ?? 0,
-      ),
-      ProfileDisciplineStat(
-        discipline: 'Ciencias da Natureza',
-        count: counts['ciencias_natureza'] ?? 0,
-      ),
-      ProfileDisciplineStat(
-        discipline: 'Matematica',
-        count: counts['matematica'] ?? 0,
-      ),
-    ];
-  }
-
-  String? _canonicalDisciplineKey(String value) {
-    final normalized = _normalizeDiscipline(value);
-    switch (normalized) {
-      case 'linguagens':
-      case 'linguagens, codigos e suas tecnologias':
-        return 'linguagens';
-      case 'ciencias humanas':
-      case 'ciencias humanas e suas tecnologias':
-        return 'ciencias_humanas';
-      case 'ciencias da natureza':
-      case 'ciencias da natureza e suas tecnologias':
-        return 'ciencias_natureza';
-      case 'matematica':
-      case 'matematica e suas tecnologias':
-        return 'matematica';
-      default:
-        return null;
-    }
-  }
-
-  String _normalizeDiscipline(String value) {
-    return value
-        .trim()
-        .toLowerCase()
-        .replaceAll('ã', 'a')
-        .replaceAll('á', 'a')
-        .replaceAll('à', 'a')
-        .replaceAll('â', 'a')
-        .replaceAll('é', 'e')
-        .replaceAll('ê', 'e')
-        .replaceAll('í', 'i')
-        .replaceAll('ó', 'o')
-        .replaceAll('ô', 'o')
-        .replaceAll('õ', 'o')
-        .replaceAll('ú', 'u')
-        .replaceAll('ç', 'c');
+    return _disciplineOrder
+        .map(
+          (key) => _DisciplineTileData(
+            definition: _disciplineDefinitionsByKey[key]!,
+            count: counts[key] ?? 0,
+          ),
+        )
+        .toList(growable: false);
   }
 }
 
 class _DisciplineChip extends StatelessWidget {
   const _DisciplineChip({
-    required this.label,
+    required this.definition,
     required this.count,
     required this.onSurface,
     required this.onSurfaceMuted,
   });
 
-  final String label;
+  final _DisciplineDefinition definition;
   final int count;
   final Color onSurface;
   final Color onSurfaceMuted;
@@ -126,22 +111,24 @@ class _DisciplineChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final accent = _disciplineAccent(label);
 
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
+          colors: <Color>[
             const Color(0xFF101A33),
-            Color.alphaBlend(accent.withOpacity(0.10), const Color(0xFF152243)),
+            Color.alphaBlend(
+              definition.accent.withOpacity(0.10),
+              const Color(0xFF152243),
+            ),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: Colors.white.withOpacity(0.05)),
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
             color: Colors.black.withOpacity(0.14),
             blurRadius: 14,
@@ -151,25 +138,25 @@ class _DisciplineChip extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           Row(
-            children: [
+            children: <Widget>[
               Container(
                 width: 4,
                 height: 20,
                 decoration: BoxDecoration(
-                  color: accent,
+                  color: definition.accent,
                   borderRadius: BorderRadius.circular(999),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  _shortDisciplineLabel(label).toUpperCase(),
+                  definition.label.toUpperCase(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: accent,
+                    color: definition.accent,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.45,
                   ),
@@ -196,15 +183,15 @@ class _DisciplineChip extends StatelessWidget {
           ),
           const Spacer(),
           Row(
-            children: [
+            children: <Widget>[
               Container(
                 width: 26,
                 height: 26,
                 decoration: BoxDecoration(
-                  color: accent.withOpacity(0.16),
+                  color: definition.accent.withOpacity(0.16),
                   borderRadius: BorderRadius.circular(9),
                 ),
-                child: Icon(_disciplineIcon(label), color: accent, size: 15),
+                child: Icon(definition.icon, color: definition.accent, size: 15),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -224,81 +211,95 @@ class _DisciplineChip extends StatelessWidget {
       ),
     );
   }
+}
 
-  String _shortDisciplineLabel(String value) {
-    switch (value.trim().toLowerCase()) {
-      case 'linguagens':
-      case 'linguagens, codigos e suas tecnologias':
-        return 'Linguagens';
-      case 'ciencias humanas':
-      case 'ciencias humanas e suas tecnologias':
-        return 'Ciencias Humanas';
-      case 'ciencias da natureza':
-      case 'ciencias da natureza e suas tecnologias':
-        return 'Ciencias da Natureza';
-      case 'matematica':
-      case 'matematica e suas tecnologias':
-        return 'Matematica';
-      default:
-        return value;
-    }
+class _DisciplineDefinition {
+  const _DisciplineDefinition({
+    required this.label,
+    required this.accent,
+    required this.icon,
+  });
+
+  final String label;
+  final Color accent;
+  final IconData icon;
+}
+
+class _DisciplineTileData {
+  const _DisciplineTileData({
+    required this.definition,
+    required this.count,
+  });
+
+  final _DisciplineDefinition definition;
+  final int count;
+}
+
+String? _canonicalDisciplineKey(String value) {
+  switch (_normalizeDiscipline(value)) {
+    case 'linguagens':
+    case 'linguagens, codigos e suas tecnologias':
+      return 'linguagens';
+    case 'ciencias humanas':
+    case 'ciencias humanas e suas tecnologias':
+      return 'ciencias_humanas';
+    case 'ciencias da natureza':
+    case 'ciencias da natureza e suas tecnologias':
+      return 'ciencias_natureza';
+    case 'matematica':
+    case 'matematica e suas tecnologias':
+      return 'matematica';
+    default:
+      return null;
+  }
+}
+
+String _normalizeDiscipline(String value) {
+  return value
+      .trim()
+      .toLowerCase()
+      .replaceAll('á', 'a')
+      .replaceAll('à', 'a')
+      .replaceAll('â', 'a')
+      .replaceAll('ã', 'a')
+      .replaceAll('é', 'e')
+      .replaceAll('ê', 'e')
+      .replaceAll('í', 'i')
+      .replaceAll('ó', 'o')
+      .replaceAll('ô', 'o')
+      .replaceAll('õ', 'o')
+      .replaceAll('ú', 'u')
+      .replaceAll('ç', 'c')
+      .replaceAll('Ã¡', 'a')
+      .replaceAll('Ã ', 'a')
+      .replaceAll('Ã¢', 'a')
+      .replaceAll('Ã£', 'a')
+      .replaceAll('Ã©', 'e')
+      .replaceAll('Ãª', 'e')
+      .replaceAll('Ã­', 'i')
+      .replaceAll('Ã³', 'o')
+      .replaceAll('Ã´', 'o')
+      .replaceAll('Ãµ', 'o')
+      .replaceAll('Ãº', 'u')
+      .replaceAll('Ã§', 'c');
+}
+
+String _questionsLabel(int count) {
+  return count == 1 ? 'quest\u00e3o respondida' : 'quest\u00f5es respondidas';
+}
+
+String _disciplineCaption(int count) {
+  if (count == 1) {
+    return 'In\u00edcio';
   }
 
-  Color _disciplineAccent(String value) {
-    switch (value.trim().toLowerCase()) {
-      case 'linguagens':
-      case 'linguagens, codigos e suas tecnologias':
-        return const Color(0xFF7C9BFF);
-      case 'ciencias humanas':
-      case 'ciencias humanas e suas tecnologias':
-        return const Color(0xFFFF8A65);
-      case 'ciencias da natureza':
-      case 'ciencias da natureza e suas tecnologias':
-        return const Color(0xFF49D7A8);
-      case 'matematica':
-      case 'matematica e suas tecnologias':
-        return const Color(0xFFFFC857);
-      default:
-        return const Color(0xFF8E7CFF);
-    }
+  if (count < 10) {
+    return 'Primeiros passos';
   }
 
-  IconData _disciplineIcon(String value) {
-    switch (value.trim().toLowerCase()) {
-      case 'linguagens':
-      case 'linguagens, codigos e suas tecnologias':
-        return Icons.menu_book_rounded;
-      case 'ciencias humanas':
-      case 'ciencias humanas e suas tecnologias':
-        return Icons.public_rounded;
-      case 'ciencias da natureza':
-      case 'ciencias da natureza e suas tecnologias':
-        return Icons.eco_rounded;
-      case 'matematica':
-      case 'matematica e suas tecnologias':
-        return Icons.calculate_rounded;
-      default:
-        return Icons.school_rounded;
-    }
+  if (count < 100) {
+    return 'Em evolu\u00e7\u00e3o';
   }
 
-  String _questionsLabel(int count) {
-    return count == 1 ? 'questao respondida' : 'questoes respondidas';
-  }
-
-  String _disciplineCaption(int count) {
-    if (count == 1) {
-      return 'Inicio';
-    }
-
-    if (count < 10) {
-      return 'Primeiros passos';
-    }
-
-    if (count < 100) {
-      return 'Em evolucao';
-    }
-
-    return 'Consistente';
-  }
+  return 'Consistente';
 }

@@ -39,11 +39,7 @@ class TrainingSummaryMapCard extends StatelessWidget {
               color: primary.withOpacity(0.15),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(
-              Icons.account_tree_rounded,
-              color: primary,
-              size: 20,
-            ),
+            child: Icon(Icons.account_tree_rounded, color: primary, size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -62,9 +58,9 @@ class TrainingSummaryMapCard extends StatelessWidget {
                 Text(
                   isLocked
                       ? (lockedMessage ??
-                          'Conclua o simulado para liberar seu mapa mental personalizado.')
+                            'Conclua o simulado para liberar seu mapa mental personalizado.')
                       : isCompact
-                      ? 'Comeca focado no tema principal. Arraste e aproxime para explorar.'
+                      ? 'Começa focado no tema principal. Arraste e aproxime para explorar.'
                       : 'Mapa mental interativo para revisar pontos-chave com zoom e arraste.',
                   style: GoogleFonts.inter(
                     color: onSurfaceMuted,
