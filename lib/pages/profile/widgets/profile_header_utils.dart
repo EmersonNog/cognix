@@ -37,7 +37,7 @@ ProfileHeaderMomentumViewData buildProfileHeaderMomentumView({
       description:
           'Seu ritmo est\u00e1 forte agora. Vale aproveitar essa fase para manter o embalo.',
       index: index,
-      accent: const Color(0xFF6BE7A7),
+      accent: const Color.fromARGB(255, 38, 208, 120),
     );
   }
 
@@ -47,7 +47,7 @@ ProfileHeaderMomentumViewData buildProfileHeaderMomentumView({
       description:
           'Seu momento est\u00e1 melhorando. Mais alguns bons blocos podem elevar esse \u00edndice.',
       index: index,
-      accent: const Color(0xFF45D0C2),
+      accent: const Color.fromARGB(255, 28, 191, 251),
     );
   }
 
