@@ -18,6 +18,7 @@ class QuestionItem {
     required this.subcategory,
     required this.discipline,
     required this.year,
+    this.tip,
   });
 
   final int id;
@@ -26,6 +27,7 @@ class QuestionItem {
   final String subcategory;
   final String discipline;
   final int? year;
+  final String? tip;
 }
 
 class QuestionsPage {

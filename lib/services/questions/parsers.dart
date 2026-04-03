@@ -26,6 +26,7 @@ QuestionItem parseQuestionItem(
     subcategory: row['subcategoria']?.toString() ?? fallbackSubcategory,
     discipline: row['disciplina']?.toString() ?? fallbackDiscipline,
     year: int.tryParse('${row['ano']}'),
+    tip: row['dica']?.toString(),
   );
 }
 
@@ -82,8 +83,10 @@ TrainingSessionsOverview parseTrainingSessionsOverview(
       answeredQuestions:
           int.tryParse('${latestRaw['answered_questions']}') ?? 0,
       totalQuestions: int.tryParse('${latestRaw['total_questions']}') ?? 0,
-      progress:
-          (double.tryParse('${latestRaw['progress']}') ?? 0.0).clamp(0.0, 1.0),
+      progress: (double.tryParse('${latestRaw['progress']}') ?? 0.0).clamp(
+        0.0,
+        1.0,
+      ),
       updatedAt: parseApiDateTime(latestRaw['updated_at']?.toString()),
     );
   }

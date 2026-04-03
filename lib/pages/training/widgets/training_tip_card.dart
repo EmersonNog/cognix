@@ -7,14 +7,20 @@ class TrainingTipCard extends StatelessWidget {
     required this.surfaceContainer,
     required this.onSurfaceMuted,
     required this.primary,
+    required this.tip,
   });
 
   final Color surfaceContainer;
   final Color onSurfaceMuted;
   final Color primary;
+  final String? tip;
 
   @override
   Widget build(BuildContext context) {
+    final trimmedTip = tip?.trim();
+    final hasTip = trimmedTip != null && trimmedTip.isNotEmpty;
+    final tipText = hasTip ? trimmedTip! : 'Sem dica disponivel para esta questao.';
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -42,12 +48,7 @@ class TrainingTipCard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const TextSpan(
-                    text:
-                        'Lembre-se que a função de onda ψ(x) se mantém contínua '
-                        'nas fronteiras. Se E < V₀, a solução na barreira é uma '
-                        'função de decaimento exponencial, não zero.',
-                  ),
+                  TextSpan(text: tipText),
                 ],
               ),
             ),

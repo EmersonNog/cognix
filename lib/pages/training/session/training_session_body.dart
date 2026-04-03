@@ -155,6 +155,7 @@ class TrainingSessionBody extends StatelessWidget {
           surfaceContainer: surfaceContainer,
           onSurfaceMuted: onSurfaceMuted,
           primary: primary,
+          tip: question.tip,
         ),
       ],
     );

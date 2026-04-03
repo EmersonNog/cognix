@@ -75,6 +75,7 @@ Map<String, dynamic> serializeQuestionItem(QuestionItem question) {
     'subcategory': question.subcategory,
     'discipline': question.discipline,
     'year': question.year,
+    'tip': question.tip,
   };
 }
 
@@ -92,6 +93,7 @@ QuestionItem deserializeQuestionItem(
     subcategory: row['subcategory']?.toString() ?? fallbackSubcategory,
     discipline: row['discipline']?.toString() ?? fallbackDiscipline,
     year: int.tryParse('${row['year']}'),
+    tip: row['dica']?.toString(),
   );
 }
 
@@ -101,7 +103,8 @@ bool matchesTrainingSessionState(
   required String subcategory,
 }) {
   if (state == null) return false;
-  return state['discipline'] == discipline && state['subcategory'] == subcategory;
+  return state['discipline'] == discipline &&
+      state['subcategory'] == subcategory;
 }
 
 bool isCompletedTrainingSessionState(
@@ -239,7 +242,8 @@ TrainingRestoredSessionData? parseTrainingRestoredSessionData(
     ),
     isCorrectByQuestionId: parseTrainingCorrectMap(decoded['isCorrect']),
     correctOptionIndexByQuestionId: parseTrainingCorrectOptionIndexMap(
-      decoded['correctOptionIndexByQuestionId'] ?? decoded['correctOptionIndex'],
+      decoded['correctOptionIndexByQuestionId'] ??
+          decoded['correctOptionIndex'],
     ),
     paused: decoded['paused'] == true,
     elapsedSeconds: int.tryParse('${decoded['elapsedSeconds']}') ?? 0,
@@ -258,7 +262,9 @@ Map<String, dynamic>? chooseTrainingSessionState({
 }) {
   final localSavedAt = localState?['savedAt'];
   final localSavedAtMs = int.tryParse('${localSavedAt ?? ''}');
-  final remoteSavedAtMs = remoteState?.updatedAt?.toUtc().millisecondsSinceEpoch;
+  final remoteSavedAtMs = remoteState?.updatedAt
+      ?.toUtc()
+      .millisecondsSinceEpoch;
 
   if (localState != null && remoteState != null) {
     if ((remoteSavedAtMs ?? 0) > (localSavedAtMs ?? 0)) {
