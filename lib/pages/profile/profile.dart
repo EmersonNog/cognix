@@ -84,14 +84,12 @@ class _ProfileTabState extends State<ProfileTab> {
                 onSurface: widget.onSurface,
                 onSurfaceMuted: widget.onSurfaceMuted,
               ),
-              if (profile.questionsByDiscipline.isNotEmpty) ...[
-                const SizedBox(height: 16),
-                ProfileDisciplineGrid(
-                  items: profile.questionsByDiscipline,
-                  onSurface: widget.onSurface,
-                  onSurfaceMuted: widget.onSurfaceMuted,
-                ),
-              ],
+              const SizedBox(height: 16),
+              ProfileDisciplineGrid(
+                items: profile.questionsByDiscipline,
+                onSurface: widget.onSurface,
+                onSurfaceMuted: widget.onSurfaceMuted,
+              ),
               const SizedBox(height: 18),
               ProfileOpenPanelCard(
                 onTap: () => _openDetails(profile),

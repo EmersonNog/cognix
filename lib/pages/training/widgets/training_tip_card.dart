@@ -19,7 +19,9 @@ class TrainingTipCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final trimmedTip = tip?.trim();
     final hasTip = trimmedTip != null && trimmedTip.isNotEmpty;
-    final tipText = hasTip ? trimmedTip! : 'Sem dica disponivel para esta questao.';
+    final tipText = hasTip
+        ? trimmedTip
+        : 'Sem dica disponivel para esta questao.';
 
     return Container(
       padding: const EdgeInsets.all(16),

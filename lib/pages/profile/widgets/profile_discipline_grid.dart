@@ -16,11 +16,7 @@ class ProfileDisciplineGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (items.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    final visibleItems = items.take(4).toList();
+    final visibleItems = _buildVisibleItems(items);
     return GridView.builder(
       itemCount: visibleItems.length,
       shrinkWrap: true,
@@ -41,6 +37,76 @@ class ProfileDisciplineGrid extends StatelessWidget {
         );
       },
     );
+  }
+
+  List<ProfileDisciplineStat> _buildVisibleItems(
+    List<ProfileDisciplineStat> source,
+  ) {
+    final counts = <String, int>{};
+    for (final item in source) {
+      final key = _canonicalDisciplineKey(item.discipline);
+      if (key == null) {
+        continue;
+      }
+      counts[key] = (counts[key] ?? 0) + item.count;
+    }
+
+    return [
+      ProfileDisciplineStat(
+        discipline: 'Linguagens',
+        count: counts['linguagens'] ?? 0,
+      ),
+      ProfileDisciplineStat(
+        discipline: 'Ciencias Humanas',
+        count: counts['ciencias_humanas'] ?? 0,
+      ),
+      ProfileDisciplineStat(
+        discipline: 'Ciencias da Natureza',
+        count: counts['ciencias_natureza'] ?? 0,
+      ),
+      ProfileDisciplineStat(
+        discipline: 'Matematica',
+        count: counts['matematica'] ?? 0,
+      ),
+    ];
+  }
+
+  String? _canonicalDisciplineKey(String value) {
+    final normalized = _normalizeDiscipline(value);
+    switch (normalized) {
+      case 'linguagens':
+      case 'linguagens, codigos e suas tecnologias':
+        return 'linguagens';
+      case 'ciencias humanas':
+      case 'ciencias humanas e suas tecnologias':
+        return 'ciencias_humanas';
+      case 'ciencias da natureza':
+      case 'ciencias da natureza e suas tecnologias':
+        return 'ciencias_natureza';
+      case 'matematica':
+      case 'matematica e suas tecnologias':
+        return 'matematica';
+      default:
+        return null;
+    }
+  }
+
+  String _normalizeDiscipline(String value) {
+    return value
+        .trim()
+        .toLowerCase()
+        .replaceAll('ã', 'a')
+        .replaceAll('á', 'a')
+        .replaceAll('à', 'a')
+        .replaceAll('â', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('ê', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ô', 'o')
+        .replaceAll('õ', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('ç', 'c');
   }
 }
 
@@ -122,7 +188,7 @@ class _DisciplineChip extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'questões respondidas',
+            _questionsLabel(count),
             style: theme.textTheme.bodySmall?.copyWith(
               color: onSurfaceMuted,
               fontWeight: FontWeight.w600,
@@ -161,18 +227,18 @@ class _DisciplineChip extends StatelessWidget {
 
   String _shortDisciplineLabel(String value) {
     switch (value.trim().toLowerCase()) {
-      case 'linguagens, códigos e suas tecnologias':
+      case 'linguagens':
       case 'linguagens, codigos e suas tecnologias':
         return 'Linguagens';
-      case 'ciências humanas e suas tecnologias':
+      case 'ciencias humanas':
       case 'ciencias humanas e suas tecnologias':
-        return 'Ciências Humanas';
-      case 'ciências da natureza e suas tecnologias':
+        return 'Ciencias Humanas';
+      case 'ciencias da natureza':
       case 'ciencias da natureza e suas tecnologias':
-        return 'Ciências da Natureza';
-      case 'matemática e suas tecnologias':
+        return 'Ciencias da Natureza';
+      case 'matematica':
       case 'matematica e suas tecnologias':
-        return 'Matemática';
+        return 'Matematica';
       default:
         return value;
     }
@@ -180,16 +246,16 @@ class _DisciplineChip extends StatelessWidget {
 
   Color _disciplineAccent(String value) {
     switch (value.trim().toLowerCase()) {
-      case 'linguagens, códigos e suas tecnologias':
+      case 'linguagens':
       case 'linguagens, codigos e suas tecnologias':
         return const Color(0xFF7C9BFF);
-      case 'ciências humanas e suas tecnologias':
+      case 'ciencias humanas':
       case 'ciencias humanas e suas tecnologias':
         return const Color(0xFFFF8A65);
-      case 'ciências da natureza e suas tecnologias':
+      case 'ciencias da natureza':
       case 'ciencias da natureza e suas tecnologias':
         return const Color(0xFF49D7A8);
-      case 'matemática e suas tecnologias':
+      case 'matematica':
       case 'matematica e suas tecnologias':
         return const Color(0xFFFFC857);
       default:
@@ -199,16 +265,16 @@ class _DisciplineChip extends StatelessWidget {
 
   IconData _disciplineIcon(String value) {
     switch (value.trim().toLowerCase()) {
-      case 'linguagens, códigos e suas tecnologias':
+      case 'linguagens':
       case 'linguagens, codigos e suas tecnologias':
         return Icons.menu_book_rounded;
-      case 'ciências humanas e suas tecnologias':
+      case 'ciencias humanas':
       case 'ciencias humanas e suas tecnologias':
         return Icons.public_rounded;
-      case 'ciências da natureza e suas tecnologias':
+      case 'ciencias da natureza':
       case 'ciencias da natureza e suas tecnologias':
         return Icons.eco_rounded;
-      case 'matemática e suas tecnologias':
+      case 'matematica':
       case 'matematica e suas tecnologias':
         return Icons.calculate_rounded;
       default:
@@ -216,9 +282,13 @@ class _DisciplineChip extends StatelessWidget {
     }
   }
 
+  String _questionsLabel(int count) {
+    return count == 1 ? 'questao respondida' : 'questoes respondidas';
+  }
+
   String _disciplineCaption(int count) {
     if (count == 1) {
-      return 'Início';
+      return 'Inicio';
     }
 
     if (count < 10) {
@@ -226,7 +296,7 @@ class _DisciplineChip extends StatelessWidget {
     }
 
     if (count < 100) {
-      return 'Em evolução';
+      return 'Em evolucao';
     }
 
     return 'Consistente';
