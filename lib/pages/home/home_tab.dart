@@ -63,23 +63,6 @@ class _HomeTabState extends State<HomeTab> {
           onSurfaceMuted: widget.onSurfaceMuted,
           primary: widget.primary,
         ),
-        const SizedBox(height: 18),
-        FutureBuilder<ProfileScoreData>(
-          future: _profileFuture,
-          builder: (context, snapshot) {
-            final profile = snapshot.data;
-            if (profile == null) {
-              return const SizedBox.shrink();
-            }
-
-            return HomePerformanceCtaCard(
-              onTap: () => _openPerformance(profile),
-              onSurface: widget.onSurface,
-              onSurfaceMuted: widget.onSurfaceMuted,
-              primary: widget.primary,
-            );
-          },
-        ),
         const SizedBox(height: 22),
         HomeRecommendationsSection(
           onSurface: widget.onSurface,

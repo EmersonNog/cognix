@@ -1,11 +1,13 @@
 import 'package:cognix/widgets/cognix_widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import '../../services/auth/auth_api.dart';
 import 'home_tab.dart';
-import '../training/training_tab.dart';
+import '../performance/performance_screen.dart';
 import '../profile/profile.dart';
+import '../training/training_tab.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -54,7 +56,7 @@ class _HomeState extends State<Home> {
     const secondaryDim = Color(0xFF8455EF);
 
     final currentUser = FirebaseAuth.instance.currentUser;
-    final userName = currentUser?.displayName ?? 'Usuário';
+    final userName = currentUser?.displayName ?? 'Usu\u00E1rio';
 
     final Widget content = switch (_currentIndex) {
       0 => HomeTab(
@@ -73,7 +75,12 @@ class _HomeState extends State<Home> {
         onSurfaceMuted: onSurfaceMuted,
         primary: primary,
       ),
-      2 => ProfileTab(
+      2 => PerformanceScreen.embedded(
+        onSurface: onSurface,
+        onSurfaceMuted: onSurfaceMuted,
+        primary: primary,
+      ),
+      3 => ProfileTab(
         surfaceContainer: surfaceContainer,
         surfaceContainerHigh: surfaceContainerHigh,
         onSurface: onSurface,
@@ -168,7 +175,7 @@ class _HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _NavItem(
-                label: 'Início',
+                label: 'In\u00EDcio',
                 icon: Icons.grid_view_rounded,
                 selected: _currentIndex == 0,
                 onTap: () => setState(() => _currentIndex = 0),
@@ -186,10 +193,19 @@ class _HomeState extends State<Home> {
                 selectedBackground: surfaceContainerHigh,
               ),
               _NavItem(
-                label: 'Perfil',
-                icon: Icons.person_rounded,
+                label: 'An\u00E1lise',
+                icon: Icons.insights_rounded,
                 selected: _currentIndex == 2,
                 onTap: () => setState(() => _currentIndex = 2),
+                primary: primary,
+                muted: onSurfaceMuted,
+                selectedBackground: surfaceContainerHigh,
+              ),
+              _NavItem(
+                label: 'Perfil',
+                icon: Icons.person_rounded,
+                selected: _currentIndex == 3,
+                onTap: () => setState(() => _currentIndex = 3),
                 primary: primary,
                 muted: onSurfaceMuted,
                 selectedBackground: surfaceContainerHigh,
