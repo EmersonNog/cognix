@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-
-import '../../services/profile/profile_api.dart';
-import '../performance/performance_screen.dart';
 import 'widgets/home_daily_rhythm_card.dart';
 import 'widgets/home_master_streak_card.dart';
-import 'widgets/home_performance_cta_card.dart';
 import 'widgets/home_recommendations_section.dart';
 import 'widgets/home_recent_performance_card.dart';
 
-class HomeTab extends StatefulWidget {
+class HomeTab extends StatelessWidget {
   const HomeTab({
     super.key,
     required this.surfaceContainer,
@@ -29,69 +25,43 @@ class HomeTab extends StatefulWidget {
   final String userName;
 
   @override
-  State<HomeTab> createState() => _HomeTabState();
-}
-
-class _HomeTabState extends State<HomeTab> {
-  late final Future<ProfileScoreData> _profileFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _profileFuture = fetchProfileScore();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
       children: [
         HomeDailyRhythmCard(
-          surfaceContainer: widget.surfaceContainer,
-          surfaceContainerHigh: widget.surfaceContainerHigh,
-          onSurface: widget.onSurface,
-          onSurfaceMuted: widget.onSurfaceMuted,
-          primary: widget.primary,
-          primaryDim: widget.primaryDim,
-          userName: widget.userName,
+          surfaceContainer: surfaceContainer,
+          surfaceContainerHigh: surfaceContainerHigh,
+          onSurface: onSurface,
+          onSurfaceMuted: onSurfaceMuted,
+          primary: primary,
+          primaryDim: primaryDim,
+          userName: userName,
         ),
         const SizedBox(height: 18),
         HomeMasterStreakCard(
-          surfaceContainer: widget.surfaceContainer,
-          surfaceContainerHigh: widget.surfaceContainerHigh,
-          onSurface: widget.onSurface,
-          onSurfaceMuted: widget.onSurfaceMuted,
-          primary: widget.primary,
+          surfaceContainer: surfaceContainer,
+          surfaceContainerHigh: surfaceContainerHigh,
+          onSurface: onSurface,
+          onSurfaceMuted: onSurfaceMuted,
+          primary: primary,
         ),
         const SizedBox(height: 22),
         HomeRecommendationsSection(
-          onSurface: widget.onSurface,
-          onSurfaceMuted: widget.onSurfaceMuted,
-          primary: widget.primary,
-          surfaceContainerHigh: widget.surfaceContainerHigh,
+          onSurface: onSurface,
+          onSurfaceMuted: onSurfaceMuted,
+          primary: primary,
+          surfaceContainerHigh: surfaceContainerHigh,
         ),
         const SizedBox(height: 22),
         HomeRecentPerformanceCard(
-          surfaceContainer: widget.surfaceContainer,
-          surfaceContainerHigh: widget.surfaceContainerHigh,
-          onSurface: widget.onSurface,
-          onSurfaceMuted: widget.onSurfaceMuted,
-          primary: widget.primary,
+          surfaceContainer: surfaceContainer,
+          surfaceContainerHigh: surfaceContainerHigh,
+          onSurface: onSurface,
+          onSurfaceMuted: onSurfaceMuted,
+          primary: primary,
         ),
       ],
-    );
-  }
-
-  void _openPerformance(ProfileScoreData profile) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => PerformanceScreen(
-          profile: profile,
-          onSurface: widget.onSurface,
-          onSurfaceMuted: widget.onSurfaceMuted,
-          primary: widget.primary,
-        ),
-      ),
     );
   }
 }
