@@ -135,6 +135,7 @@ class _ProfileHeaderMomentumCardNativeState
                           _NativeMomentumIndexBadge(
                             accent: widget.view.accent,
                             index: widget.view.index,
+                            indexLabel: widget.view.indexLabel,
                             onSurface: widget.onSurface,
                             onSurfaceMuted: widget.onSurfaceMuted,
                           ),
@@ -170,12 +171,14 @@ class _NativeMomentumIndexBadge extends StatelessWidget {
   const _NativeMomentumIndexBadge({
     required this.accent,
     required this.index,
+    required this.indexLabel,
     required this.onSurface,
     required this.onSurfaceMuted,
   });
 
   final Color accent;
   final int index;
+  final String? indexLabel;
   final Color onSurface;
   final Color onSurfaceMuted;
 
@@ -223,7 +226,7 @@ class _NativeMomentumIndexBadge extends StatelessWidget {
           ),
           const SizedBox(height: 7),
           Text(
-            '$index/100',
+            indexLabel ?? '$index/100',
             style: GoogleFonts.manrope(
               color: onSurface,
               fontSize: 17,

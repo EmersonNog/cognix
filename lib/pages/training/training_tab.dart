@@ -62,13 +62,32 @@ class _TrainingTabState extends State<TrainingTab> with RouteAware {
     try {
       final overview = await fetchTrainingSessionsOverview();
       final latest = overview.latestSession;
-      if (latest == null) {
-        return const TrainingRhythmData.empty();
-      }
-
       final completedCountLabel =
           '${overview.completedSessions} '
           '${overview.completedSessions == 1 ? 'simulado conclu\u00eddo' : 'simulados conclu\u00eddos'}';
+
+      if (latest == null) {
+        if (overview.inProgressSessions > 0) {
+          final inProgressLabel =
+              '${overview.inProgressSessions} '
+              '${overview.inProgressSessions == 1 ? 'simulado em andamento' : 'simulados em andamento'}';
+          return TrainingRhythmData(
+            subtitle: 'Voc\u00ea ainda tem treino para retomar',
+            badgeLabel: '${overview.inProgressSessions}x',
+            completedCountLabel: inProgressLabel,
+          );
+        }
+
+        if (overview.completedSessions > 0) {
+          return TrainingRhythmData(
+            subtitle: 'Seu hist\u00f3rico recente j\u00e1 est\u00e1 salvo',
+            badgeLabel: '${overview.completedSessions}x',
+            completedCountLabel: completedCountLabel,
+          );
+        }
+
+        return const TrainingRhythmData.empty();
+      }
 
       if (latest.completed) {
         final percent = latest.totalQuestions <= 0
@@ -94,7 +113,7 @@ class _TrainingTabState extends State<TrainingTab> with RouteAware {
         completedCountLabel: completedCountLabel,
       );
     } catch (_) {
-      return const TrainingRhythmData.empty();
+      return const TrainingRhythmData.error();
     }
   }
 
@@ -200,7 +219,14 @@ class _TrainingTabState extends State<TrainingTab> with RouteAware {
           FutureBuilder<TrainingRhythmData>(
             future: _rhythmFuture,
             builder: (context, snapshot) {
-              final rhythm = snapshot.data ?? const TrainingRhythmData.empty();
+              final rhythm =
+                  snapshot.connectionState == ConnectionState.waiting &&
+                      !snapshot.hasData
+                  ? const TrainingRhythmData.loading()
+                  : snapshot.data ??
+                        (snapshot.hasError
+                            ? const TrainingRhythmData.error()
+                            : const TrainingRhythmData.empty());
 
               return TrainingRhythmCard(
                 data: rhythm,

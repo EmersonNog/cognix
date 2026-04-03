@@ -5,12 +5,14 @@ class ProfileHeaderMomentumViewData {
     required this.label,
     required this.description,
     required this.index,
+    this.indexLabel,
     required this.accent,
   });
 
   final String label;
   final String description;
   final int index;
+  final String? indexLabel;
   final Color accent;
 }
 
@@ -25,8 +27,9 @@ ProfileHeaderMomentumViewData buildProfileHeaderMomentumView({
     return const ProfileHeaderMomentumViewData(
       label: 'Come\u00e7ando agora',
       description:
-          'Seu \u00edndice come\u00e7a neutro e passa a reagir depois do primeiro simulado conclu\u00eddo.',
-      index: 50,
+          'Seu \u00edndice come\u00e7a em 0 e passa a reagir depois do primeiro simulado conclu\u00eddo.',
+      index: 0,
+      indexLabel: '0/100',
       accent: Color(0xFF8E96B8),
     );
   }

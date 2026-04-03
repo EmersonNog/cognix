@@ -20,6 +20,24 @@ class TrainingRhythmCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final badgeChild = data.isLoading
+        ? SizedBox(
+            width: 14,
+            height: 14,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(primary),
+            ),
+          )
+        : Text(
+            data.badgeLabel,
+            style: GoogleFonts.plusJakartaSans(
+              color: primary,
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+            ),
+          );
+
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -72,14 +90,7 @@ class TrainingRhythmCard extends StatelessWidget {
               color: primary.withOpacity(0.2),
               borderRadius: BorderRadius.circular(999),
             ),
-            child: Text(
-              data.badgeLabel,
-              style: GoogleFonts.plusJakartaSans(
-                color: primary,
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+            child: badgeChild,
           ),
         ],
       ),
