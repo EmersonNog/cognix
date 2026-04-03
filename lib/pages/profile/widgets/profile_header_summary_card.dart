@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'profile_avatar_display.dart';
 import 'profile_header_metric_pill.dart';
-import 'profile_header_momentum_card_native.dart';
+import 'profile_header_momentum_card.dart';
 import 'profile_header_score_progress_hint.dart';
 import 'profile_header_utils.dart';
 

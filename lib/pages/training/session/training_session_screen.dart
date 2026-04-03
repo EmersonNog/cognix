@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../widgets/cognix/cognix_messages.dart';
 import '../../../services/questions/questions_api.dart';
+import '../../../services/profile/profile_refresh_notifier.dart';
 import 'training_session_question_loader.dart';
 import '../results/training_results_screen.dart';
 import 'training_session_models.dart';
@@ -624,6 +625,7 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
           _lastAnswerWasCorrect = result.isCorrect;
         });
       }
+      profileRefreshNotifier.markDirty();
       if (!_sessionCompleted) {
         _saveSessionState();
       }

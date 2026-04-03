@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../../navigation/app_route_observer.dart';
 import '../../services/questions/questions_api.dart';
 import '../subjects/subjects_area_screen.dart';
@@ -16,6 +17,7 @@ class TrainingTab extends StatefulWidget {
     required this.onSurface,
     required this.onSurfaceMuted,
     required this.primary,
+    required this.onRefreshHubData,
   });
 
   final Color surfaceContainer;
@@ -23,6 +25,7 @@ class TrainingTab extends StatefulWidget {
   final Color onSurface;
   final Color onSurfaceMuted;
   final Color primary;
+  final RefreshCallback onRefreshHubData;
 
   @override
   State<TrainingTab> createState() => _TrainingTabState();
@@ -65,7 +68,7 @@ class _TrainingTabState extends State<TrainingTab> with RouteAware {
 
       final completedCountLabel =
           '${overview.completedSessions} '
-          '${overview.completedSessions == 1 ? 'simulado concluído' : 'simulados concluídos'}';
+          '${overview.completedSessions == 1 ? 'simulado conclu\u00eddo' : 'simulados conclu\u00eddos'}';
 
       if (latest.completed) {
         final percent = latest.totalQuestions <= 0
@@ -74,8 +77,8 @@ class _TrainingTabState extends State<TrainingTab> with RouteAware {
                   .round();
         return TrainingRhythmData(
           subtitle: latest.subcategory.isEmpty
-              ? 'Último simulado concluído'
-              : 'Último simulado concluído em ${latest.subcategory}',
+              ? '\u00daltimo simulado conclu\u00eddo'
+              : '\u00daltimo simulado conclu\u00eddo em ${latest.subcategory}',
           badgeLabel: '$percent%',
           completedCountLabel: completedCountLabel,
         );
@@ -116,8 +119,26 @@ class _TrainingTabState extends State<TrainingTab> with RouteAware {
   }
 
   Future<void> _refreshData() async {
+    final rhythmFuture = _loadRhythmData();
+    final areaTotalsFuture = _loadAreaTotals();
     if (!mounted) return;
-    setState(_scheduleRefresh);
+
+    setState(() {
+      _rhythmFuture = rhythmFuture;
+      _areaTotalsFuture = areaTotalsFuture;
+    });
+
+    await Future.wait<void>([
+      rhythmFuture.then((_) {}),
+      areaTotalsFuture.then((_) {}),
+    ]);
+  }
+
+  Future<void> _handlePullToRefresh() async {
+    await Future.wait<void>([
+      _refreshData(),
+      widget.onRefreshHubData(),
+    ]);
   }
 
   void _openArea(TrainingAreaItem item) {
@@ -150,13 +171,16 @@ class _TrainingTabState extends State<TrainingTab> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 28),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return RefreshIndicator(
+      onRefresh: _handlePullToRefresh,
+      color: widget.primary,
+      backgroundColor: widget.surfaceContainer,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(20, 24, 20, 120),
         children: [
           Text(
-            'Áreas de Conhecimento',
+            '\u00c1reas de Conhecimento',
             style: GoogleFonts.manrope(
               color: widget.onSurface,
               fontSize: 26,
@@ -166,7 +190,7 @@ class _TrainingTabState extends State<TrainingTab> with RouteAware {
           ),
           const SizedBox(height: 6),
           Text(
-            'Escolha uma área para iniciar seu treino personalizado.',
+            'Escolha uma \u00e1rea para iniciar seu treino personalizado.',
             style: GoogleFonts.inter(
               color: widget.onSurfaceMuted,
               fontSize: 13,

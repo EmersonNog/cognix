@@ -104,78 +104,60 @@ class _ProfileHeaderMomentumCardNativeState
             ),
           ),
           ClipRect(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 1500),
-              reverseDuration: const Duration(milliseconds: 800),
-              switchInCurve: Curves.easeOutQuart,
-              switchOutCurve: Curves.easeInOutCubic,
-              transitionBuilder: (child, animation) {
-                final fade = CurvedAnimation(
-                  parent: animation,
-                  curve: Curves.easeOut,
-                );
-                final size = CurvedAnimation(
-                  parent: animation,
-                  curve: Curves.easeInOutCubic,
-                );
-
-                return FadeTransition(
-                  opacity: fade,
-                  child: SizeTransition(
-                    sizeFactor: size,
-                    axisAlignment: -1,
-                    child: child,
-                  ),
-                );
-              },
-              child: _isExpanded
-                  ? Padding(
-                      key: const ValueKey('expanded_momentum_content'),
-                      padding: const EdgeInsets.only(top: 14),
-                      child: Column(
+            child: AnimatedSize(
+              duration: const Duration(milliseconds: 420),
+              reverseDuration: const Duration(milliseconds: 320),
+              curve: Curves.easeOutQuart,
+              alignment: Alignment.topCenter,
+              child: Align(
+                alignment: Alignment.topCenter,
+                heightFactor: _isExpanded ? 1 : 0,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 14),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  widget.view.label,
-                                  style: GoogleFonts.manrope(
-                                    color: widget.view.accent,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w800,
-                                    height: 1.1,
-                                  ),
-                                ),
+                          Expanded(
+                            child: Text(
+                              widget.view.label,
+                              style: GoogleFonts.manrope(
+                                color: widget.view.accent,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w800,
+                                height: 1.1,
                               ),
-                              const SizedBox(width: 12),
-                              _NativeMomentumIndexBadge(
-                                accent: widget.view.accent,
-                                index: widget.view.index,
-                                onSurface: widget.onSurface,
-                                onSurfaceMuted: widget.onSurfaceMuted,
-                              ),
-                            ],
+                            ),
                           ),
-                          const SizedBox(height: 12),
-                          _NativeMomentumBar(
+                          const SizedBox(width: 12),
+                          _NativeMomentumIndexBadge(
                             accent: widget.view.accent,
                             index: widget.view.index,
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            widget.view.description,
-                            style: GoogleFonts.inter(
-                              color: widget.onSurfaceMuted,
-                              fontSize: 11.5,
-                              height: 1.45,
-                            ),
+                            onSurface: widget.onSurface,
+                            onSurfaceMuted: widget.onSurfaceMuted,
                           ),
                         ],
                       ),
-                    )
-                  : const SizedBox(key: ValueKey('collapsed_momentum_content')),
+                      const SizedBox(height: 12),
+                      _NativeMomentumBar(
+                        accent: widget.view.accent,
+                        index: widget.view.index,
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        widget.view.description,
+                        style: GoogleFonts.inter(
+                          color: widget.onSurfaceMuted,
+                          fontSize: 11.5,
+                          height: 1.45,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         ],

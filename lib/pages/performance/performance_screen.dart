@@ -12,20 +12,26 @@ class PerformanceScreen extends StatelessWidget {
     required this.onSurface,
     required this.onSurfaceMuted,
     required this.primary,
-  }) : _embedded = false;
+    this.onRefresh,
+  })  : profileFuture = null,
+        _embedded = false;
 
   const PerformanceScreen.embedded({
     super.key,
+    required this.profileFuture,
     required this.onSurface,
     required this.onSurfaceMuted,
     required this.primary,
+    this.onRefresh,
   })  : profile = null,
         _embedded = true;
 
   final ProfileScoreData? profile;
+  final Future<ProfileScoreData>? profileFuture;
   final Color onSurface;
   final Color onSurfaceMuted;
   final Color primary;
+  final RefreshCallback? onRefresh;
   final bool _embedded;
 
   @override
@@ -37,13 +43,15 @@ class PerformanceScreen extends StatelessWidget {
         onSurfaceMuted: onSurfaceMuted,
         primary: primary,
         embedded: _embedded,
+        onRefresh: onRefresh,
       );
     }
 
     return FutureBuilder<ProfileScoreData>(
-      future: fetchProfileScore(),
+      future: profileFuture ?? fetchProfileScore(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            !snapshot.hasData) {
           return _embedded
               ? Center(
                   child: CircularProgressIndicator(color: primary),
@@ -61,6 +69,7 @@ class PerformanceScreen extends StatelessWidget {
             embedded: _embedded,
             onSurfaceMuted: onSurfaceMuted,
             primary: primary,
+            onRefresh: onRefresh,
           );
         }
 
@@ -70,6 +79,7 @@ class PerformanceScreen extends StatelessWidget {
           onSurfaceMuted: onSurfaceMuted,
           primary: primary,
           embedded: _embedded,
+          onRefresh: onRefresh,
         );
       },
     );
@@ -83,6 +93,7 @@ class _PerformanceScreenFrame extends StatelessWidget {
     required this.onSurfaceMuted,
     required this.primary,
     required this.embedded,
+    required this.onRefresh,
   });
 
   final ProfileScoreData profile;
@@ -90,6 +101,7 @@ class _PerformanceScreenFrame extends StatelessWidget {
   final Color onSurfaceMuted;
   final Color primary;
   final bool embedded;
+  final RefreshCallback? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +111,7 @@ class _PerformanceScreenFrame extends StatelessWidget {
       onSurfaceMuted: onSurfaceMuted,
       primary: primary,
       embedded: embedded,
+      onRefresh: onRefresh,
     );
 
     if (embedded) {
@@ -125,6 +138,7 @@ class _PerformanceScreenContent extends StatelessWidget {
     required this.onSurfaceMuted,
     required this.primary,
     required this.embedded,
+    required this.onRefresh,
   });
 
   final ProfileScoreData profile;
@@ -132,12 +146,14 @@ class _PerformanceScreenContent extends StatelessWidget {
   final Color onSurfaceMuted;
   final Color primary;
   final bool embedded;
+  final RefreshCallback? onRefresh;
 
   @override
   Widget build(BuildContext context) {
     final view = PerformanceViewData.fromProfile(profile);
 
-    return ListView(
+    final listView = ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: EdgeInsets.fromLTRB(20, embedded ? 0 : 8, 20, embedded ? 120 : 30),
       children: [
         MomentIndicatorsSection(
@@ -171,6 +187,17 @@ class _PerformanceScreenContent extends StatelessWidget {
         ),
       ],
     );
+
+    if (onRefresh == null) {
+      return listView;
+    }
+
+    return RefreshIndicator(
+      onRefresh: onRefresh!,
+      color: primary,
+      backgroundColor: const Color(0xFF141F38),
+      child: listView,
+    );
   }
 }
 
@@ -179,11 +206,13 @@ class _PerformanceErrorState extends StatelessWidget {
     required this.embedded,
     required this.onSurfaceMuted,
     required this.primary,
+    required this.onRefresh,
   });
 
   final bool embedded;
   final Color onSurfaceMuted;
   final Color primary;
+  final RefreshCallback? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -211,6 +240,15 @@ class _PerformanceErrorState extends StatelessWidget {
         ),
       ],
     );
+
+    if (embedded && onRefresh != null) {
+      return RefreshIndicator(
+        onRefresh: onRefresh!,
+        color: primary,
+        backgroundColor: const Color(0xFF141F38),
+        child: child,
+      );
+    }
 
     if (embedded) {
       return child;

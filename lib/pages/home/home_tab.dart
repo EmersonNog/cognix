@@ -14,6 +14,7 @@ class HomeTab extends StatelessWidget {
     required this.primary,
     required this.primaryDim,
     required this.userName,
+    required this.onRefresh,
   });
 
   final Color surfaceContainer;
@@ -23,45 +24,52 @@ class HomeTab extends StatelessWidget {
   final Color primary;
   final Color primaryDim;
   final String userName;
+  final RefreshCallback onRefresh;
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
-      children: [
-        HomeDailyRhythmCard(
-          surfaceContainer: surfaceContainer,
-          surfaceContainerHigh: surfaceContainerHigh,
-          onSurface: onSurface,
-          onSurfaceMuted: onSurfaceMuted,
-          primary: primary,
-          primaryDim: primaryDim,
-          userName: userName,
-        ),
-        const SizedBox(height: 18),
-        HomeMasterStreakCard(
-          surfaceContainer: surfaceContainer,
-          surfaceContainerHigh: surfaceContainerHigh,
-          onSurface: onSurface,
-          onSurfaceMuted: onSurfaceMuted,
-          primary: primary,
-        ),
-        const SizedBox(height: 22),
-        HomeRecommendationsSection(
-          onSurface: onSurface,
-          onSurfaceMuted: onSurfaceMuted,
-          primary: primary,
-          surfaceContainerHigh: surfaceContainerHigh,
-        ),
-        const SizedBox(height: 22),
-        HomeRecentPerformanceCard(
-          surfaceContainer: surfaceContainer,
-          surfaceContainerHigh: surfaceContainerHigh,
-          onSurface: onSurface,
-          onSurfaceMuted: onSurfaceMuted,
-          primary: primary,
-        ),
-      ],
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      color: primary,
+      backgroundColor: surfaceContainer,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
+        children: [
+          HomeDailyRhythmCard(
+            surfaceContainer: surfaceContainer,
+            surfaceContainerHigh: surfaceContainerHigh,
+            onSurface: onSurface,
+            onSurfaceMuted: onSurfaceMuted,
+            primary: primary,
+            primaryDim: primaryDim,
+            userName: userName,
+          ),
+          const SizedBox(height: 18),
+          HomeMasterStreakCard(
+            surfaceContainer: surfaceContainer,
+            surfaceContainerHigh: surfaceContainerHigh,
+            onSurface: onSurface,
+            onSurfaceMuted: onSurfaceMuted,
+            primary: primary,
+          ),
+          const SizedBox(height: 22),
+          HomeRecommendationsSection(
+            onSurface: onSurface,
+            onSurfaceMuted: onSurfaceMuted,
+            primary: primary,
+            surfaceContainerHigh: surfaceContainerHigh,
+          ),
+          const SizedBox(height: 22),
+          HomeRecentPerformanceCard(
+            surfaceContainer: surfaceContainer,
+            surfaceContainerHigh: surfaceContainerHigh,
+            onSurface: onSurface,
+            onSurfaceMuted: onSurfaceMuted,
+            primary: primary,
+          ),
+        ],
+      ),
     );
   }
 }
