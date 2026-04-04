@@ -49,6 +49,83 @@ class _AvatarFilterChip extends StatelessWidget {
   }
 }
 
+class _AvatarRarityDropdown extends StatelessWidget {
+  const _AvatarRarityDropdown({
+    required this.selectedRarity,
+    required this.availableRarities,
+    required this.primary,
+    required this.onSurface,
+    required this.onSelected,
+  });
+
+  final String selectedRarity;
+  final List<String> availableRarities;
+  final Color primary;
+  final Color onSurface;
+  final ValueChanged<String> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasCustomSelection = selectedRarity != _allRaritiesFilterValue;
+
+    return PopupMenuButton<String>(
+      tooltip: 'Filtrar por raridade',
+      initialValue: selectedRarity,
+      onSelected: onSelected,
+      color: const Color(0xFF182242),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      itemBuilder: (context) => <PopupMenuEntry<String>>[
+        PopupMenuItem<String>(
+          value: _allRaritiesFilterValue,
+          child: Text(
+            'Todas',
+            style: GoogleFonts.plusJakartaSans(
+              color: onSurface,
+              fontSize: 12.5,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        ...availableRarities.map(
+          (rarity) => PopupMenuItem<String>(
+            value: rarity,
+            child: Text(
+              _formatAvatarRarity(rarity),
+              style: GoogleFonts.plusJakartaSans(
+                color: onSurface,
+                fontSize: 12.5,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ),
+      ],
+      child: Container(
+        width: 42,
+        height: 42,
+        decoration: BoxDecoration(
+          color: hasCustomSelection
+              ? primary.withValues(alpha: 0.14)
+              : const Color(0xFF141E39),
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(
+            color: hasCustomSelection
+                ? primary.withValues(alpha: 0.22)
+                : Colors.white.withValues(alpha: 0.05),
+          ),
+        ),
+        child: Icon(
+          Icons.tune_rounded,
+          size: 18,
+          color: hasCustomSelection
+              ? primary
+              : onSurface.withValues(alpha: 0.78),
+        ),
+      ),
+    );
+  }
+}
+
 class _AvatarStoreTile extends StatelessWidget {
   const _AvatarStoreTile({
     required this.item,

@@ -12,6 +12,8 @@ part 'avatar_store/catalog_widgets.dart';
 
 enum _AvatarStoreFilter { all, owned, unlockable }
 
+const String _allRaritiesFilterValue = '__all_rarities__';
+
 class AvatarSelectorDialog extends StatefulWidget {
   const AvatarSelectorDialog({
     super.key,
@@ -40,6 +42,7 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
   late List<ProfileAvatarStoreItem> _avatarStore;
   bool _isSubmitting = false;
   _AvatarStoreFilter _activeFilter = _AvatarStoreFilter.all;
+  String _activeRarity = _allRaritiesFilterValue;
 
   @override
   void initState() {
@@ -63,16 +66,7 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
   }
 
   List<ProfileAvatarStoreItem> get _visibleItems {
-    final filtered = _avatarStore.where((item) {
-      switch (_activeFilter) {
-        case _AvatarStoreFilter.all:
-          return true;
-        case _AvatarStoreFilter.owned:
-          return item.owned || item.equipped;
-        case _AvatarStoreFilter.unlockable:
-          return !item.owned;
-      }
-    }).toList();
+    final filtered = _avatarStore.where(_matchesActiveFilters).toList();
 
     filtered.sort((a, b) {
       final rankA = _itemRank(a);
@@ -90,6 +84,33 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
     });
 
     return filtered;
+  }
+
+  List<String> get _availableRarities {
+    final rarities = <String>{};
+    for (final item in _avatarStore) {
+      final normalized = item.rarity.trim().toLowerCase();
+      if (normalized.isNotEmpty) {
+        rarities.add(normalized);
+      }
+    }
+
+    final values = rarities.toList()
+      ..sort((a, b) {
+        const order = <String, int>{
+          'comum': 0,
+          'raro': 1,
+          'epico': 2,
+          'lendario': 3,
+        };
+        final rankA = order[a] ?? 99;
+        final rankB = order[b] ?? 99;
+        if (rankA != rankB) {
+          return rankA.compareTo(rankB);
+        }
+        return a.compareTo(b);
+      });
+    return values;
   }
 
   bool get _canSubmit {
@@ -110,20 +131,47 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
     return 3;
   }
 
+  bool _matchesActiveFilters(ProfileAvatarStoreItem item) {
+    final matchesCategory = switch (_activeFilter) {
+      _AvatarStoreFilter.all => true,
+      _AvatarStoreFilter.owned => item.owned || item.equipped,
+      _AvatarStoreFilter.unlockable => !item.owned,
+    };
+
+    if (!matchesCategory) {
+      return false;
+    }
+
+    if (_activeRarity == _allRaritiesFilterValue) {
+      return true;
+    }
+
+    return item.rarity.trim().toLowerCase() == _activeRarity;
+  }
+
   void _changeFilter(_AvatarStoreFilter filter) {
-    final nextVisible = _avatarStore.where((item) {
-      switch (filter) {
-        case _AvatarStoreFilter.all:
-          return true;
-        case _AvatarStoreFilter.owned:
-          return item.owned || item.equipped;
-        case _AvatarStoreFilter.unlockable:
-          return !item.owned;
-      }
-    }).toList();
+    final previousFilter = _activeFilter;
+    _activeFilter = filter;
+    final nextVisible = _avatarStore.where(_matchesActiveFilters).toList();
+    _activeFilter = previousFilter;
 
     setState(() {
       _activeFilter = filter;
+      if (nextVisible.isNotEmpty &&
+          !nextVisible.any((item) => item.seed == _selectedSeed)) {
+        _selectedSeed = nextVisible.first.seed;
+      }
+    });
+  }
+
+  void _changeRarity(String rarity) {
+    final previousRarity = _activeRarity;
+    _activeRarity = rarity;
+    final nextVisible = _avatarStore.where(_matchesActiveFilters).toList();
+    _activeRarity = previousRarity;
+
+    setState(() {
+      _activeRarity = rarity;
       if (nextVisible.isNotEmpty &&
           !nextVisible.any((item) => item.seed == _selectedSeed)) {
         _selectedSeed = nextVisible.first.seed;
@@ -382,6 +430,13 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
                         onSurface: widget.onSurface,
                         onTap: () =>
                             _changeFilter(_AvatarStoreFilter.unlockable),
+                      ),
+                      _AvatarRarityDropdown(
+                        selectedRarity: _activeRarity,
+                        availableRarities: _availableRarities,
+                        primary: widget.primary,
+                        onSurface: widget.onSurface,
+                        onSelected: _changeRarity,
                       ),
                     ],
                   ),
