@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ProfileHeaderMomentumViewData {
-  const ProfileHeaderMomentumViewData({
+class ProfileHeaderRecentIndexViewData {
+  const ProfileHeaderRecentIndexViewData({
     required this.label,
     required this.description,
     required this.index,
@@ -16,18 +16,17 @@ class ProfileHeaderMomentumViewData {
   final Color accent;
 }
 
-ProfileHeaderMomentumViewData buildProfileHeaderMomentumView({
-  required double exactMomentumScore,
-  required int completedSessions,
+ProfileHeaderRecentIndexViewData buildProfileHeaderRecentIndexView({
+  required int recentIndex,
+  required bool recentIndexReady,
 }) {
-  final normalizedMomentum = exactMomentumScore.clamp(-10.0, 10.0).toDouble();
-  final index = (((normalizedMomentum + 10.0) / 20.0) * 100.0).round();
+  final index = recentIndex.clamp(0, 100);
 
-  if (completedSessions <= 0) {
-    return const ProfileHeaderMomentumViewData(
+  if (!recentIndexReady) {
+    return const ProfileHeaderRecentIndexViewData(
       label: 'Come\u00e7ando agora',
       description:
-          'Seu \u00edndice come\u00e7a em 0 e passa a reagir depois do primeiro simulado conclu\u00eddo.',
+          'Seu \u00edndice come\u00e7a em 0 e passa a reagir conforme suas respostas e sess\u00f5es recentes.',
       index: 0,
       indexLabel: '0/100',
       accent: Color(0xFF8E96B8),
@@ -35,7 +34,7 @@ ProfileHeaderMomentumViewData buildProfileHeaderMomentumView({
   }
 
   if (index >= 80) {
-    return ProfileHeaderMomentumViewData(
+    return ProfileHeaderRecentIndexViewData(
       label: 'Em boa sequ\u00eancia',
       description:
           'Seu ritmo est\u00e1 forte agora. Vale aproveitar essa fase para manter o embalo.',
@@ -45,7 +44,7 @@ ProfileHeaderMomentumViewData buildProfileHeaderMomentumView({
   }
 
   if (index >= 65) {
-    return ProfileHeaderMomentumViewData(
+    return ProfileHeaderRecentIndexViewData(
       label: 'Ganhando tra\u00e7\u00e3o',
       description:
           'Seu momento est\u00e1 melhorando. Mais alguns bons blocos podem elevar esse \u00edndice.',
@@ -55,7 +54,7 @@ ProfileHeaderMomentumViewData buildProfileHeaderMomentumView({
   }
 
   if (index >= 50) {
-    return ProfileHeaderMomentumViewData(
+    return ProfileHeaderRecentIndexViewData(
       label: 'Ritmo est\u00e1vel',
       description:
           'Seu estudo est\u00e1 equilibrado. Consist\u00eancia e boas respostas ajudam a subir esse term\u00f4metro.',
@@ -65,7 +64,7 @@ ProfileHeaderMomentumViewData buildProfileHeaderMomentumView({
   }
 
   if (index >= 35) {
-    return ProfileHeaderMomentumViewData(
+    return ProfileHeaderRecentIndexViewData(
       label: 'Ritmo inst\u00e1vel',
       description:
           'Seu desempenho recente oscila. Um pouco mais de const\u00e2ncia j\u00e1 tende a firmar o seu ritmo.',
@@ -74,7 +73,7 @@ ProfileHeaderMomentumViewData buildProfileHeaderMomentumView({
     );
   }
 
-  return ProfileHeaderMomentumViewData(
+  return ProfileHeaderRecentIndexViewData(
     label: 'Hora de retomar',
     description:
         'Seu ritmo esfriou nos \u00faltimos dias. Uma nova sess\u00e3o bem feita j\u00e1 pode reacender esse momento.',

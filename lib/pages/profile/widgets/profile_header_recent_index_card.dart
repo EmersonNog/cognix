@@ -3,25 +3,25 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'profile_header_utils.dart';
 
-class ProfileHeaderMomentumCardNative extends StatefulWidget {
-  const ProfileHeaderMomentumCardNative({
+class ProfileHeaderRecentIndexCardNative extends StatefulWidget {
+  const ProfileHeaderRecentIndexCardNative({
     super.key,
     required this.view,
     required this.onSurface,
     required this.onSurfaceMuted,
   });
 
-  final ProfileHeaderMomentumViewData view;
+  final ProfileHeaderRecentIndexViewData view;
   final Color onSurface;
   final Color onSurfaceMuted;
 
   @override
-  State<ProfileHeaderMomentumCardNative> createState() =>
-      _ProfileHeaderMomentumCardNativeState();
+  State<ProfileHeaderRecentIndexCardNative> createState() =>
+      _ProfileHeaderRecentIndexCardNativeState();
 }
 
-class _ProfileHeaderMomentumCardNativeState
-    extends State<ProfileHeaderMomentumCardNative> {
+class _ProfileHeaderRecentIndexCardNativeState
+    extends State<ProfileHeaderRecentIndexCardNative> {
   bool _isExpanded = false;
 
   void _toggle() {
@@ -132,7 +132,7 @@ class _ProfileHeaderMomentumCardNativeState
                             ),
                           ),
                           const SizedBox(width: 12),
-                          _NativeMomentumIndexBadge(
+                          _NativeRecentIndexBadge(
                             accent: widget.view.accent,
                             index: widget.view.index,
                             indexLabel: widget.view.indexLabel,
@@ -142,7 +142,7 @@ class _ProfileHeaderMomentumCardNativeState
                         ],
                       ),
                       const SizedBox(height: 12),
-                      _NativeMomentumBar(
+                      _NativeRecentIndexBar(
                         accent: widget.view.accent,
                         index: widget.view.index,
                       ),
@@ -167,8 +167,8 @@ class _ProfileHeaderMomentumCardNativeState
   }
 }
 
-class _NativeMomentumIndexBadge extends StatelessWidget {
-  const _NativeMomentumIndexBadge({
+class _NativeRecentIndexBadge extends StatelessWidget {
+  const _NativeRecentIndexBadge({
     required this.accent,
     required this.index,
     required this.indexLabel,
@@ -240,8 +240,8 @@ class _NativeMomentumIndexBadge extends StatelessWidget {
   }
 }
 
-class _NativeMomentumBar extends StatelessWidget {
-  const _NativeMomentumBar({required this.accent, required this.index});
+class _NativeRecentIndexBar extends StatelessWidget {
+  const _NativeRecentIndexBar({required this.accent, required this.index});
 
   final Color accent;
   final int index;

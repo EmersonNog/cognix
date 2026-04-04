@@ -2,28 +2,38 @@ import '../../utils/api_datetime.dart';
 import 'models.dart';
 
 ProfileScoreData parseProfileScoreData(Map<String, dynamic> payload) {
+  final score = int.tryParse('${payload['score']}') ?? 0;
+  final exactScore = double.tryParse('${payload['exact_score']}') ?? 0.0;
+  final level = payload['level']?.toString().trim().isNotEmpty == true
+      ? payload['level'].toString().trim()
+      : 'Iniciante';
+  final questionsAnswered =
+      int.tryParse('${payload['questions_answered']}') ?? 0;
+  final completedSessions =
+      int.tryParse('${payload['completed_sessions']}') ?? 0;
+  final exactRecentIndex =
+      double.tryParse('${payload['exact_recent_index']}') ?? 0.0;
+  final recentIndex =
+      int.tryParse('${payload['recent_index']}') ?? exactRecentIndex.round();
+  final recentIndexReady = payload['recent_index_ready'] is bool
+      ? payload['recent_index_ready'] as bool
+      : questionsAnswered > 0 || completedSessions > 0;
+
   return ProfileScoreData(
-    score: int.tryParse('${payload['score']}') ?? 0,
-    exactScore: double.tryParse('${payload['exact_score']}') ?? 0.0,
-    level: payload['level']?.toString().trim().isNotEmpty == true
-        ? payload['level'].toString().trim()
-        : 'Iniciante',
-    momentumScore: int.tryParse('${payload['momentum_score']}') ?? 0,
-    exactMomentumScore:
-        double.tryParse('${payload['exact_momentum_score']}') ?? 0.0,
-    momentumLabel: payload['momentum_label']?.toString().trim().isNotEmpty ==
-            true
-        ? payload['momentum_label'].toString().trim()
-        : 'Estavel',
-    questionsAnswered: int.tryParse('${payload['questions_answered']}') ?? 0,
+    score: score,
+    exactScore: exactScore,
+    level: level,
+    recentIndex: recentIndex,
+    exactRecentIndex: exactRecentIndex,
+    recentIndexReady: recentIndexReady,
+    questionsAnswered: questionsAnswered,
     uniqueQuestionsAnswered:
         int.tryParse('${payload['unique_questions_answered']}') ?? 0,
     questionBankTotal: int.tryParse('${payload['question_bank_total']}') ?? 0,
-    disciplinesCovered:
-        int.tryParse('${payload['disciplines_covered']}') ?? 0,
+    disciplinesCovered: int.tryParse('${payload['disciplines_covered']}') ?? 0,
     totalCorrect: int.tryParse('${payload['total_correct']}') ?? 0,
     accuracyPercent: double.tryParse('${payload['accuracy_percent']}') ?? 0.0,
-    completedSessions: int.tryParse('${payload['completed_sessions']}') ?? 0,
+    completedSessions: completedSessions,
     totalStudySeconds: int.tryParse('${payload['total_study_seconds']}') ?? 0,
     activeDaysLast30: int.tryParse('${payload['active_days_last_30']}') ?? 0,
     consistencyWindowDays:
@@ -52,12 +62,16 @@ List<ProfileDisciplineStat> parseProfileDisciplineStats(dynamic raw) {
     return const [];
   }
 
-  return raw.whereType<Map>().map((item) {
-    return ProfileDisciplineStat(
-      discipline: item['discipline']?.toString() ?? '',
-      count: int.tryParse('${item['count']}') ?? 0,
-    );
-  }).where((item) => item.discipline.trim().isNotEmpty).toList();
+  return raw
+      .whereType<Map>()
+      .map((item) {
+        return ProfileDisciplineStat(
+          discipline: item['discipline']?.toString() ?? '',
+          count: int.tryParse('${item['count']}') ?? 0,
+        );
+      })
+      .where((item) => item.discipline.trim().isNotEmpty)
+      .toList();
 }
 
 ProfileSubcategoryInsight? parseProfileSubcategoryInsight(dynamic raw) {

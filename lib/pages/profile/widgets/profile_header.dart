@@ -12,9 +12,8 @@ class ProfileHeader extends StatefulWidget {
     required this.level,
     required this.score,
     required this.exactScore,
-    required this.momentumScore,
-    required this.exactMomentumScore,
-    required this.momentumLabel,
+    required this.recentIndex,
+    required this.recentIndexReady,
     required this.questionsCount,
     required this.studyHoursLabel,
     required this.accuracyLabel,
@@ -34,9 +33,8 @@ class ProfileHeader extends StatefulWidget {
   final String level;
   final int score;
   final double exactScore;
-  final int momentumScore;
-  final double exactMomentumScore;
-  final String momentumLabel;
+  final int recentIndex;
+  final bool recentIndexReady;
   final String questionsCount;
   final String studyHoursLabel;
   final String accuracyLabel;
@@ -76,9 +74,9 @@ class _ProfileHeaderState extends State<ProfileHeader> {
     final levelAccent = profileHeaderLevelAccent(widget.level, widget.primary);
     final levelEmoji = profileHeaderLevelEmoji(widget.level);
     final displayedLevel = profileHeaderDisplayLevel(widget.level);
-    final momentumView = buildProfileHeaderMomentumView(
-      exactMomentumScore: widget.exactMomentumScore,
-      completedSessions: widget.completedSessions,
+    final recentIndexView = buildProfileHeaderRecentIndexView(
+      recentIndex: widget.recentIndex,
+      recentIndexReady: widget.recentIndexReady,
     );
     final nextLevelMessage = buildProfileHeaderNextLevelMessage(
       nextLevel: widget.nextLevel,
@@ -100,7 +98,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           consistencyWindowDays: widget.consistencyWindowDays,
           completedSessions: widget.completedSessions,
           nextLevelMessage: nextLevelMessage,
-          momentumView: momentumView,
+          recentIndexView: recentIndexView,
           onSurface: widget.onSurface,
           onSurfaceMuted: widget.onSurfaceMuted,
           primaryDim: widget.primaryDim,

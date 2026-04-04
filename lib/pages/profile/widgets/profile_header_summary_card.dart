@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'profile_avatar_display.dart';
 import 'profile_header_metric_pill.dart';
-import 'profile_header_momentum_card.dart';
+import 'profile_header_recent_index_card.dart';
 import 'profile_header_score_progress_hint.dart';
 import 'profile_header_utils.dart';
 
@@ -18,7 +18,7 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
     required this.consistencyWindowDays,
     required this.completedSessions,
     required this.nextLevelMessage,
-    required this.momentumView,
+    required this.recentIndexView,
     required this.onSurface,
     required this.onSurfaceMuted,
     required this.primaryDim,
@@ -34,7 +34,7 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
   final int consistencyWindowDays;
   final int completedSessions;
   final String nextLevelMessage;
-  final ProfileHeaderMomentumViewData momentumView;
+  final ProfileHeaderRecentIndexViewData recentIndexView;
   final Color onSurface;
   final Color onSurfaceMuted;
   final Color primaryDim;
@@ -166,8 +166,8 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
             onSurface: onSurface,
           ),
           const SizedBox(height: 12),
-          ProfileHeaderMomentumCardNative(
-            view: momentumView,
+          ProfileHeaderRecentIndexCardNative(
+            view: recentIndexView,
             onSurface: onSurface,
             onSurfaceMuted: onSurfaceMuted,
           ),
