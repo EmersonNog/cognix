@@ -95,6 +95,15 @@ String buildProfileHeaderNextLevelMessage({
   return 'Faltam $pointsToNextLevel pontos para o seu pr\u00f3ximo salto!';
 }
 
+String formatCoinsLabel(double coins) {
+  final normalized = coins < 0 ? 0.0 : coins;
+  final scaled = (normalized * 10).round();
+  final hasFraction = scaled % 10 != 0;
+  return hasFraction
+      ? '${normalized.toStringAsFixed(1)} coins'
+      : '${normalized.toStringAsFixed(0)} coins';
+}
+
 Color profileHeaderLevelAccent(String level, Color fallback) {
   switch (_normalizeLevel(level)) {
     case 'iniciante':

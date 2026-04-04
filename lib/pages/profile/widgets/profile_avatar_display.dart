@@ -1,77 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:random_avatar/random_avatar.dart';
 
-import '../../../services/local/avatar_service.dart';
-
-class ProfileAvatarDisplay extends StatefulWidget {
+class ProfileAvatarDisplay extends StatelessWidget {
   const ProfileAvatarDisplay({
     super.key,
     required this.userName,
     required this.primary,
+    required this.avatarSeed,
     this.size = 100,
     this.onTap,
   });
 
   final String userName;
   final Color primary;
+  final String avatarSeed;
   final double size;
   final VoidCallback? onTap;
 
-  @override
-  State<ProfileAvatarDisplay> createState() => _ProfileAvatarDisplayState();
-}
-
-class _ProfileAvatarDisplayState extends State<ProfileAvatarDisplay> {
-  String _avatarSeed = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _avatarSeed = _defaultAvatarSeed();
-    _loadAvatarSeed();
-  }
-
-  @override
-  void didUpdateWidget(covariant ProfileAvatarDisplay oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.userName != widget.userName) {
-      _avatarSeed = _defaultAvatarSeed();
+  String _effectiveSeed() {
+    final normalized = avatarSeed.trim();
+    if (normalized.isNotEmpty) {
+      return normalized;
     }
-    _loadAvatarSeed();
-  }
 
-  String _defaultAvatarSeed() {
-    return AvatarService.defaultAvatarSeed(fallback: widget.userName);
-  }
-
-  Future<void> _loadAvatarSeed() async {
-    try {
-      final seed = await AvatarService.getAvatarSeed();
-      if (!mounted) return;
-      setState(() {
-        _avatarSeed = seed ?? _defaultAvatarSeed();
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _avatarSeed = _defaultAvatarSeed();
-      });
-      debugPrint('Erro ao carregar avatar: $e');
+    final fallback = userName.trim();
+    if (fallback.isNotEmpty) {
+      return fallback;
     }
+
+    return 'avatar_1';
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.onTap,
+      onTap: onTap,
       child: Container(
-        width: widget.size,
-        height: widget.size,
+        width: size,
+        height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(color: widget.primary, width: 3),
+          border: Border.all(color: primary, width: 3),
         ),
-        child: ClipOval(child: RandomAvatar(_avatarSeed)),
+        child: ClipOval(child: RandomAvatar(_effectiveSeed())),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../services/profile/profile_api.dart';
 import 'avatar_selector_dialog.dart';
 import 'profile_header_summary_card.dart';
 import 'profile_header_utils.dart';
@@ -12,6 +13,9 @@ class ProfileHeader extends StatefulWidget {
     required this.level,
     required this.score,
     required this.exactScore,
+    required this.coinsBalance,
+    required this.equippedAvatarSeed,
+    required this.avatarStore,
     required this.recentIndex,
     required this.recentIndexReady,
     required this.questionsCount,
@@ -27,12 +31,16 @@ class ProfileHeader extends StatefulWidget {
     required this.onSurfaceMuted,
     required this.primary,
     required this.primaryDim,
+    required this.onRefreshProfile,
   });
 
   final String userName;
   final String level;
   final int score;
   final double exactScore;
+  final double coinsBalance;
+  final String equippedAvatarSeed;
+  final List<ProfileAvatarStoreItem> avatarStore;
   final int recentIndex;
   final bool recentIndexReady;
   final String questionsCount;
@@ -48,6 +56,7 @@ class ProfileHeader extends StatefulWidget {
   final Color onSurfaceMuted;
   final Color primary;
   final Color primaryDim;
+  final Future<void> Function() onRefreshProfile;
 
   @override
   State<ProfileHeader> createState() => _ProfileHeaderState();
@@ -61,10 +70,13 @@ class _ProfileHeaderState extends State<ProfileHeader> {
         primary: widget.primary,
         onSurface: widget.onSurface,
         surfaceContainer: widget.surfaceContainer,
+        coinsBalance: widget.coinsBalance,
+        equippedAvatarSeed: widget.equippedAvatarSeed,
+        avatarStore: widget.avatarStore,
       ),
-    ).then((newSeed) {
-      if (newSeed != null && mounted) {
-        setState(() {});
+    ).then((updated) async {
+      if (updated == true && mounted) {
+        await widget.onRefreshProfile();
       }
     });
   }
@@ -78,6 +90,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
       recentIndex: widget.recentIndex,
       recentIndexReady: widget.recentIndexReady,
     );
+    final coinsLabel = formatCoinsLabel(widget.coinsBalance);
     final nextLevelMessage = buildProfileHeaderNextLevelMessage(
       nextLevel: widget.nextLevel,
       pointsToNextLevel: widget.pointsToNextLevel,
@@ -94,6 +107,8 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           levelAccent: levelAccent,
           levelEmoji: levelEmoji,
           scoreLabel: scoreLabel,
+          coinsLabel: coinsLabel,
+          avatarSeed: widget.equippedAvatarSeed,
           activeDaysLast30: widget.activeDaysLast30,
           consistencyWindowDays: widget.consistencyWindowDays,
           completedSessions: widget.completedSessions,

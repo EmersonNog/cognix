@@ -14,6 +14,8 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
     required this.levelAccent,
     required this.levelEmoji,
     required this.scoreLabel,
+    required this.coinsLabel,
+    required this.avatarSeed,
     required this.activeDaysLast30,
     required this.consistencyWindowDays,
     required this.completedSessions,
@@ -30,6 +32,8 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
   final Color levelAccent;
   final String levelEmoji;
   final String scoreLabel;
+  final String coinsLabel;
+  final String avatarSeed;
   final int activeDaysLast30;
   final int consistencyWindowDays;
   final int completedSessions;
@@ -50,16 +54,16 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
         gradient: LinearGradient(
           colors: <Color>[
             const Color(0xFF2A275A),
-            Color.lerp(primaryDim, levelAccent, 0.35)!.withOpacity(0.28),
+            Color.lerp(primaryDim, levelAccent, 0.35)!.withValues(alpha: 0.28),
             const Color(0xFF121B35),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        border: Border.all(color: Colors.white.withOpacity(0.04)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.04)),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: Colors.black.withOpacity(0.32),
+            color: Colors.black.withValues(alpha: 0.32),
             blurRadius: 30,
             offset: const Offset(0, 20),
           ),
@@ -74,6 +78,7 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
               ProfileAvatarDisplay(
                 userName: userName,
                 primary: levelAccent,
+                avatarSeed: avatarSeed,
                 size: 92,
                 onTap: onAvatarTap,
               ),
@@ -82,27 +87,59 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: levelAccent.withOpacity(0.14),
-                        borderRadius: BorderRadius.circular(999),
-                        border: Border.all(
-                          color: levelAccent.withOpacity(0.24),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: levelAccent.withValues(alpha: 0.14),
+                            borderRadius: BorderRadius.circular(999),
+                            border: Border.all(
+                              color: levelAccent.withValues(alpha: 0.24),
+                            ),
+                          ),
+                          child: Text(
+                            '$levelEmoji ${displayedLevel.toUpperCase()}',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: levelAccent,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        '$levelEmoji ${displayedLevel.toUpperCase()}',
-                        style: GoogleFonts.plusJakartaSans(
-                          color: levelAccent,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.5,
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(
+                              0xFFFFC857,
+                            ).withValues(alpha: 0.16),
+                            borderRadius: BorderRadius.circular(999),
+                            border: Border.all(
+                              color: const Color(
+                                0xFFFFC857,
+                              ).withValues(alpha: 0.28),
+                            ),
+                          ),
+                          child: Text(
+                            coinsLabel.toUpperCase(),
+                            style: GoogleFonts.plusJakartaSans(
+                              color: const Color(0xFFFFD977),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                     const SizedBox(height: 12),
                     Text(

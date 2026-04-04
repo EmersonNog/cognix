@@ -61,6 +61,9 @@ class ProfileTab extends StatelessWidget {
                   level: profile.level,
                   score: profile.score,
                   exactScore: profile.exactScore,
+                  coinsBalance: profile.coinsBalance,
+                  equippedAvatarSeed: profile.equippedAvatarSeed,
+                  avatarStore: profile.avatarStore,
                   recentIndex: profile.recentIndex,
                   recentIndexReady: profile.recentIndexReady,
                   questionsCount: profile.questionsAnswered.toString(),
@@ -77,6 +80,7 @@ class ProfileTab extends StatelessWidget {
                   onSurfaceMuted: onSurfaceMuted,
                   primary: primary,
                   primaryDim: primaryDim,
+                  onRefreshProfile: onRefresh,
                 ),
                 const SizedBox(height: 18),
                 _ProfileSectionHeader(
@@ -156,7 +160,7 @@ class _ProfileErrorBanner extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF3A1E2D),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Text(
         'N\u00e3o foi poss\u00edvel atualizar o score agora. Exibindo o \u00faltimo estado local dispon\u00edvel.',

@@ -7,6 +7,16 @@ ProfileScoreData parseProfileScoreData(Map<String, dynamic> payload) {
   final level = payload['level']?.toString().trim().isNotEmpty == true
       ? payload['level'].toString().trim()
       : 'Iniciante';
+  final coinsBalance = double.tryParse('${payload['coins_balance']}') ?? 0.0;
+  final coinsHalfUnits =
+      int.tryParse('${payload['coins_half_units']}') ??
+      (coinsBalance * 2).round();
+  final equippedAvatarSeed =
+      payload['equipped_avatar_seed']?.toString().trim().isNotEmpty == true
+      ? payload['equipped_avatar_seed'].toString().trim()
+      : 'avatar_1';
+  final ownedAvatarSeeds = parseOwnedAvatarSeeds(payload['owned_avatar_seeds']);
+  final avatarStore = parseProfileAvatarStoreItems(payload['avatar_store']);
   final questionsAnswered =
       int.tryParse('${payload['questions_answered']}') ?? 0;
   final completedSessions =
@@ -23,6 +33,13 @@ ProfileScoreData parseProfileScoreData(Map<String, dynamic> payload) {
     score: score,
     exactScore: exactScore,
     level: level,
+    coinsBalance: coinsBalance,
+    coinsHalfUnits: coinsHalfUnits,
+    equippedAvatarSeed: equippedAvatarSeed,
+    ownedAvatarSeeds: ownedAvatarSeeds.isEmpty
+        ? const ['avatar_1']
+        : ownedAvatarSeeds,
+    avatarStore: avatarStore,
     recentIndex: recentIndex,
     exactRecentIndex: exactRecentIndex,
     recentIndexReady: recentIndexReady,
@@ -55,6 +72,71 @@ ProfileScoreData parseProfileScoreData(Map<String, dynamic> payload) {
     attentionAccuracyThreshold:
         double.tryParse('${payload['attention_accuracy_threshold']}') ?? 60.0,
   );
+}
+
+ProfileAvatarSelectionResult parseProfileAvatarSelectionResult(
+  Map<String, dynamic> payload,
+) {
+  final status = payload['status']?.toString().trim().isNotEmpty == true
+      ? payload['status'].toString().trim()
+      : 'error';
+  final action = payload['action']?.toString().trim().isNotEmpty == true
+      ? payload['action'].toString().trim()
+      : status;
+  final coinsBalance = double.tryParse('${payload['coins_balance']}') ?? 0.0;
+  final coinsHalfUnits =
+      int.tryParse('${payload['coins_half_units']}') ??
+      (coinsBalance * 2).round();
+  final equippedAvatarSeed =
+      payload['equipped_avatar_seed']?.toString().trim().isNotEmpty == true
+      ? payload['equipped_avatar_seed'].toString().trim()
+      : 'avatar_1';
+
+  return ProfileAvatarSelectionResult(
+    status: status,
+    action: action,
+    coinsBalance: coinsBalance,
+    coinsHalfUnits: coinsHalfUnits,
+    equippedAvatarSeed: equippedAvatarSeed,
+    ownedAvatarSeeds: parseOwnedAvatarSeeds(payload['owned_avatar_seeds']),
+    avatarStore: parseProfileAvatarStoreItems(payload['avatar_store']),
+    requiredCoins: double.tryParse('${payload['required_coins']}'),
+    missingCoins: double.tryParse('${payload['missing_coins']}'),
+  );
+}
+
+List<String> parseOwnedAvatarSeeds(dynamic raw) {
+  if (raw is! List) {
+    return const [];
+  }
+
+  return raw
+      .map((item) => item?.toString().trim() ?? '')
+      .where((item) => item.isNotEmpty)
+      .toList();
+}
+
+List<ProfileAvatarStoreItem> parseProfileAvatarStoreItems(dynamic raw) {
+  if (raw is! List) {
+    return const [];
+  }
+
+  return raw
+      .whereType<Map>()
+      .map((item) {
+        return ProfileAvatarStoreItem(
+          seed: item['seed']?.toString() ?? '',
+          title: item['title']?.toString() ?? '',
+          costCoins: double.tryParse('${item['cost_coins']}') ?? 0.0,
+          costHalfUnits: int.tryParse('${item['cost_half_units']}') ?? 0,
+          owned: item['owned'] == true,
+          equipped: item['equipped'] == true,
+          affordable: item['affordable'] == true,
+          isDefault: item['is_default'] == true,
+        );
+      })
+      .where((item) => item.seed.trim().isNotEmpty)
+      .toList();
 }
 
 List<ProfileDisciplineStat> parseProfileDisciplineStats(dynamic raw) {
