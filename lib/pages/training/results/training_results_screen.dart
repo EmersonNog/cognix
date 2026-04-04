@@ -1,4 +1,5 @@
 import 'package:cognix/widgets/cognix_widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -34,6 +35,12 @@ class TrainingResultsScreen extends StatelessWidget {
   final Duration elapsed;
   static const _sessionStateKey = 'training_session_state';
 
+  Future<void> _handleLogout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    if (!context.mounted) return;
+    Navigator.of(context).pushNamedAndRemoveUntil('login', (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     const surface = Color(0xFF060E20);
@@ -67,6 +74,7 @@ class TrainingResultsScreen extends StatelessWidget {
           icon: Icons.logout_rounded,
           background: surfaceContainer,
           iconColor: onSurfaceMuted,
+          onTap: () => _handleLogout(context),
         ),
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
