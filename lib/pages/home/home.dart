@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../navigation/app_route_observer.dart';
-import '../../services/auth/auth_api.dart';
 import '../../services/profile/profile_api.dart';
 import '../../services/profile/profile_refresh_notifier.dart';
 import 'home_tab.dart';
@@ -22,14 +21,12 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with RouteAware {
   bool _isLoading = false;
   int _currentIndex = 0;
-  late final Future<void> _userSyncFuture;
   late Future<ProfileScoreData> _profileFuture;
   bool _isRouteObserverSubscribed = false;
 
   @override
   void initState() {
     super.initState();
-    _userSyncFuture = _syncUserAfterLogin();
     _profileFuture = _fetchSharedProfileScore();
   }
 
@@ -44,14 +41,7 @@ class _HomeState extends State<Home> with RouteAware {
     }
   }
 
-  Future<void> _syncUserAfterLogin() async {
-    try {
-      await syncCurrentUserToBackend();
-    } catch (_) {}
-  }
-
   Future<ProfileScoreData> _fetchSharedProfileScore() async {
-    await _userSyncFuture;
     return fetchProfileScore();
   }
 
@@ -190,7 +180,10 @@ class _HomeState extends State<Home> with RouteAware {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
-                  colors: [secondaryDim.withOpacity(0.55), Colors.transparent],
+                  colors: [
+                    secondaryDim.withValues(alpha: 0.55),
+                    Colors.transparent,
+                  ],
                 ),
               ),
             ),
@@ -204,7 +197,7 @@ class _HomeState extends State<Home> with RouteAware {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
-                  colors: [primary.withOpacity(0.28), Colors.transparent],
+                  colors: [primary.withValues(alpha: 0.28), Colors.transparent],
                 ),
               ),
             ),
@@ -221,7 +214,7 @@ class _HomeState extends State<Home> with RouteAware {
             borderRadius: BorderRadius.circular(22),
             boxShadow: [
               BoxShadow(
-                color: primary.withOpacity(0.15),
+                color: primary.withValues(alpha: 0.15),
                 blurRadius: 24,
                 offset: const Offset(0, 14),
               ),
@@ -307,7 +300,7 @@ class _NavItem extends StatelessWidget {
           boxShadow: selected
               ? [
                   BoxShadow(
-                    color: primary.withOpacity(0.22),
+                    color: primary.withValues(alpha: 0.22),
                     blurRadius: 16,
                     offset: const Offset(0, 8),
                   ),

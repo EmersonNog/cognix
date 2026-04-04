@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../../utils/firebase_auth_errors.dart';
 import '../../utils/google_sign_in_errors.dart';
 import '../../widgets/cognix_widgets.dart';
+import 'helpers/auth_backend_bootstrap.dart';
 import 'helpers/auth_google_sign_in.dart';
 import 'auth_theme.dart';
 import 'widgets/auth_inline_prompt.dart';
@@ -56,6 +57,7 @@ class _SignInState extends State<SignIn> {
         email: email,
         password: password,
       );
+      await prepareAuthenticatedBackendSession();
       if (mounted) {
         Navigator.of(context).pushReplacementNamed('home');
       }
@@ -76,12 +78,13 @@ class _SignInState extends State<SignIn> {
         _showMessage('Login cancelado.');
         return;
       }
+      await prepareAuthenticatedBackendSession();
       if (mounted) {
         Navigator.of(context).pushReplacementNamed('home');
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'missing-google-id-token') {
-      _showMessage('Não foi possível autenticar com o Google.');
+        _showMessage('Não foi possível autenticar com o Google.');
       } else {
         _showMessage(authErrorMessage(e.code, action: AuthAction.signIn));
       }
