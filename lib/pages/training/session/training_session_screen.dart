@@ -1,17 +1,23 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../widgets/cognix/cognix_messages.dart';
-import '../../../services/questions/questions_api.dart';
 import '../../../services/profile/profile_refresh_notifier.dart';
-import 'training_session_question_loader.dart';
+import '../../../services/questions/questions_api.dart';
+import '../../../widgets/cognix/cognix_messages.dart';
 import '../results/training_results_screen.dart';
-import 'training_session_models.dart';
-import 'training_session_state_codec.dart';
-import 'training_session_storage.dart';
 import 'training_session_body.dart';
 import 'training_session_feedback.dart';
+import 'training_session_models.dart';
+import 'training_session_question_loader.dart';
+import 'training_session_state_codec.dart';
+import 'training_session_storage.dart';
+
+part 'training_session_screen_loading.dart';
+part 'training_session_screen_persistence.dart';
+part 'training_session_screen_progression.dart';
+part 'training_session_screen_timer.dart';
 
 class TrainingSessionScreen extends StatefulWidget {
   const TrainingSessionScreen({
@@ -42,33 +48,37 @@ class TrainingSessionScreen extends StatefulWidget {
 class _TrainingSessionScreenState extends State<TrainingSessionScreen>
     with WidgetsBindingObserver {
   static const _sessionStateKey = 'training_session_state';
+
   late final Future<void> _initialLoadFuture;
   final List<QuestionItem> _questions = [];
   final Set<int> _loadedIds = {};
-  int? _totalAvailable;
-  int _offset = 0;
-  final int _pageSize = 20;
-  bool _loadingMore = false;
-  int _currentIndex = 0;
   final Map<int, int> _selections = {};
   final Map<int, String> _lastSubmittedLetterByQuestionId = {};
   final Map<int, bool?> _isCorrectByQuestionId = {};
   final Map<int, int> _correctOptionIndexByQuestionId = {};
-  bool _showingAnswerFeedback = false;
+  final Stopwatch _stopwatch = Stopwatch();
+
+  int? _totalAvailable;
+  int _offset = 0;
+  int _currentIndex = 0;
+  final int _pageSize = 20;
+  int _lastSavedSecond = -1;
   int? _feedbackQuestionId;
   int? _correctOptionIndex;
+
+  bool _loadingMore = false;
+  bool _showingAnswerFeedback = false;
   bool? _lastAnswerWasCorrect;
   bool _submitting = false;
-  final Stopwatch _stopwatch = Stopwatch();
-  Timer? _ticker;
   bool _paused = false;
-  Duration _elapsedOffset = Duration.zero;
-  int _lastSavedSecond = -1;
-  DateTime? _lastRemoteSyncAt;
   bool _restoringSession = false;
   bool _restoredNoticeShown = false;
-  TrainingCompletedSessionResult? _completedSessionResult;
   bool _sessionCompleted = false;
+
+  Timer? _ticker;
+  Duration _elapsedOffset = Duration.zero;
+  DateTime? _lastRemoteSyncAt;
+  TrainingCompletedSessionResult? _completedSessionResult;
 
   @override
   void initState() {
@@ -106,8 +116,15 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
       });
     }
 
-    return WillPopScope(
-      onWillPop: _handleBackNavigation,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        final navigator = Navigator.of(context);
+        final shouldPop = await _handleBackNavigation();
+        if (!mounted || !shouldPop) return;
+        navigator.pop();
+      },
       child: Scaffold(
         backgroundColor: const Color(0xFF060E20),
         appBar: AppBar(
@@ -117,9 +134,10 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
           leading: BackButton(
             color: widget.onSurface,
             onPressed: () async {
+              final navigator = Navigator.of(context);
               final shouldPop = await _handleBackNavigation();
               if (!mounted || !shouldPop) return;
-              Navigator.of(context).pop();
+              navigator.pop();
             },
           ),
           title: Text(
@@ -149,21 +167,20 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
 
             if (snapshot.hasError) {
               return TrainingSessionMessageState(
-                message: 'Não foi possível carregar as questões.',
+                message: 'Nao foi possivel carregar as questoes.',
                 onSurfaceMuted: widget.onSurfaceMuted,
               );
             }
 
-            final questions = _questions;
-            if (questions.isEmpty) {
+            if (_questions.isEmpty) {
               return TrainingSessionMessageState(
-                message: 'Nenhuma questão encontrada para esta subcategoria.',
+                message: 'Nenhuma questao encontrada para esta subcategoria.',
                 onSurfaceMuted: widget.onSurfaceMuted,
               );
             }
 
-            final index = _currentIndex.clamp(0, questions.length - 1);
-            final question = questions[index];
+            final index = _currentIndex.clamp(0, _questions.length - 1);
+            final question = _questions[index];
             final selectedIndex = _selections[question.id];
             final isSubmitted =
                 selectedIndex != null &&
@@ -171,12 +188,13 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
                     _optionLetter(selectedIndex);
             final isFreshAnswerFeedback =
                 _showingAnswerFeedback && _feedbackQuestionId == question.id;
+
             return TrainingSessionBody(
               subcategory: widget.subcategory,
               discipline: widget.discipline,
               question: question,
               currentIndex: index,
-              totalQuestions: _totalAvailable ?? questions.length,
+              totalQuestions: _totalAvailable ?? _questions.length,
               selectedIndex: selectedIndex,
               hasMore: _hasMoreQuestions(),
               isLoadingMore: _loadingMore,
@@ -203,7 +221,7 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
               },
               onNext: () => _handleNextQuestion(
                 question: question,
-                visibleQuestionsCount: questions.length,
+                visibleQuestionsCount: _questions.length,
               ),
               onPrevious: () {
                 setState(() => _currentIndex -= 1);
@@ -216,497 +234,32 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
     );
   }
 
-  Future<void> _loadInitialQuestions() async {
-    final batch = await loadInitialTrainingQuestions(
-      discipline: widget.discipline,
-      subcategory: widget.subcategory,
-      pageSize: _pageSize,
-    );
-    _totalAvailable = batch.total;
-    _offset = batch.nextOffset;
-    _questions
-      ..clear()
-      ..addAll(batch.items);
-    _loadedIds
-      ..clear()
-      ..addAll(batch.items.map((e) => e.id));
-  }
+  bool _hasMoreQuestions() => _hasMoreQuestionsForState(this);
 
-  Future<void> _loadMoreQuestions() async {
-    if (_loadingMore) return;
-    if (!_hasMoreQuestions()) return;
-    setState(() => _loadingMore = true);
-    try {
-      final batch = await loadMoreTrainingQuestions(
-        discipline: widget.discipline,
-        subcategory: widget.subcategory,
-        pageSize: _pageSize,
-        offset: _offset,
-        loadedIds: _loadedIds,
-      );
-      _totalAvailable ??= batch.total;
-      _offset = batch.nextOffset;
+  void _togglePause() => _togglePauseForState(this);
 
-      if (batch.items.isNotEmpty) {
-        setState(() {
-          _questions.addAll(batch.items);
-          _loadedIds.addAll(batch.items.map((e) => e.id));
-        });
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _loadingMore = false);
-      }
-    }
-  }
+  String _formatElapsed(Duration elapsed) => _formatElapsedForDuration(elapsed);
 
-  bool _hasMoreQuestions() {
-    if (_totalAvailable == null) {
-      return false;
-    }
-    return _questions.length < _totalAvailable!;
-  }
+  Duration _currentElapsed() => _currentElapsedForState(this);
 
-  void _maybePrefetch() {
-    if (_loadingMore) return;
-    if (!_hasMoreQuestions()) return;
-    final triggerIndex = _questions.length - 3;
-    if (_currentIndex >= triggerIndex) {
-      _loadMoreQuestions().catchError((_) {});
-    }
-  }
+  Future<void> _restoreOrLoad() => _restoreOrLoadForState(this);
 
-  void _startTimer() {
-    if (!_paused) {
-      _stopwatch.start();
-    }
-    _ticker?.cancel();
-    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (!mounted) return;
-      if (!_stopwatch.isRunning) return;
-      final seconds = _currentElapsed().inSeconds;
-      if (seconds != _lastSavedSecond && seconds % 5 == 0) {
-        _lastSavedSecond = seconds;
-        _saveSessionState();
-      }
-      setState(() {});
-    });
-  }
+  Future<void> _saveSessionState() => _saveSessionStateForState(this);
 
-  void _togglePause() {
-    setState(() {
-      _paused = !_paused;
-      if (_paused) {
-        _elapsedOffset += _stopwatch.elapsed;
-        _stopwatch
-          ..stop()
-          ..reset();
-      } else {
-        _stopwatch.start();
-      }
-    });
-    _saveSessionState();
-  }
-
-  String _formatElapsed(Duration elapsed) {
-    final minutes = elapsed.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final seconds = elapsed.inSeconds.remainder(60).toString().padLeft(2, '0');
-    final hours = elapsed.inHours;
-    if (hours > 0) {
-      final hh = hours.toString().padLeft(2, '0');
-      return '$hh:$minutes:$seconds';
-    }
-    return '$minutes:$seconds';
-  }
-
-  Future<void> _finishSession({required int totalQuestionsLoaded}) async {
-    _stopwatch.stop();
-    _ticker?.cancel();
-    _sessionCompleted = true;
-
-    final answered = _isCorrectByQuestionId.values
-        .where((v) => v != null)
-        .length;
-    final correct = _isCorrectByQuestionId.values
-        .where((v) => v == true)
-        .length;
-    final wrong = _isCorrectByQuestionId.values.where((v) => v == false).length;
-    final totalQuestions = _totalAvailable ?? totalQuestionsLoaded;
-    final elapsed = _currentElapsed();
-    final result = buildCompletedTrainingSessionResult(
-      totalQuestions: totalQuestions,
-      answeredQuestions: answered,
-      correctAnswers: correct,
-      wrongAnswers: wrong,
-      elapsedSeconds: elapsed.inSeconds,
-    );
-
-    await _saveCompletedSessionState(result);
-
-    if (!mounted) return;
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => TrainingResultsScreen(
-          discipline: widget.discipline,
-          subcategory: widget.subcategory,
-          totalQuestions: result.totalQuestions,
-          answeredQuestions: result.answeredQuestions,
-          correctAnswers: result.correctAnswers,
-          wrongAnswers: result.wrongAnswers,
-          elapsed: Duration(seconds: result.elapsedSeconds),
-        ),
-      ),
-    );
-  }
-
-  Duration _currentElapsed() {
-    return _elapsedOffset + _stopwatch.elapsed;
-  }
-
-  Future<void> _restoreOrLoad() async {
-    try {
-      final restored = await _restoreSessionState();
-      if (_completedSessionResult != null) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (!mounted || _completedSessionResult == null) return;
-          final result = _completedSessionResult!;
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (_) => TrainingResultsScreen(
-                discipline: widget.discipline,
-                subcategory: widget.subcategory,
-                totalQuestions: result.totalQuestions,
-                answeredQuestions: result.answeredQuestions,
-                correctAnswers: result.correctAnswers,
-                wrongAnswers: result.wrongAnswers,
-                elapsed: Duration(seconds: result.elapsedSeconds),
-              ),
-            ),
-          );
-        });
-        return;
-      }
-      if (!restored) {
-        await _loadInitialQuestions();
-      }
-      _startTimer();
-    } catch (error) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        showCognixMessage(
-          context,
-          error.toString(),
-          type: CognixMessageType.error,
-        );
-      });
-      rethrow;
-    }
-  }
-
-  Map<String, dynamic> _buildSessionPayload({required bool includeQuestions}) {
-    return buildTrainingSessionPayload(
-      discipline: widget.discipline,
-      subcategory: widget.subcategory,
-      currentIndex: _currentIndex,
-      questions: _questions,
-      selections: _selections,
-      lastSubmittedByQuestionId: _lastSubmittedLetterByQuestionId,
-      isCorrectByQuestionId: _isCorrectByQuestionId,
-      correctOptionIndexByQuestionId: _correctOptionIndexByQuestionId,
-      elapsedSeconds: _currentElapsed().inSeconds,
-      paused: _paused,
-      totalAvailable: _totalAvailable,
-      offset: _offset,
-      includeQuestions: includeQuestions,
-      showingAnswerFeedback: _showingAnswerFeedback,
-      feedbackQuestionId: _feedbackQuestionId,
-      correctOptionIndex: _correctOptionIndex,
-      lastAnswerWasCorrect: _lastAnswerWasCorrect,
-    );
-  }
-
-  Future<void> _saveSessionState() async {
-    if (!mounted) return;
-    if (_questions.isEmpty) return;
-    if (_sessionCompleted) return;
-    final payload = _buildSessionPayload(includeQuestions: true);
-    await writeLocalTrainingSessionState(_sessionStateKey, payload);
-    _maybeSyncRemote();
-  }
-
-  Future<bool> _handleBackNavigation() async {
-    await _persistSessionImmediately();
-    return true;
-  }
-
-  Future<void> _persistSessionImmediately() async {
-    if (_questions.isEmpty ||
-        _completedSessionResult != null ||
-        _sessionCompleted) {
-      return;
-    }
-    final payload = _buildSessionPayload(includeQuestions: true);
-    await writeLocalTrainingSessionState(_sessionStateKey, payload);
-    try {
-      await saveRemoteTrainingSessionState(
-        discipline: widget.discipline,
-        subcategory: widget.subcategory,
-        payload: _buildSessionPayload(includeQuestions: false),
-      );
-      _lastRemoteSyncAt = DateTime.now();
-    } catch (_) {}
-  }
-
-  Future<void> _saveCompletedSessionState(
-    TrainingCompletedSessionResult result,
-  ) async {
-    final payload = buildCompletedTrainingSessionPayload(
-      discipline: widget.discipline,
-      subcategory: widget.subcategory,
-      result: result,
-    );
-    await writeLocalTrainingSessionState(_sessionStateKey, payload);
-    try {
-      await saveRemoteTrainingSessionState(
-        discipline: widget.discipline,
-        subcategory: widget.subcategory,
-        payload: payload,
-      );
-    } catch (_) {}
-  }
-
-  Future<bool> _restoreSessionState() async {
-    TrainingSessionRestoreOutcome? outcome;
-    try {
-      if (mounted) {
-        setState(() => _restoringSession = true);
-      }
-      outcome = await restoreTrainingSessionSnapshot(
-        sessionKey: _sessionStateKey,
-        discipline: widget.discipline,
-        subcategory: widget.subcategory,
-      );
-    } finally {
-      if (mounted) {
-        setState(() => _restoringSession = false);
-      }
-    }
-
-    if (outcome == null) {
-      return false;
-    }
-
-    if (outcome.completedResult != null) {
-      _completedSessionResult = outcome.completedResult;
-      return true;
-    }
-
-    final restoredState = outcome.restoredState;
-    if (restoredState == null) {
-      return false;
-    }
-
-    final applied = _applySessionState(restoredState);
-    if (applied) {
-      await _saveSessionState();
-      _restoredNoticeShown = true;
-    }
-    return applied;
-  }
-
-  bool _applySessionState(Map<String, dynamic> decoded) {
-    final restored = parseTrainingRestoredSessionData(
-      decoded,
-      fallbackSubcategory: widget.subcategory,
-      fallbackDiscipline: widget.discipline,
-    );
-    if (restored == null) {
-      return false;
-    }
-
-    _questions
-      ..clear()
-      ..addAll(restored.questions);
-    _loadedIds
-      ..clear()
-      ..addAll(restored.questions.map((e) => e.id));
-
-    _currentIndex = restored.currentIndex;
-    _totalAvailable = restored.totalAvailable;
-    _offset = restored.offset;
-
-    _selections
-      ..clear()
-      ..addAll(restored.selections);
-
-    _lastSubmittedLetterByQuestionId
-      ..clear()
-      ..addAll(restored.lastSubmittedByQuestionId);
-
-    _isCorrectByQuestionId
-      ..clear()
-      ..addAll(restored.isCorrectByQuestionId);
-    _correctOptionIndexByQuestionId
-      ..clear()
-      ..addAll(restored.correctOptionIndexByQuestionId);
-
-    _paused = restored.paused;
-    _showingAnswerFeedback = restored.showingAnswerFeedback;
-    _feedbackQuestionId = restored.feedbackQuestionId;
-    _correctOptionIndex = restored.correctOptionIndex;
-    _lastAnswerWasCorrect = restored.lastAnswerWasCorrect;
-    _elapsedOffset = Duration(seconds: restored.elapsedSeconds);
-    _stopwatch
-      ..stop()
-      ..reset();
-    if (_paused) {
-      _stopwatch.stop();
-    } else {
-      _stopwatch.start();
-    }
-
-    return true;
-  }
-
-  Future<void> _maybeSyncRemote() async {
-    final now = DateTime.now();
-    if (_lastRemoteSyncAt != null &&
-        now.difference(_lastRemoteSyncAt!).inSeconds < 15) {
-      return;
-    }
-    _lastRemoteSyncAt = now;
-    try {
-      await saveRemoteTrainingSessionState(
-        discipline: widget.discipline,
-        subcategory: widget.subcategory,
-        payload: _buildSessionPayload(includeQuestions: false),
-      );
-    } catch (_) {}
-  }
+  Future<bool> _handleBackNavigation() => _handleBackNavigationForState(this);
 
   Future<void> _handleNextQuestion({
     required QuestionItem question,
     required int visibleQuestionsCount,
-  }) async {
-    final selectedOptionIndex = _selections[question.id];
-    if (selectedOptionIndex == null) return;
-
-    final letter = _optionLetter(selectedOptionIndex);
-    final lastSubmitted = _lastSubmittedLetterByQuestionId[question.id];
-
-    if (lastSubmitted == letter) {
-      _clearAnswerFeedback();
-      await _advanceAfterAnswer(visibleQuestionsCount);
-      return;
-    }
-
-    setState(() => _submitting = true);
-    try {
-      final result = await submitAttempt(
-        questionId: question.id,
-        selectedLetter: letter,
-        discipline: widget.discipline,
-        subcategory: widget.subcategory,
-      );
-      _isCorrectByQuestionId[question.id] = result.isCorrect;
-      _lastSubmittedLetterByQuestionId[question.id] = letter;
-      final correctOptionIndex = _optionIndexFromLetter(
-        result.correctLetter,
-        question.alternatives.length,
-      );
-      if (correctOptionIndex != null) {
-        _correctOptionIndexByQuestionId[question.id] = correctOptionIndex;
-      }
-      if (mounted) {
-        setState(() {
-          _showingAnswerFeedback = true;
-          _feedbackQuestionId = question.id;
-          _correctOptionIndex = correctOptionIndex;
-          _lastAnswerWasCorrect = result.isCorrect;
-        });
-      }
-      profileRefreshNotifier.markDirty();
-      if (!_sessionCompleted) {
-        _saveSessionState();
-      }
-    } catch (_) {
-      if (!mounted) return;
-      showCognixMessage(
-        context,
-        'Não foi possível salvar sua resposta. Tente novamente.',
-        type: CognixMessageType.error,
-      );
-    } finally {
-      if (mounted) {
-        setState(() => _submitting = false);
-      }
-    }
+  }) {
+    return _handleNextQuestionForState(
+      this,
+      question: question,
+      visibleQuestionsCount: visibleQuestionsCount,
+    );
   }
 
-  Future<void> _advanceAfterAnswer(int visibleQuestionsCount) async {
-    if (_currentIndex < _questions.length - 1) {
-      setState(() => _currentIndex += 1);
-      _maybePrefetch();
-      _saveSessionState();
-      return;
-    }
+  String _optionLetter(int index) => _optionLetterForIndex(index);
 
-    if (_hasMoreQuestions()) {
-      try {
-        await _loadMoreQuestions();
-      } catch (_) {
-        if (!mounted) return;
-        showCognixMessage(
-          context,
-          'Não foi possível carregar mais questões.',
-          type: CognixMessageType.error,
-        );
-        return;
-      }
-
-      if (!mounted) return;
-      if (_currentIndex < _questions.length - 1) {
-        setState(() => _currentIndex += 1);
-        _maybePrefetch();
-        _saveSessionState();
-        return;
-      }
-    }
-
-    if (mounted) {
-      await _finishSession(totalQuestionsLoaded: visibleQuestionsCount);
-    }
-  }
-
-  String _optionLetter(int index) {
-    const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-    if (index >= 0 && index < letters.length) {
-      return letters[index];
-    }
-    return '${index + 1}';
-  }
-
-  int? _optionIndexFromLetter(String? letter, int optionsCount) {
-    if (letter == null || letter.trim().isEmpty) {
-      return null;
-    }
-
-    final normalized = letter.trim().toUpperCase();
-    for (var i = 0; i < optionsCount; i++) {
-      if (_optionLetter(i) == normalized) {
-        return i;
-      }
-    }
-    return null;
-  }
-
-  void _clearAnswerFeedback() {
-    if (!mounted) return;
-    setState(() {
-      _showingAnswerFeedback = false;
-      _feedbackQuestionId = null;
-      _correctOptionIndex = null;
-      _lastAnswerWasCorrect = null;
-    });
-  }
+  void _update(VoidCallback action) => setState(action);
 }
