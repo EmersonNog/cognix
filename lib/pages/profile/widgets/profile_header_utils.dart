@@ -100,8 +100,8 @@ String formatCoinsLabel(double coins) {
   final scaled = (normalized * 10).round();
   final hasFraction = scaled % 10 != 0;
   return hasFraction
-      ? '${normalized.toStringAsFixed(1)} coins'
-      : '${normalized.toStringAsFixed(0)} coins';
+      ? '${normalized.toStringAsFixed(1)} moedas'
+      : '${normalized.toStringAsFixed(0)} moedas';
 }
 
 Color profileHeaderLevelAccent(String level, Color fallback) {

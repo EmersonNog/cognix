@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../services/profile/profile_api.dart';
-import 'avatar_selector_dialog.dart';
+import '../avatar_store_dialog.dart';
 import 'profile_header_summary_card.dart';
 import 'profile_header_utils.dart';
 import 'profile_stats_box.dart';

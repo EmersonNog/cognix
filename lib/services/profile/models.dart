@@ -25,6 +25,8 @@ class ProfileAvatarStoreItem {
   const ProfileAvatarStoreItem({
     required this.seed,
     required this.title,
+    required this.theme,
+    required this.rarity,
     required this.costCoins,
     required this.costHalfUnits,
     required this.owned,
@@ -35,6 +37,8 @@ class ProfileAvatarStoreItem {
 
   final String seed;
   final String title;
+  final String theme;
+  final String rarity;
   final double costCoins;
   final int costHalfUnits;
   final bool owned;

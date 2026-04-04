@@ -127,6 +127,8 @@ List<ProfileAvatarStoreItem> parseProfileAvatarStoreItems(dynamic raw) {
         return ProfileAvatarStoreItem(
           seed: item['seed']?.toString() ?? '',
           title: item['title']?.toString() ?? '',
+          theme: item['theme']?.toString() ?? '',
+          rarity: item['rarity']?.toString() ?? 'comum',
           costCoins: double.tryParse('${item['cost_coins']}') ?? 0.0,
           costHalfUnits: int.tryParse('${item['cost_half_units']}') ?? 0,
           owned: item['owned'] == true,
