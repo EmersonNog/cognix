@@ -154,10 +154,7 @@ class _TrainingTabState extends State<TrainingTab> with RouteAware {
   }
 
   Future<void> _handlePullToRefresh() async {
-    await Future.wait<void>([
-      _refreshData(),
-      widget.onRefreshHubData(),
-    ]);
+    await Future.wait<void>([_refreshData(), widget.onRefreshHubData()]);
   }
 
   void _openArea(TrainingAreaItem item) {
@@ -209,7 +206,7 @@ class _TrainingTabState extends State<TrainingTab> with RouteAware {
           ),
           const SizedBox(height: 6),
           Text(
-            'Escolha uma \u00e1rea para iniciar seu treino personalizado.',
+            'Escolha uma área para iniciar seu treino personalizado.',
             style: GoogleFonts.inter(
               color: widget.onSurfaceMuted,
               fontSize: 13,

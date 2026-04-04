@@ -145,7 +145,7 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
       return 'Equipar agora';
     }
     if (item.affordable) {
-      return 'Comprar por ${formatCoinsLabel(item.costCoins)}';
+      return 'Comprar';
     }
     return 'Sem saldo';
   }
@@ -288,124 +288,135 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
         constraints: BoxConstraints(maxWidth: 520, maxHeight: maxHeight),
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(28),
-            color: const Color(0xFF10192F),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
+            borderRadius: BorderRadius.circular(30),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: <Color>[
+                Colors.white.withValues(alpha: 0.08),
+                const Color(0xFF1A2748),
+                const Color(0xFF0C1430),
+              ],
+            ),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.3),
-                blurRadius: 28,
-                offset: const Offset(0, 18),
+                color: Colors.black.withValues(alpha: 0.22),
+                blurRadius: 24,
+                offset: const Offset(0, 14),
+              ),
+              BoxShadow(
+                color: const Color(0xFF6170E8).withValues(alpha: 0.08),
+                blurRadius: 26,
+                spreadRadius: -8,
+                offset: const Offset(0, 6),
               ),
             ],
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(28),
-            child: Column(
+          child: Container(
+            margin: const EdgeInsets.all(1.1),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(29),
+              color: const Color(0xFF10192F),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.035)),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(29),
+              child: Column(
               children: <Widget>[
                 _AvatarShopHero(
                   title: 'Avatares do perfil',
-                  subtitle:
-                      'Escolha um visual para representar seu momento e equipe sem sair do painel.',
+                  subtitle: 'Escolha um visual para seu perfil.',
                   balanceLabel: formatCoinsLabel(_coinsBalance),
                   badgeLabel: _selectedBadge(selectedItem),
                   badgeColor: _selectedBadgeColor(selectedItem),
+                  item: selectedItem,
+                  priceLabel: selectedItem == null
+                      ? null
+                      : _priceLabel(selectedItem),
+                  rarityLabel: selectedItem == null
+                      ? null
+                      : _formatAvatarRarity(selectedItem.rarity),
+                  themeLabel: selectedItem?.theme,
+                  rarityColor: selectedItem == null
+                      ? widget.primary
+                      : _avatarRarityColor(selectedItem.rarity, widget.primary),
+                  description: _selectedDescription(selectedItem),
                   primary: widget.primary,
                   onSurface: widget.onSurface,
                   onClose: _isSubmitting ? null : () => Navigator.pop(context),
                 ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        _AvatarSpotlightCard(
-                          item: selectedItem,
-                          priceLabel: selectedItem == null
-                              ? null
-                              : _priceLabel(selectedItem),
-                          rarityLabel: selectedItem == null
-                              ? null
-                              : _formatAvatarRarity(selectedItem.rarity),
-                          themeLabel: selectedItem?.theme,
-                          rarityColor: selectedItem == null
-                              ? widget.primary
-                              : _avatarRarityColor(
-                                  selectedItem.rarity,
-                                  widget.primary,
-                                ),
-                          description: _selectedDescription(selectedItem),
-                          primary: widget.primary,
-                          onSurface: widget.onSurface,
-                        ),
-                        const SizedBox(height: 18),
-                        Wrap(
-                          spacing: 10,
-                          runSpacing: 10,
-                          children: <Widget>[
-                            _AvatarFilterChip(
-                              label: 'Todos',
-                              selected: _activeFilter == _AvatarStoreFilter.all,
-                              primary: widget.primary,
-                              onSurface: widget.onSurface,
-                              onTap: () =>
-                                  _changeFilter(_AvatarStoreFilter.all),
-                            ),
-                            _AvatarFilterChip(
-                              label: 'Meus',
-                              selected:
-                                  _activeFilter == _AvatarStoreFilter.owned,
-                              primary: widget.primary,
-                              onSurface: widget.onSurface,
-                              onTap: () =>
-                                  _changeFilter(_AvatarStoreFilter.owned),
-                            ),
-                            _AvatarFilterChip(
-                              label: 'Para comprar',
-                              selected:
-                                  _activeFilter ==
-                                  _AvatarStoreFilter.unlockable,
-                              primary: widget.primary,
-                              onSurface: widget.onSurface,
-                              onTap: () =>
-                                  _changeFilter(_AvatarStoreFilter.unlockable),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 18),
-                        if (visibleItems.isEmpty)
-                          _AvatarEmptyState(onSurface: widget.onSurface)
-                        else
-                          GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: visibleItems.length,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 14,
-                                  mainAxisSpacing: 14,
-                                  childAspectRatio: 0.82,
-                                ),
-                            itemBuilder: (context, index) {
-                              final item = visibleItems[index];
-                              return _AvatarStoreTile(
-                                item: item,
-                                isSelected: _selectedSeed == item.seed,
-                                primary: widget.primary,
-                                onSurface: widget.onSurface,
-                                onTap: () {
-                                  setState(() {
-                                    _selectedSeed = item.seed;
-                                  });
-                                },
-                              );
-                            },
-                          ),
-                      ],
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF10192F),
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Colors.white.withValues(alpha: 0.05),
+                      ),
                     ),
                   ),
+                  child: Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: <Widget>[
+                      _AvatarFilterChip(
+                        label: 'Todos',
+                        selected: _activeFilter == _AvatarStoreFilter.all,
+                        primary: widget.primary,
+                        onSurface: widget.onSurface,
+                        onTap: () => _changeFilter(_AvatarStoreFilter.all),
+                      ),
+                      _AvatarFilterChip(
+                        label: 'Meus',
+                        selected: _activeFilter == _AvatarStoreFilter.owned,
+                        primary: widget.primary,
+                        onSurface: widget.onSurface,
+                        onTap: () => _changeFilter(_AvatarStoreFilter.owned),
+                      ),
+                      _AvatarFilterChip(
+                        label: 'Para comprar',
+                        selected:
+                            _activeFilter == _AvatarStoreFilter.unlockable,
+                        primary: widget.primary,
+                        onSurface: widget.onSurface,
+                        onTap: () =>
+                            _changeFilter(_AvatarStoreFilter.unlockable),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: visibleItems.isEmpty
+                      ? SingleChildScrollView(
+                          padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                          child: _AvatarEmptyState(onSurface: widget.onSurface),
+                        )
+                      : GridView.builder(
+                          padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                          itemCount: visibleItems.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 14,
+                                mainAxisSpacing: 14,
+                                childAspectRatio: 0.82,
+                              ),
+                          itemBuilder: (context, index) {
+                            final item = visibleItems[index];
+                            return _AvatarStoreTile(
+                              item: item,
+                              isSelected: _selectedSeed == item.seed,
+                              primary: widget.primary,
+                              onSurface: widget.onSurface,
+                              onTap: () {
+                                setState(() {
+                                  _selectedSeed = item.seed;
+                                });
+                              },
+                            );
+                          },
+                        ),
                 ),
                 Container(
                   padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
@@ -448,7 +459,9 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
                               Text(
                                 'Fechar',
                                 style: GoogleFonts.manrope(
-                                  color: widget.onSurface.withValues(alpha: 0.94),
+                                  color: widget.onSurface.withValues(
+                                    alpha: 0.94,
+                                  ),
                                   fontSize: 14,
                                   fontWeight: FontWeight.w800,
                                 ),
@@ -503,6 +516,7 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
                   ),
                 ),
               ],
+            ),
             ),
           ),
         ),

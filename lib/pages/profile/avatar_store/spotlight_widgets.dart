@@ -10,6 +10,7 @@ class _AvatarSpotlightCard extends StatelessWidget {
     required this.description,
     required this.primary,
     required this.onSurface,
+    this.compact = false,
   });
 
   final ProfileAvatarStoreItem? item;
@@ -20,6 +21,7 @@ class _AvatarSpotlightCard extends StatelessWidget {
   final String description;
   final Color primary;
   final Color onSurface;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -35,13 +37,13 @@ class _AvatarSpotlightCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(compact ? 14 : 16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(compact ? 22 : 24),
         color: item == null
             ? const Color(0xFF141E39)
             : Color.alphaBlend(
-                accent.withValues(alpha: 0.12),
+                accent.withValues(alpha: compact ? 0.1 : 0.12),
                 const Color(0xFF141E39),
               ),
         border: Border.all(
@@ -51,9 +53,9 @@ class _AvatarSpotlightCard extends StatelessWidget {
         ),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.18),
-            blurRadius: 18,
-            offset: const Offset(0, 10),
+            color: Colors.black.withValues(alpha: compact ? 0.12 : 0.18),
+            blurRadius: compact ? 14 : 18,
+            offset: Offset(0, compact ? 8 : 10),
           ),
         ],
       ),
@@ -61,9 +63,9 @@ class _AvatarSpotlightCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            width: 76,
-            height: 76,
-            padding: const EdgeInsets.all(6),
+            width: compact ? 68 : 76,
+            height: compact ? 68 : 76,
+            padding: EdgeInsets.all(compact ? 5 : 6),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.white.withValues(alpha: 0.92),
@@ -127,37 +129,39 @@ class _AvatarSpotlightCard extends StatelessWidget {
                     const Spacer(),
                     Icon(
                       Icons.auto_awesome_rounded,
-                      size: 16,
+                      size: compact ? 14 : 16,
                       color: rarityColor.withValues(alpha: 0.78),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: compact ? 8 : 10),
                 Text(
                   title,
                   style: GoogleFonts.manrope(
                     color: onSurface,
-                    fontSize: 17,
+                    fontSize: compact ? 15.5 : 17,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 if (themeLabel != null && themeLabel!.trim().isNotEmpty) ...<Widget>[
-                  const SizedBox(height: 4),
+                  SizedBox(height: compact ? 3 : 4),
                   Text(
                     themeLabel!,
                     style: GoogleFonts.plusJakartaSans(
                       color: rarityColor,
-                      fontSize: 11,
+                      fontSize: compact ? 10.5 : 11,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],
-                const SizedBox(height: 6),
+                SizedBox(height: compact ? 5 : 6),
                 Text(
                   description,
+                  maxLines: compact ? 3 : null,
+                  overflow: compact ? TextOverflow.ellipsis : TextOverflow.visible,
                   style: GoogleFonts.inter(
                     color: onSurface.withValues(alpha: 0.72),
-                    fontSize: 11.5,
+                    fontSize: compact ? 11 : 11.5,
                     height: 1.45,
                   ),
                 ),

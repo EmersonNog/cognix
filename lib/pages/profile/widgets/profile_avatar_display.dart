@@ -35,14 +35,45 @@ class ProfileAvatarDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: primary, width: 3),
-        ),
-        child: ClipOval(child: RandomAvatar(_effectiveSeed())),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: primary, width: 3),
+            ),
+            child: ClipOval(child: RandomAvatar(_effectiveSeed())),
+          ),
+          if (onTap != null)
+            Positioned(
+              right: -2,
+              bottom: -2,
+              child: Container(
+                width: size * 0.28,
+                height: size * 0.28,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFF131E39),
+                  border: Border.all(color: primary, width: 1.8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.22),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  Icons.edit_rounded,
+                  size: size * 0.14,
+                  color: Colors.white.withValues(alpha: 0.9),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import '../../../services/profile/profile_api.dart';
@@ -64,16 +66,60 @@ class ProfileHeader extends StatefulWidget {
 
 class _ProfileHeaderState extends State<ProfileHeader> {
   void _openAvatarSelector() {
-    showDialog<Object?>(
+    showGeneralDialog<Object?>(
       context: context,
-      builder: (context) => AvatarSelectorDialog(
-        primary: widget.primary,
-        onSurface: widget.onSurface,
-        surfaceContainer: widget.surfaceContainer,
-        coinsBalance: widget.coinsBalance,
-        equippedAvatarSeed: widget.equippedAvatarSeed,
-        avatarStore: widget.avatarStore,
-      ),
+      barrierDismissible: true,
+      barrierLabel: 'Avatar store',
+      barrierColor: Colors.black.withValues(alpha: 0.18),
+      transitionDuration: const Duration(milliseconds: 500),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: SizedBox.expand(
+            child: AvatarSelectorDialog(
+              primary: widget.primary,
+              onSurface: widget.onSurface,
+              surfaceContainer: widget.surfaceContainer,
+              coinsBalance: widget.coinsBalance,
+              equippedAvatarSeed: widget.equippedAvatarSeed,
+              avatarStore: widget.avatarStore,
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        final fade = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+          reverseCurve: Curves.easeInCubic,
+        );
+        final scale = Tween<double>(begin: 0.92, end: 1).animate(
+          CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOutBack,
+            reverseCurve: Curves.easeInCubic,
+          ),
+        );
+        final slide =
+            Tween<Offset>(
+              begin: const Offset(0, 0.05),
+              end: Offset.zero,
+            ).animate(
+              CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOutCubic,
+                reverseCurve: Curves.easeInCubic,
+              ),
+            );
+
+        return FadeTransition(
+          opacity: fade,
+          child: SlideTransition(
+            position: slide,
+            child: ScaleTransition(scale: scale, child: child),
+          ),
+        );
+      },
     ).then((updated) async {
       if (updated == true && mounted) {
         await widget.onRefreshProfile();

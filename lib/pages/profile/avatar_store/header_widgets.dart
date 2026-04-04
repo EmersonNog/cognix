@@ -7,6 +7,12 @@ class _AvatarShopHero extends StatelessWidget {
     required this.balanceLabel,
     required this.badgeLabel,
     required this.badgeColor,
+    required this.item,
+    required this.priceLabel,
+    required this.rarityLabel,
+    required this.themeLabel,
+    required this.rarityColor,
+    required this.description,
     required this.primary,
     required this.onSurface,
     required this.onClose,
@@ -17,6 +23,12 @@ class _AvatarShopHero extends StatelessWidget {
   final String balanceLabel;
   final String badgeLabel;
   final Color badgeColor;
+  final ProfileAvatarStoreItem? item;
+  final String? priceLabel;
+  final String? rarityLabel;
+  final String? themeLabel;
+  final Color rarityColor;
+  final String description;
   final Color primary;
   final Color onSurface;
   final VoidCallback? onClose;
@@ -27,7 +39,15 @@ class _AvatarShopHero extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF141E39),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[
+            Color(0xFF182242),
+            Color(0xFF141E39),
+            Color(0xFF11192F),
+          ],
+        ),
         border: Border(
           bottom: BorderSide(color: Colors.white.withValues(alpha: 0.06)),
         ),
@@ -36,14 +56,29 @@ class _AvatarShopHero extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Container(
                 width: 42,
                 height: 42,
                 decoration: BoxDecoration(
-                  color: primary.withValues(alpha: 0.14),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: <Color>[
+                      primary.withValues(alpha: 0.24),
+                      primary.withValues(alpha: 0.1),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: primary.withValues(alpha: 0.14)),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                      color: primary.withValues(alpha: 0.08),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: Icon(
                   Icons.face_retouching_natural_rounded,
@@ -53,36 +88,51 @@ class _AvatarShopHero extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      title,
-                      style: GoogleFonts.manrope(
-                        color: onSurface,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 1),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        title,
+                        style: GoogleFonts.manrope(
+                          color: onSurface,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          height: 1.02,
+                          letterSpacing: -0.2,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: GoogleFonts.inter(
-                        color: onSurface.withValues(alpha: 0.72),
-                        fontSize: 12,
-                        height: 1.45,
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.inter(
+                          color: onSurface.withValues(alpha: 0.66),
+                          fontSize: 11.5,
+                          height: 1.35,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(width: 10),
-              IconButton(
-                onPressed: onClose,
-                style: IconButton.styleFrom(
-                  backgroundColor: Colors.white.withValues(alpha: 0.04),
+              SizedBox(
+                width: 42,
+                height: 42,
+                child: IconButton(
+                  onPressed: onClose,
+                  padding: EdgeInsets.zero,
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.white.withValues(alpha: 0.06),
+                    side: BorderSide(
+                      color: Colors.white.withValues(alpha: 0.05),
+                    ),
+                  ),
+                  icon: Icon(Icons.close_rounded, color: onSurface, size: 22),
                 ),
-                icon: Icon(Icons.close_rounded, color: onSurface),
               ),
             ],
           ),
@@ -125,6 +175,18 @@ class _AvatarShopHero extends StatelessWidget {
                 ],
               );
             },
+          ),
+          const SizedBox(height: 14),
+          _AvatarSpotlightCard(
+            item: item,
+            priceLabel: priceLabel,
+            rarityLabel: rarityLabel,
+            themeLabel: themeLabel,
+            rarityColor: rarityColor,
+            description: description,
+            primary: primary,
+            onSurface: onSurface,
+            compact: true,
           ),
         ],
       ),
