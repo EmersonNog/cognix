@@ -1,16 +1,23 @@
 import 'dart:convert';
 
 import '../../../services/local/shared_preferences_store.dart';
-
 import '../../../services/questions/questions_api.dart';
 import 'training_session_models.dart';
 import 'training_session_state_codec.dart';
+
+ScopedPreferenceKey _resolveTrainingSessionKey(String sessionKey) {
+  return SharedPreferencesStore.resolveScopedKey(sessionKey);
+}
 
 Future<Map<String, dynamic>?> readLocalTrainingSessionState(
   String sessionKey,
 ) async {
   final prefs = await SharedPreferencesStore.instance();
-  final raw = await prefs.getString(sessionKey);
+  final key = _resolveTrainingSessionKey(sessionKey);
+  final raw = await prefs.getString(key.storageKey);
+  if (key.hasLegacyBaseKey) {
+    await prefs.remove(key.baseKey);
+  }
   if (raw == null || raw.isEmpty) {
     return null;
   }
@@ -27,7 +34,44 @@ Future<void> writeLocalTrainingSessionState(
   Map<String, dynamic> payload,
 ) async {
   final prefs = await SharedPreferencesStore.instance();
-  await prefs.setString(sessionKey, jsonEncode(payload));
+  final key = _resolveTrainingSessionKey(sessionKey);
+  await prefs.setString(key.storageKey, jsonEncode(payload));
+  if (key.hasLegacyBaseKey) {
+    await prefs.remove(key.baseKey);
+  }
+}
+
+Future<void> clearLocalTrainingSessionState(
+  String sessionKey, {
+  String? discipline,
+  String? subcategory,
+}) async {
+  final prefs = await SharedPreferencesStore.instance();
+  final key = _resolveTrainingSessionKey(sessionKey);
+  final keys = {key.storageKey, if (key.hasLegacyBaseKey) key.baseKey};
+
+  for (final currentKey in keys) {
+    if (discipline == null && subcategory == null) {
+      await prefs.remove(currentKey);
+      continue;
+    }
+
+    final raw = await prefs.getString(currentKey);
+    if (raw == null || raw.isEmpty) {
+      continue;
+    }
+
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is Map &&
+          decoded['discipline'] == discipline &&
+          decoded['subcategory'] == subcategory) {
+        await prefs.remove(currentKey);
+      }
+    } catch (_) {
+      await prefs.remove(currentKey);
+    }
+  }
 }
 
 Future<void> saveRemoteTrainingSessionState({
@@ -59,7 +103,8 @@ Future<TrainingSessionState?> readRemoteTrainingSessionState({
 Future<Map<String, dynamic>?> hydrateTrainingSessionState(
   Map<String, dynamic> decoded,
 ) async {
-  if (decoded['questions'] is List && (decoded['questions'] as List).isNotEmpty) {
+  if (decoded['questions'] is List &&
+      (decoded['questions'] as List).isNotEmpty) {
     return decoded;
   }
 
@@ -103,7 +148,8 @@ Future<Map<String, dynamic>?> hydrateTrainingSessionState(
       returnedIds,
     ),
     'correctOptionIndexByQuestionId': filterTrainingSessionMapByIds(
-      decoded['correctOptionIndexByQuestionId'] ?? decoded['correctOptionIndex'],
+      decoded['correctOptionIndexByQuestionId'] ??
+          decoded['correctOptionIndex'],
       returnedIds,
     ),
     'feedbackQuestionId': (() {
@@ -139,13 +185,11 @@ Future<TrainingSessionRestoreOutcome?> restoreTrainingSessionSnapshot({
   required String subcategory,
 }) async {
   var localState = await readLocalTrainingSessionState(sessionKey);
-  if (
-    !matchesTrainingSessionState(
-      localState,
-      discipline: discipline,
-      subcategory: subcategory,
-    )
-  ) {
+  if (!matchesTrainingSessionState(
+    localState,
+    discipline: discipline,
+    subcategory: subcategory,
+  )) {
     localState = null;
   }
 
@@ -162,13 +206,11 @@ Future<TrainingSessionRestoreOutcome?> restoreTrainingSessionSnapshot({
     return null;
   }
 
-  if (
-    isCompletedTrainingSessionState(
-      chosen,
-      discipline: discipline,
-      subcategory: subcategory,
-    )
-  ) {
+  if (isCompletedTrainingSessionState(
+    chosen,
+    discipline: discipline,
+    subcategory: subcategory,
+  )) {
     return TrainingSessionRestoreOutcome(
       completedResult: completedResultFromTrainingSessionState(chosen),
     );

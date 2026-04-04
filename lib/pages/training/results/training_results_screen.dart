@@ -1,12 +1,10 @@
-import 'dart:convert';
-
 import 'package:cognix/widgets/cognix_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../services/local/shared_preferences_store.dart';
 
 import '../../../services/questions/questions_api.dart';
 import '../session/training_session_screen.dart';
+import '../session/training_session_storage.dart';
 import 'utils/training_results_utils.dart';
 import 'widgets/training_results_action_buttons.dart';
 import 'widgets/training_results_metric_card.dart';
@@ -245,20 +243,11 @@ class TrainingResultsScreen extends StatelessWidget {
   }
 
   Future<void> _restartSession() async {
-    final prefs = await SharedPreferencesStore.instance();
-    final raw = await prefs.getString(_sessionStateKey);
-    if (raw != null && raw.isNotEmpty) {
-      try {
-        final decoded = jsonDecode(raw);
-        if (decoded is Map &&
-            decoded['discipline'] == discipline &&
-            decoded['subcategory'] == subcategory) {
-          await prefs.remove(_sessionStateKey);
-        }
-      } catch (_) {
-        await prefs.remove(_sessionStateKey);
-      }
-    }
+    await clearLocalTrainingSessionState(
+      _sessionStateKey,
+      discipline: discipline,
+      subcategory: subcategory,
+    );
 
     try {
       await clearTrainingSession(

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:random_avatar/random_avatar.dart';
+
 import '../../../services/local/avatar_service.dart';
 
 class ProfileAvatarDisplay extends StatefulWidget {
   const ProfileAvatarDisplay({
+    super.key,
     required this.userName,
     required this.primary,
     this.size = 100,
@@ -25,26 +27,35 @@ class _ProfileAvatarDisplayState extends State<ProfileAvatarDisplay> {
   @override
   void initState() {
     super.initState();
-    _avatarSeed = widget.userName;
+    _avatarSeed = _defaultAvatarSeed();
     _loadAvatarSeed();
   }
 
   @override
   void didUpdateWidget(covariant ProfileAvatarDisplay oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.userName != widget.userName) {
+      _avatarSeed = _defaultAvatarSeed();
+    }
     _loadAvatarSeed();
+  }
+
+  String _defaultAvatarSeed() {
+    return AvatarService.defaultAvatarSeed(fallback: widget.userName);
   }
 
   Future<void> _loadAvatarSeed() async {
     try {
       final seed = await AvatarService.getAvatarSeed();
-      if (seed != null && mounted) {
-        setState(() {
-          _avatarSeed = seed;
-        });
-      }
+      if (!mounted) return;
+      setState(() {
+        _avatarSeed = seed ?? _defaultAvatarSeed();
+      });
     } catch (e) {
-      // Se falhar, deixa o padrão
+      if (!mounted) return;
+      setState(() {
+        _avatarSeed = _defaultAvatarSeed();
+      });
       debugPrint('Erro ao carregar avatar: $e');
     }
   }

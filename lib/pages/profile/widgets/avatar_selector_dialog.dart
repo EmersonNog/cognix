@@ -5,6 +5,7 @@ import '../../../services/local/avatar_service.dart';
 
 class AvatarSelectorDialog extends StatefulWidget {
   const AvatarSelectorDialog({
+    super.key,
     required this.primary,
     required this.onSurface,
     required this.surfaceContainer,
@@ -19,7 +20,7 @@ class AvatarSelectorDialog extends StatefulWidget {
 }
 
 class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
-  late String _selectedSeed;
+  String _selectedSeed = 'avatar_1';
   final List<String> _avatarOptions = [
     'avatar_1',
     'avatar_2',
