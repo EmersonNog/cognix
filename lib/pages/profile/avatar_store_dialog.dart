@@ -5,14 +5,12 @@ import 'package:random_avatar/random_avatar.dart';
 import '../../services/profile/profile_api.dart';
 import 'widgets/profile_header_utils.dart';
 
+part 'avatar_store/dialog_logic.dart';
 part 'avatar_store/formatters.dart';
 part 'avatar_store/header_widgets.dart';
 part 'avatar_store/spotlight_widgets.dart';
 part 'avatar_store/catalog_widgets.dart';
-
-enum _AvatarStoreFilter { all, owned, unlockable }
-
-const String _allRaritiesFilterValue = '__all_rarities__';
+part 'avatar_store/footer_widgets.dart';
 
 class AvatarSelectorDialog extends StatefulWidget {
   const AvatarSelectorDialog({
@@ -65,53 +63,14 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
     return null;
   }
 
-  List<ProfileAvatarStoreItem> get _visibleItems {
-    final filtered = _avatarStore.where(_matchesActiveFilters).toList();
+  List<ProfileAvatarStoreItem> get _visibleItems => _buildVisibleAvatarItems(
+    avatarStore: _avatarStore,
+    activeFilter: _activeFilter,
+    activeRarity: _activeRarity,
+  );
 
-    filtered.sort((a, b) {
-      final rankA = _itemRank(a);
-      final rankB = _itemRank(b);
-      if (rankA != rankB) {
-        return rankA.compareTo(rankB);
-      }
-
-      final priceCompare = a.costHalfUnits.compareTo(b.costHalfUnits);
-      if (priceCompare != 0) {
-        return priceCompare;
-      }
-
-      return a.title.compareTo(b.title);
-    });
-
-    return filtered;
-  }
-
-  List<String> get _availableRarities {
-    final rarities = <String>{};
-    for (final item in _avatarStore) {
-      final normalized = item.rarity.trim().toLowerCase();
-      if (normalized.isNotEmpty) {
-        rarities.add(normalized);
-      }
-    }
-
-    final values = rarities.toList()
-      ..sort((a, b) {
-        const order = <String, int>{
-          'comum': 0,
-          'raro': 1,
-          'epico': 2,
-          'lendario': 3,
-        };
-        final rankA = order[a] ?? 99;
-        final rankB = order[b] ?? 99;
-        if (rankA != rankB) {
-          return rankA.compareTo(rankB);
-        }
-        return a.compareTo(b);
-      });
-    return values;
-  }
+  List<String> get _availableRarities =>
+      _collectAvailableAvatarRarities(_avatarStore);
 
   bool get _canSubmit {
     final item = _selectedItem;
@@ -124,173 +83,32 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
     return item.owned || item.affordable;
   }
 
-  int _itemRank(ProfileAvatarStoreItem item) {
-    if (item.equipped) return 0;
-    if (item.owned) return 1;
-    if (item.affordable) return 2;
-    return 3;
-  }
-
-  bool _matchesActiveFilters(ProfileAvatarStoreItem item) {
-    final matchesCategory = switch (_activeFilter) {
-      _AvatarStoreFilter.all => true,
-      _AvatarStoreFilter.owned => item.owned || item.equipped,
-      _AvatarStoreFilter.unlockable => !item.owned,
-    };
-
-    if (!matchesCategory) {
-      return false;
-    }
-
-    if (_activeRarity == _allRaritiesFilterValue) {
-      return true;
-    }
-
-    return item.rarity.trim().toLowerCase() == _activeRarity;
-  }
-
   void _changeFilter(_AvatarStoreFilter filter) {
-    final previousFilter = _activeFilter;
-    _activeFilter = filter;
-    final nextVisible = _avatarStore.where(_matchesActiveFilters).toList();
-    _activeFilter = previousFilter;
+    final nextSelectedSeed = _resolveNextSelectedSeed(
+      avatarStore: _avatarStore,
+      currentSelectedSeed: _selectedSeed,
+      activeFilter: filter,
+      activeRarity: _activeRarity,
+    );
 
     setState(() {
       _activeFilter = filter;
-      if (nextVisible.isNotEmpty &&
-          !nextVisible.any((item) => item.seed == _selectedSeed)) {
-        _selectedSeed = nextVisible.first.seed;
-      }
+      _selectedSeed = nextSelectedSeed;
     });
   }
 
   void _changeRarity(String rarity) {
-    final previousRarity = _activeRarity;
-    _activeRarity = rarity;
-    final nextVisible = _avatarStore.where(_matchesActiveFilters).toList();
-    _activeRarity = previousRarity;
+    final nextSelectedSeed = _resolveNextSelectedSeed(
+      avatarStore: _avatarStore,
+      currentSelectedSeed: _selectedSeed,
+      activeFilter: _activeFilter,
+      activeRarity: rarity,
+    );
 
     setState(() {
       _activeRarity = rarity;
-      if (nextVisible.isNotEmpty &&
-          !nextVisible.any((item) => item.seed == _selectedSeed)) {
-        _selectedSeed = nextVisible.first.seed;
-      }
+      _selectedSeed = nextSelectedSeed;
     });
-  }
-
-  String _primaryLabel(ProfileAvatarStoreItem? item) {
-    if (_isSubmitting) {
-      return 'Salvando...';
-    }
-    if (item == null) {
-      return 'Selecionar';
-    }
-    if (item.equipped) {
-      return 'Em uso';
-    }
-    if (item.owned) {
-      return 'Equipar agora';
-    }
-    if (item.affordable) {
-      return 'Comprar';
-    }
-    return 'Sem saldo';
-  }
-
-  IconData _primaryIcon(ProfileAvatarStoreItem? item) {
-    if (_isSubmitting) {
-      return Icons.hourglass_top_rounded;
-    }
-    if (item == null) {
-      return Icons.touch_app_rounded;
-    }
-    if (item.equipped) {
-      return Icons.task_alt_rounded;
-    }
-    if (item.owned) {
-      return Icons.check_circle_rounded;
-    }
-    if (item.affordable) {
-      return Icons.shopping_bag_rounded;
-    }
-    return Icons.lock_rounded;
-  }
-
-  String _selectedDescription(ProfileAvatarStoreItem? item) {
-    if (item == null) {
-      return 'Escolha um avatar para personalizar seu perfil.';
-    }
-
-    final collectionLabel = item.theme.trim().isEmpty
-        ? _formatAvatarRarity(item.rarity)
-        : '${item.theme} · ${_formatAvatarRarity(item.rarity)}';
-
-    if (item.equipped) {
-      return '$collectionLabel. Esse avatar ja esta equipado no seu perfil.';
-    }
-    if (item.owned) {
-      return '$collectionLabel. Voce ja desbloqueou esse avatar. Toque para equipar.';
-    }
-    if (item.affordable) {
-      return '$collectionLabel. Disponivel para compra agora por ${formatCoinsLabel(item.costCoins)}.';
-    }
-    return '$collectionLabel. Junte mais coins para desbloquear esse visual.';
-  }
-
-  String _selectedBadge(ProfileAvatarStoreItem? item) {
-    if (item == null) {
-      return 'Sem selecao';
-    }
-    if (item.equipped) {
-      return 'Equipado';
-    }
-    if (item.owned) {
-      return 'Adquirido';
-    }
-    if (item.affordable) {
-      return 'Pronto para comprar';
-    }
-    return 'Bloqueado';
-  }
-
-  Color _selectedBadgeColor(ProfileAvatarStoreItem? item) {
-    if (item == null) {
-      return const Color(0xFF8E96B8);
-    }
-    if (item.equipped) {
-      return widget.primary;
-    }
-    if (item.owned) {
-      return const Color(0xFF26D078);
-    }
-    if (item.affordable) {
-      return const Color(0xFFFFC857);
-    }
-    return const Color(0xFFFF8B7A);
-  }
-
-  Color _primaryButtonColor(ProfileAvatarStoreItem? item) {
-    if (item == null) {
-      return const Color(0xFF5868D8);
-    }
-    if (item.equipped) {
-      return const Color(0xFF5A6788);
-    }
-    if (item.owned) {
-      return const Color(0xFF3F7B73);
-    }
-    if (item.affordable) {
-      return const Color(0xFF5868D8);
-    }
-    return const Color(0xFF8B5F6B);
-  }
-
-  String _priceLabel(ProfileAvatarStoreItem item) {
-    if (item.equipped) return 'Em uso';
-    if (item.owned) return 'Comprado';
-    if (item.costCoins <= 0) return 'Gratis';
-    return formatCoinsLabel(item.costCoins);
   }
 
   Future<void> _submitSelection() async {
@@ -299,9 +117,7 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
       return;
     }
 
-    setState(() {
-      _isSubmitting = true;
-    });
+    setState(() => _isSubmitting = true);
 
     try {
       final result = await selectProfileAvatar(item.seed);
@@ -328,6 +144,22 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
     final selectedItem = _selectedItem;
     final visibleItems = _visibleItems;
     final maxHeight = MediaQuery.sizeOf(context).height * 0.8;
+
+    final selectedBadge = _avatarSelectedBadge(selectedItem);
+    final selectedBadgeColor = _avatarSelectedBadgeColor(
+      selectedItem,
+      widget.primary,
+    );
+    final spotlightDescription = _avatarSelectedDescription(selectedItem);
+    final primaryButtonLabel = _avatarPrimaryLabel(
+      selectedItem,
+      isSubmitting: _isSubmitting,
+    );
+    final primaryButtonIcon = _avatarPrimaryIcon(
+      selectedItem,
+      isSubmitting: _isSubmitting,
+    );
+    final primaryButtonColor = _avatarPrimaryButtonColor(selectedItem);
 
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 22, vertical: 28),
@@ -370,208 +202,123 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(29),
               child: Column(
-              children: <Widget>[
-                _AvatarShopHero(
-                  title: 'Avatares do perfil',
-                  subtitle: 'Escolha um visual para seu perfil.',
-                  balanceLabel: formatCoinsLabel(_coinsBalance),
-                  badgeLabel: _selectedBadge(selectedItem),
-                  badgeColor: _selectedBadgeColor(selectedItem),
-                  item: selectedItem,
-                  priceLabel: selectedItem == null
-                      ? null
-                      : _priceLabel(selectedItem),
-                  rarityLabel: selectedItem == null
-                      ? null
-                      : _formatAvatarRarity(selectedItem.rarity),
-                  themeLabel: selectedItem?.theme,
-                  rarityColor: selectedItem == null
-                      ? widget.primary
-                      : _avatarRarityColor(selectedItem.rarity, widget.primary),
-                  description: _selectedDescription(selectedItem),
-                  primary: widget.primary,
-                  onSurface: widget.onSurface,
-                  onClose: _isSubmitting ? null : () => Navigator.pop(context),
-                ),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF10192F),
-                    border: Border(
-                      bottom: BorderSide(
-                        color: Colors.white.withValues(alpha: 0.05),
+                children: <Widget>[
+                  _AvatarShopHero(
+                    title: 'Avatares do perfil',
+                    subtitle: 'Escolha um visual para seu perfil.',
+                    balanceLabel: formatCoinsLabel(_coinsBalance),
+                    badgeLabel: selectedBadge,
+                    badgeColor: selectedBadgeColor,
+                    item: selectedItem,
+                    priceLabel: selectedItem == null
+                        ? null
+                        : _avatarPriceLabel(selectedItem),
+                    rarityLabel: selectedItem == null
+                        ? null
+                        : _formatAvatarRarity(selectedItem.rarity),
+                    themeLabel: selectedItem?.theme,
+                    rarityColor: selectedItem == null
+                        ? widget.primary
+                        : _avatarRarityColor(selectedItem.rarity, widget.primary),
+                    description: spotlightDescription,
+                    primary: widget.primary,
+                    onSurface: widget.onSurface,
+                    onClose: _isSubmitting ? null : () => Navigator.pop(context),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF10192F),
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.white.withValues(alpha: 0.05),
+                        ),
                       ),
                     ),
+                    child: Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: <Widget>[
+                        _AvatarFilterChip(
+                          label: 'Todos',
+                          selected: _activeFilter == _AvatarStoreFilter.all,
+                          primary: widget.primary,
+                          onSurface: widget.onSurface,
+                          onTap: () => _changeFilter(_AvatarStoreFilter.all),
+                        ),
+                        _AvatarFilterChip(
+                          label: 'Meus',
+                          selected: _activeFilter == _AvatarStoreFilter.owned,
+                          primary: widget.primary,
+                          onSurface: widget.onSurface,
+                          onTap: () => _changeFilter(_AvatarStoreFilter.owned),
+                        ),
+                        _AvatarFilterChip(
+                          label: 'Para comprar',
+                          selected:
+                              _activeFilter == _AvatarStoreFilter.unlockable,
+                          primary: widget.primary,
+                          onSurface: widget.onSurface,
+                          onTap: () =>
+                              _changeFilter(_AvatarStoreFilter.unlockable),
+                        ),
+                        _AvatarRarityDropdown(
+                          selectedRarity: _activeRarity,
+                          availableRarities: _availableRarities,
+                          primary: widget.primary,
+                          onSurface: widget.onSurface,
+                          onSelected: _changeRarity,
+                        ),
+                      ],
+                    ),
                   ),
-                  child: Wrap(
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: <Widget>[
-                      _AvatarFilterChip(
-                        label: 'Todos',
-                        selected: _activeFilter == _AvatarStoreFilter.all,
-                        primary: widget.primary,
-                        onSurface: widget.onSurface,
-                        onTap: () => _changeFilter(_AvatarStoreFilter.all),
-                      ),
-                      _AvatarFilterChip(
-                        label: 'Meus',
-                        selected: _activeFilter == _AvatarStoreFilter.owned,
-                        primary: widget.primary,
-                        onSurface: widget.onSurface,
-                        onTap: () => _changeFilter(_AvatarStoreFilter.owned),
-                      ),
-                      _AvatarFilterChip(
-                        label: 'Para comprar',
-                        selected:
-                            _activeFilter == _AvatarStoreFilter.unlockable,
-                        primary: widget.primary,
-                        onSurface: widget.onSurface,
-                        onTap: () =>
-                            _changeFilter(_AvatarStoreFilter.unlockable),
-                      ),
-                      _AvatarRarityDropdown(
-                        selectedRarity: _activeRarity,
-                        availableRarities: _availableRarities,
-                        primary: widget.primary,
-                        onSurface: widget.onSurface,
-                        onSelected: _changeRarity,
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: visibleItems.isEmpty
-                      ? SingleChildScrollView(
-                          padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-                          child: _AvatarEmptyState(onSurface: widget.onSurface),
-                        )
-                      : GridView.builder(
-                          padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-                          itemCount: visibleItems.length,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 14,
-                                mainAxisSpacing: 14,
-                                childAspectRatio: 0.82,
-                              ),
-                          itemBuilder: (context, index) {
-                            final item = visibleItems[index];
-                            return _AvatarStoreTile(
-                              item: item,
-                              isSelected: _selectedSeed == item.seed,
-                              primary: widget.primary,
+                  Expanded(
+                    child: visibleItems.isEmpty
+                        ? SingleChildScrollView(
+                            padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                            child: _AvatarEmptyState(
                               onSurface: widget.onSurface,
-                              onTap: () {
-                                setState(() {
-                                  _selectedSeed = item.seed;
-                                });
-                              },
-                            );
-                          },
-                        ),
-                ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF141E39),
-                    border: Border(
-                      top: BorderSide(
-                        color: Colors.white.withValues(alpha: 0.06),
-                      ),
-                    ),
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: _isSubmitting
-                              ? null
-                              : () => Navigator.pop(context),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: widget.onSurface,
-                            backgroundColor: const Color(0xFF18223D),
-                            side: BorderSide(
-                              color: Colors.white.withValues(alpha: 0.14),
                             ),
-                            minimumSize: const Size.fromHeight(50),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Icon(
-                                Icons.close_rounded,
-                                size: 18,
-                                color: widget.onSurface.withValues(alpha: 0.92),
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                'Fechar',
-                                style: GoogleFonts.manrope(
-                                  color: widget.onSurface.withValues(
-                                    alpha: 0.94,
-                                  ),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w800,
+                          )
+                        : GridView.builder(
+                            padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                            itemCount: visibleItems.length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 14,
+                                  mainAxisSpacing: 14,
+                                  childAspectRatio: 0.82,
                                 ),
-                              ),
-                            ],
+                            itemBuilder: (context, index) {
+                              final item = visibleItems[index];
+                              return _AvatarStoreTile(
+                                item: item,
+                                isSelected: _selectedSeed == item.seed,
+                                primary: widget.primary,
+                                onSurface: widget.onSurface,
+                                onTap: () {
+                                  setState(() {
+                                    _selectedSeed = item.seed;
+                                  });
+                                },
+                              );
+                            },
                           ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: _canSubmit ? _submitSelection : null,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _primaryButtonColor(selectedItem),
-                            disabledBackgroundColor: _primaryButtonColor(
-                              selectedItem,
-                            ).withValues(alpha: 0.55),
-                            elevation: 0,
-                            minimumSize: const Size.fromHeight(50),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Icon(
-                                _primaryIcon(selectedItem),
-                                size: 18,
-                                color: Colors.white,
-                              ),
-                              const SizedBox(width: 8),
-                              Flexible(
-                                child: Text(
-                                  _primaryLabel(selectedItem),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.manrope(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
-                ),
-              ],
-            ),
+                  _AvatarStoreFooter(
+                    onSurface: widget.onSurface,
+                    isSubmitting: _isSubmitting,
+                    canSubmit: _canSubmit,
+                    primaryActionColor: primaryButtonColor,
+                    primaryActionLabel: primaryButtonLabel,
+                    primaryActionIcon: primaryButtonIcon,
+                    onClose: () => Navigator.pop(context),
+                    onSubmit: _submitSelection,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

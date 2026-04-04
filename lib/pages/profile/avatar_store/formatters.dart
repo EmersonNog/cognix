@@ -7,7 +7,7 @@ String _formatAvatarRarity(String rarity) {
     case 'epico':
       return 'Épico';
     case 'lendario':
-      return 'Lendario';
+      return 'Lendário';
     default:
       return 'Comum';
   }
