@@ -124,19 +124,22 @@ class ProfileTab extends StatelessWidget {
 
   String _formatStudyHours(int totalStudySeconds) {
     if (totalStudySeconds <= 0) {
-      return '0h';
+      return '0s';
     }
 
-    final totalMinutes = (totalStudySeconds / 60).round();
-    if (totalMinutes < 60) {
-      return '${totalMinutes}m';
+    final hours = totalStudySeconds ~/ 3600;
+    final minutes = (totalStudySeconds % 3600) ~/ 60;
+    final seconds = totalStudySeconds % 60;
+
+    if (hours > 0) {
+      return '${hours}h ${minutes}m ${seconds}s';
     }
 
-    final hours = totalStudySeconds / 3600;
-    final roundedHours = hours >= 10
-        ? hours.round().toString()
-        : hours.toStringAsFixed(1);
-    return '${roundedHours}h';
+    if (minutes > 0) {
+      return '${minutes}m ${seconds}s';
+    }
+
+    return '${seconds}s';
   }
 }
 
