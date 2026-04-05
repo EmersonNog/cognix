@@ -170,7 +170,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           children: <Widget>[
             ProfileStatsBox(
               value: widget.questionsCount,
-              label: 'QUEST\u00d5ES',
+              label: 'QUESTÕES',
               icon: Icons.quiz_rounded,
               surfaceContainer: widget.surfaceContainer,
               onSurface: widget.onSurface,
@@ -190,7 +190,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
             const SizedBox(width: 12),
             ProfileStatsBox(
               value: widget.accuracyLabel,
-              label: 'PRECIS\u00c3O',
+              label: 'PRECISÃO',
               icon: Icons.track_changes_rounded,
               surfaceContainer: widget.surfaceContainer,
               onSurface: widget.onSurface,

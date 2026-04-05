@@ -64,7 +64,7 @@ class _TrainingTabState extends State<TrainingTab> with RouteAware {
       final latest = overview.latestSession;
       final completedCountLabel =
           '${overview.completedSessions} '
-          '${overview.completedSessions == 1 ? 'simulado conclu\u00eddo' : 'simulados conclu\u00eddos'}';
+          '${overview.completedSessions == 1 ? 'simulado concluído' : 'simulados concluídos'}';
 
       if (latest == null) {
         if (overview.inProgressSessions > 0) {
@@ -72,7 +72,7 @@ class _TrainingTabState extends State<TrainingTab> with RouteAware {
               '${overview.inProgressSessions} '
               '${overview.inProgressSessions == 1 ? 'simulado em andamento' : 'simulados em andamento'}';
           return TrainingRhythmData(
-            subtitle: 'Voc\u00ea ainda tem treino para retomar',
+            subtitle: 'Você ainda tem treino para retomar',
             badgeLabel: '${overview.inProgressSessions}x',
             completedCountLabel: inProgressLabel,
           );
@@ -80,7 +80,7 @@ class _TrainingTabState extends State<TrainingTab> with RouteAware {
 
         if (overview.completedSessions > 0) {
           return TrainingRhythmData(
-            subtitle: 'Seu hist\u00f3rico recente j\u00e1 est\u00e1 salvo',
+            subtitle: 'Seu histórico recente já está salvo',
             badgeLabel: '${overview.completedSessions}x',
             completedCountLabel: completedCountLabel,
           );
@@ -96,8 +96,8 @@ class _TrainingTabState extends State<TrainingTab> with RouteAware {
                   .round();
         return TrainingRhythmData(
           subtitle: latest.subcategory.isEmpty
-              ? '\u00daltimo simulado conclu\u00eddo'
-              : '\u00daltimo simulado conclu\u00eddo em ${latest.subcategory}',
+              ? 'último simulado concluído'
+              : 'último simulado concluído em ${latest.subcategory}',
           badgeLabel: '$percent%',
           completedCountLabel: completedCountLabel,
         );
@@ -196,7 +196,7 @@ class _TrainingTabState extends State<TrainingTab> with RouteAware {
         padding: const EdgeInsets.fromLTRB(20, 24, 20, 120),
         children: [
           Text(
-            '\u00c1reas de Conhecimento',
+            'Áreas de Conhecimento',
             style: GoogleFonts.manrope(
               color: widget.onSurface,
               fontSize: 26,

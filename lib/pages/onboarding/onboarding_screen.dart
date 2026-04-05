@@ -146,7 +146,7 @@ class OnboardingScreen extends StatelessWidget {
         PageViewModel(
           title: 'Treino direcionado',
           bodyWidget: _buildBody(
-            'Organize o estudo por áreas e subcategorias para evoluir com clareza.',
+            'Organize o estudo por áreas e disciplinas para evoluir com clareza.',
             const [
               'Rotas por área',
               'Áreas-chave',

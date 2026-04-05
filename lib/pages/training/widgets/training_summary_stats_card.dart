@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../../../services/summaries/summaries_api.dart';
 import '../../../utils/api_datetime.dart';
 
@@ -40,12 +39,9 @@ class TrainingSummaryStatsCard extends StatelessWidget {
         children: [
           Text(
             isLocked
-                ? 'Estatisticas liberadas ao concluir o simulado.'
-                : 'Dados do seu historico nesta subcategoria.',
-            style: GoogleFonts.inter(
-              color: onSurfaceMuted,
-              fontSize: 11.5,
-            ),
+                ? 'Estatísticas liberadas ao concluir o simulado.'
+                : 'Dados do seu histórico nesta disciplina.',
+            style: GoogleFonts.inter(color: onSurfaceMuted, fontSize: 11.5),
           ),
           const SizedBox(height: 10),
           Wrap(
@@ -155,11 +151,7 @@ class _SummaryStatBadge extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           if (isLocked)
-            Icon(
-              Icons.lock_outline_rounded,
-              color: onSurface,
-              size: 15,
-            )
+            Icon(Icons.lock_outline_rounded, color: onSurface, size: 15)
           else
             Text(
               value,

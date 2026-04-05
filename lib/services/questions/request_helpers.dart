@@ -61,7 +61,7 @@ Future<String?> _findCanonicalSubcategoryName({
     Uri.parse(
       '${apiBaseUrl()}/questions/subcategories',
     ).replace(queryParameters: {'discipline': discipline}),
-    errorMessage: 'Erro ao carregar subcategorias',
+    errorMessage: 'Erro ao carregar disciplina',
   );
 
   final items = payload['items'];
@@ -193,7 +193,7 @@ Future<List<SubcategoryItem>> loadSubcategoriesWithFallback(
     Uri.parse(
       '${apiBaseUrl()}/questions/subcategories',
     ).replace(queryParameters: {'discipline': discipline}),
-    errorMessage: 'Erro ao carregar subcategorias',
+    errorMessage: 'Erro ao carregar disciplina',
   );
 
   final parsed = parseSubcategoryItems(payload, fallbackDiscipline: discipline);
@@ -210,7 +210,7 @@ Future<List<SubcategoryItem>> loadSubcategoriesWithFallback(
     Uri.parse(
       '${apiBaseUrl()}/questions/subcategories',
     ).replace(queryParameters: {'discipline': canonicalDiscipline}),
-    errorMessage: 'Erro ao carregar subcategorias',
+    errorMessage: 'Erro ao carregar disciplina',
   );
   return parseSubcategoryItems(
     fallbackPayload,

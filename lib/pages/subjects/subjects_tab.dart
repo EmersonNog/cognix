@@ -138,8 +138,8 @@ class _SubjectsTabState extends State<SubjectsTab> {
                           title: subcategory.item.name,
                           discipline: title,
                           area: widget.area,
-                          description: 'Subcategoria de $title',
-                          badgeLabel: 'Subcategoria',
+                          description: 'Disciplina de $title',
+                          badgeLabel: 'Disciplina',
                           badgeColor: widget.primary,
                           countLabel:
                               '${subcategory.item.total} questões disponíveis',
@@ -169,10 +169,7 @@ class _SubjectsTabState extends State<SubjectsTab> {
 }
 
 class _SubjectCardData {
-  const _SubjectCardData({
-    required this.item,
-    required this.status,
-  });
+  const _SubjectCardData({required this.item, required this.status});
 
   final SubcategoryItem item;
   final _SubjectCardStatus status;

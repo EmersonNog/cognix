@@ -153,7 +153,7 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'N\u00edvel definido por quest\u00f5es, precis\u00e3o, simulados conclu\u00eddos e consist\u00eancia di\u00e1ria.',
+                      'Nível definido por questões, precisão, simulados concluídos e consistência diária.',
                       style: GoogleFonts.inter(
                         color: onSurfaceMuted,
                         fontSize: 13,
@@ -179,7 +179,7 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: ProfileHeaderMetricPill(
-                  label: 'Consist\u00eancia',
+                  label: 'Consistência',
                   value: '$activeDaysLast30/$consistencyWindowDays dias',
                   accent: levelAccent,
                   onSurface: onSurface,

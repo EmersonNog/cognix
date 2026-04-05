@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../services/profile/profile_api.dart';
 import 'utils/performance_utils.dart';
 import 'widgets/performance_sections.dart';
@@ -13,8 +12,8 @@ class PerformanceScreen extends StatelessWidget {
     required this.onSurfaceMuted,
     required this.primary,
     this.onRefresh,
-  })  : profileFuture = null,
-        _embedded = false;
+  }) : profileFuture = null,
+       _embedded = false;
 
   const PerformanceScreen.embedded({
     super.key,
@@ -23,8 +22,8 @@ class PerformanceScreen extends StatelessWidget {
     required this.onSurfaceMuted,
     required this.primary,
     this.onRefresh,
-  })  : profile = null,
-        _embedded = true;
+  }) : profile = null,
+       _embedded = true;
 
   final ProfileScoreData? profile;
   final Future<ProfileScoreData>? profileFuture;
@@ -53,9 +52,7 @@ class PerformanceScreen extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting &&
             !snapshot.hasData) {
           return _embedded
-              ? Center(
-                  child: CircularProgressIndicator(color: primary),
-                )
+              ? Center(child: CircularProgressIndicator(color: primary))
               : Scaffold(
                   backgroundColor: const Color(0xFF05051A),
                   body: Center(
@@ -154,7 +151,12 @@ class _PerformanceScreenContent extends StatelessWidget {
 
     final listView = ListView(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: EdgeInsets.fromLTRB(20, embedded ? 0 : 8, 20, embedded ? 120 : 30),
+      padding: EdgeInsets.fromLTRB(
+        20,
+        embedded ? 0 : 8,
+        20,
+        embedded ? 120 : 30,
+      ),
       children: [
         MomentIndicatorsSection(
           view: view,
@@ -172,7 +174,7 @@ class _PerformanceScreenContent extends StatelessWidget {
           onSurfaceMuted: onSurfaceMuted,
         ),
         PerformanceInsightCard(
-          title: 'Leitura do cen\u00E1rio',
+          title: 'Leitura do cenário',
           description: buildPerformanceNarrative(
             leaderDiscipline: view.leader?.discipline,
             activeDisciplineCount: view.activeDisciplineCount,
@@ -217,7 +219,12 @@ class _PerformanceErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final child = ListView(
-      padding: EdgeInsets.fromLTRB(20, embedded ? 0 : 8, 20, embedded ? 120 : 30),
+      padding: EdgeInsets.fromLTRB(
+        20,
+        embedded ? 0 : 8,
+        20,
+        embedded ? 120 : 30,
+      ),
       children: [
         Container(
           padding: const EdgeInsets.all(18),
@@ -230,12 +237,8 @@ class _PerformanceErrorState extends StatelessWidget {
             border: Border.all(color: Colors.white.withOpacity(0.05)),
           ),
           child: Text(
-            'N\u00E3o foi poss\u00EDvel carregar o painel de desempenho agora.',
-            style: TextStyle(
-              color: onSurfaceMuted,
-              fontSize: 14,
-              height: 1.4,
-            ),
+            'Não foi possível carregar o painel de desempenho agora.',
+            style: TextStyle(color: onSurfaceMuted, fontSize: 14, height: 1.4),
           ),
         ),
       ],
@@ -257,7 +260,7 @@ class _PerformanceErrorState extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF05051A),
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color.fromARGB(0, 255, 0, 0),
         elevation: 0,
       ),
       body: child,

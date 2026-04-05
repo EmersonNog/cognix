@@ -174,7 +174,7 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
 
             if (_questions.isEmpty) {
               return TrainingSessionMessageState(
-                message: 'Nenhuma questao encontrada para esta subcategoria.',
+                message: 'Nenhuma questão encontrada para esta disciplina.',
                 onSurfaceMuted: widget.onSurfaceMuted,
               );
             }

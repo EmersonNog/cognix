@@ -105,13 +105,13 @@ String performanceShortDisciplineName(String value) {
     return 'Linguagens';
   }
   if (normalized.contains('humanas')) {
-    return 'Ci\u00EAncias Humanas';
+    return 'Ciências Humanas';
   }
   if (normalized.contains('natureza')) {
-    return 'Ci\u00EAncias da Natureza';
+    return 'Ciências da Natureza';
   }
   if (normalized.contains('matem')) {
-    return 'Matem\u00E1tica';
+    return 'Matemática';
   }
 
   return value;
@@ -196,32 +196,32 @@ String buildPerformanceNarrative({
   required int completedSessions,
 }) {
   final focus = leaderDiscipline == null
-      ? 'Seu hist\u00F3rico ainda est\u00E1 distribuindo volume entre poucas refer\u00EAncias.'
-      : 'Voc\u00EA mostra mais presen\u00E7a em ${performanceShortDisciplineName(leaderDiscipline)}.';
+      ? 'Seu histórico ainda está distribuindo volume entre poucas referências.'
+      : 'Você mostra mais presença em ${performanceShortDisciplineName(leaderDiscipline)}.';
 
   final coverage = activeDisciplineCount >= 4
-      ? 'Seu treino j\u00E1 passou por todas as \u00E1reas de conhecimentos.'
+      ? 'Seu treino já passou por todas as áreas de conhecimentos.'
       : activeDisciplineCount >= 2
-      ? 'Seu estudo j\u00E1 est\u00E1 mais distribu\u00EDdo, mas ainda pode ganhar mais equil\u00EDbrio entre as \u00E1reas.'
-      : 'Seu estudo ainda est\u00E1 concentrado em poucas \u00E1reas.';
+      ? 'Seu estudo já está mais distribuído, mas ainda pode ganhar mais equilíbrio entre as áreas.'
+      : 'Seu estudo ainda está concentrado em poucas áreas.';
 
   final rhythm = activeDaysLast30 >= (consistencyWindowDays * 0.7)
-      ? 'A rotina recente indica uma cad\u00EAncia forte.'
+      ? 'A rotina recente indica uma cadência forte.'
       : activeDaysLast30 >= (consistencyWindowDays * 0.4)
-      ? 'A rotina j\u00E1 tem uma base boa, mas ainda pede mais regularidade.'
-      : 'Seu desempenho ainda depende bastante de ganhar frequ\u00EAncia.';
+      ? 'A rotina já tem uma base boa, mas ainda pede mais regularidade.'
+      : 'Seu desempenho ainda depende bastante de ganhar frequência.';
 
   final quality = accuracyPercent >= 75
-      ? 'Sua taxa de acerto est\u00E1 em um bom n\u00EDvel.'
+      ? 'Sua taxa de acerto está em um bom nível.'
       : accuracyPercent >= 55
-      ? 'Sua taxa de acerto est\u00E1 evoluindo, mas ainda h\u00E1 espa\u00E7o para ganhar mais consist\u00EAncia.'
-      : 'Sua taxa de acerto ainda pede mais revis\u00E3o e refor\u00E7o nos estudos.';
+      ? 'Sua taxa de acerto está evoluindo, mas ainda há espaço para ganhar mais consistência.'
+      : 'Sua taxa de acerto ainda pede mais revisão e reforço nos estudos.';
 
   final simulation = completedSessions >= 15
-      ? 'Seu hist\u00F3rico de simulados j\u00E1 oferece uma leitura mais consistente do seu comportamento.'
+      ? 'Seu histórico de simulados já oferece uma leitura mais consistente do seu comportamento.'
       : completedSessions >= 5
-      ? 'Voc\u00EA j\u00E1 tem uma base inicial de simulados para observar seu comportamento.'
-      : 'Ainda h\u00E1 espa\u00E7o para usar mais simulados como refer\u00EAncia do seu desempenho.';
+      ? 'Você já tem uma base inicial de simulados para observar seu comportamento.'
+      : 'Ainda há espaço para usar mais simulados como referência do seu desempenho.';
 
   return '$focus $coverage $rhythm $quality $simulation';
 }

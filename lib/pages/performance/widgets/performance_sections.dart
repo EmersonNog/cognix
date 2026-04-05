@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../utils/performance_utils.dart';
 import 'performance_widgets.dart';
 
@@ -26,7 +25,7 @@ class MomentIndicatorsSection extends StatelessWidget {
         PerformanceSectionHeader(
           title: 'Indicadores do momento',
           subtitle:
-              'Leituras derivadas da API para enxergar intensidade, distribui\u00E7\u00E3o e cobertura da sua rotina.',
+              'Leituras derivadas da API para enxergar intensidade, distribuição e cobertura da sua rotina.',
           onSurface: onSurface,
           onSurfaceMuted: onSurfaceMuted,
         ),
@@ -35,13 +34,13 @@ class MomentIndicatorsSection extends StatelessWidget {
           children: [
             Expanded(
               child: PerformanceMetricCard(
-                label: 'Pontos de aten\u00E7\u00E3o',
+                label: 'Pontos de atenção',
                 value: '${view.attentionSubcategoriesCount}',
                 helper: weakestSubcategory == null
-                    ? 'Ainda n\u00E3o h\u00E1 subcategorias com base suficiente para identificar alertas.'
+                    ? 'Ainda não há disciplinas com base suficiente para identificar alertas.'
                     : view.attentionSubcategoriesCount == 0
-                    ? 'Nenhuma subcategoria ficou abaixo de ${view.attentionAccuracyThreshold.toStringAsFixed(0)}% de acerto'
-                    : '${performanceShortSubcategoryName(weakestSubcategory.subcategory)} \u00E9 a mais sens\u00EDvel agora.',
+                    ? 'Nenhuma disciplina ficou abaixo de ${view.attentionAccuracyThreshold.toStringAsFixed(0)}% de acerto'
+                    : '${performanceShortSubcategoryName(weakestSubcategory.subcategory)} é a mais sensível agora.',
                 icon: Icons.warning_amber_rounded,
                 accent: const Color(0xFF7C9BFF),
                 onSurface: onSurface,
@@ -56,8 +55,8 @@ class MomentIndicatorsSection extends StatelessWidget {
                     ? '--'
                     : '${strongestSubcategory.accuracyPercent.toStringAsFixed(0)}%',
                 helper: strongestSubcategory == null
-                    ? 'Ainda n\u00E3o h\u00E1 subcategorias com base suficiente para comparar.'
-                    : '${performanceShortSubcategoryName(strongestSubcategory.subcategory)}\n${performanceShortDisciplineName(strongestSubcategory.discipline)} \u2022 ${performanceAttemptsLabel(strongestSubcategory.totalAttempts)}',
+                    ? 'Ainda não há disciplinas com base suficiente para comparar.'
+                    : '${performanceShortSubcategoryName(strongestSubcategory.subcategory)}\n${performanceShortDisciplineName(strongestSubcategory.discipline)} • ${performanceAttemptsLabel(strongestSubcategory.totalAttempts)}',
                 icon: Icons.emoji_events_rounded,
                 accent: const Color(0xFFC28BFF),
                 onSurface: onSurface,
@@ -74,8 +73,8 @@ class MomentIndicatorsSection extends StatelessWidget {
                 label: 'Tempo por simulado',
                 value: performanceFormatSeconds(view.secondsPerSimulation),
                 helper: view.completedSessions == 0
-                    ? 'Conclua simulados para liberar essa m\u00E9dia.'
-                    : 'M\u00E9dia sobre ${view.completedSessions} simulados conclu\u00EDdos.',
+                    ? 'Conclua simulados para liberar essa média.'
+                    : 'Média sobre ${view.completedSessions} simulados concluídos.',
                 icon: Icons.flag_rounded,
                 accent: const Color(0xFFFFC857),
                 onSurface: onSurface,
@@ -90,8 +89,8 @@ class MomentIndicatorsSection extends StatelessWidget {
                     ? '--'
                     : '${weakestSubcategory.accuracyPercent.toStringAsFixed(0)}%',
                 helper: weakestSubcategory == null
-                    ? 'Ainda n\u00E3o h\u00E1 subcategorias com base suficiente para comparar'
-                    : '${performanceShortSubcategoryName(weakestSubcategory.subcategory)}\n${performanceShortDisciplineName(weakestSubcategory.discipline)} \u2022 ${performanceAttemptsLabel(weakestSubcategory.totalAttempts)}',
+                    ? 'Ainda não há disciplinas com base suficiente para comparar'
+                    : '${performanceShortSubcategoryName(weakestSubcategory.subcategory)}\n${performanceShortDisciplineName(weakestSubcategory.discipline)} • ${performanceAttemptsLabel(weakestSubcategory.totalAttempts)}',
                 icon: Icons.troubleshoot_rounded,
                 accent: const Color(0xFF4ED7A6),
                 onSurface: onSurface,
@@ -126,7 +125,7 @@ class DisciplineSection extends StatelessWidget {
         PerformanceSectionHeader(
           title: 'Leitura por disciplina',
           subtitle:
-              'Aqui o foco \u00E9 peso relativo: onde seu volume j\u00E1 tem tra\u00E7\u00E3o e onde ainda falta presen\u00E7a.',
+              'Aqui o foco é peso relativo: onde seu volume já tem tração e onde ainda falta presença.',
           onSurface: onSurface,
           onSurfaceMuted: onSurfaceMuted,
         ),
@@ -135,13 +134,13 @@ class DisciplineSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             PerformanceSpotlightCard(
-              title: 'Maior presen\u00E7a',
+              title: 'Maior presença',
               value: view.leader == null
                   ? 'Sem dados'
                   : performanceShortDisciplineName(view.leader!.discipline),
               subtitle: view.leader == null
-                  ? 'Assim que voc\u00EA responder quest\u00F5es, essa leitura aparece.'
-                  : '${performanceDisciplineShare(view.leader!.count, view.totalQuestions)} do seu hist\u00F3rico est\u00E1 aqui.',
+                  ? 'Assim que você responder questões, essa leitura aparece.'
+                  : '${performanceDisciplineShare(view.leader!.count, view.totalQuestions)} do seu histórico está aqui.',
               accent: view.leader == null
                   ? const Color(0xFF7C88A8)
                   : performanceDisciplineAccent(view.leader!.discipline),
@@ -151,13 +150,13 @@ class DisciplineSection extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             PerformanceSpotlightCard(
-              title: 'Mais espa\u00E7o para crescer',
+              title: 'Mais espaço para crescer',
               value: view.underused == null
                   ? 'Sem leitura'
                   : performanceShortDisciplineName(view.underused!.discipline),
               subtitle: view.underused == null
-                  ? 'Ainda n\u00E3o h\u00E1 base suficiente para comparar \u00E1reas.'
-                  : '${performanceDisciplineShare(view.underused!.count, view.totalQuestions)} do volume atual passa por essa \u00E1rea.',
+                  ? 'Ainda não há base suficiente para comparar áreas.'
+                  : '${performanceDisciplineShare(view.underused!.count, view.totalQuestions)} do volume atual passa por essa área.',
               accent: view.underused == null
                   ? const Color(0xFF7C88A8)
                   : performanceDisciplineAccent(view.underused!.discipline),
@@ -226,7 +225,7 @@ class EfficiencySection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         PerformanceSectionHeader(
-          title: 'Efici\u00EAncia e ritmo',
+          title: 'Eficiência e ritmo',
           subtitle:
               'Mais do que volume, essa leitura mostra a qualidade do seu tempo e das suas respostas.',
           onSurface: onSurface,
@@ -251,11 +250,11 @@ class EfficiencySection extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: PerformanceMetricCard(
-                label: 'Erros \u00FAteis',
+                label: 'Erros úteis',
                 value: '${view.errorCount}',
                 helper: view.errorCount == 0
-                    ? 'Nenhum erro relevante no hist\u00F3rico.'
-                    : 'Pontos com mais espa\u00E7o para revis\u00E3o.',
+                    ? 'Nenhum erro relevante no histórico.'
+                    : 'Pontos com mais espaço para revisão.',
                 icon: Icons.refresh_rounded,
                 accent: const Color(0xFFFF9D6C),
                 onSurface: onSurface,
@@ -269,11 +268,11 @@ class EfficiencySection extends StatelessWidget {
           children: [
             Expanded(
               child: PerformanceMetricCard(
-                label: 'Tempo por quest\u00E3o',
+                label: 'Tempo por questão',
                 value: performanceFormatSeconds(view.averageSecondsPerQuestion),
                 helper: view.questionsAnswered == 0
-                    ? 'A m\u00E9dia aparece com suas respostas.'
-                    : 'Tempo m\u00E9dio gasto por quest\u00E3o.',
+                    ? 'A média aparece com suas respostas.'
+                    : 'Tempo médio gasto por questão.',
                 icon: Icons.timer_outlined,
                 accent: const Color(0xFF7C9BFF),
                 onSurface: onSurface,
@@ -284,7 +283,7 @@ class EfficiencySection extends StatelessWidget {
             Expanded(
               child: PerformanceMetricCard(
                 label: view.hasWeeklyRhythmBase
-                    ? 'M\u00E9dia semanal'
+                    ? 'Média semanal'
                     : 'Volume inicial',
                 value: view.hasWeeklyRhythmBase
                     ? (view.weeklyQuestionAverage == 0
@@ -292,10 +291,10 @@ class EfficiencySection extends StatelessWidget {
                           : view.weeklyQuestionAverage.toStringAsFixed(1))
                     : '${view.questionsAnswered}',
                 helper: view.questionsAnswered == 0
-                    ? 'Sem quest\u00F5es recentes para calcular.'
+                    ? 'Sem questões recentes para calcular.'
                     : view.hasWeeklyRhythmBase
-                    ? 'Quest\u00F5es respondidas por semana, em m\u00E9dia.'
-                    : 'Quest\u00F5es acumuladas nos seus primeiros dias.',
+                    ? 'Questões respondidas por semana, em média.'
+                    : 'Questões acumuladas nos seus primeiros dias.',
                 icon: Icons.bolt_rounded,
                 accent: const Color(0xFFFFC857),
                 onSurface: onSurface,

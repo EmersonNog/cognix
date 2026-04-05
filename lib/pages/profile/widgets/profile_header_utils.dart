@@ -24,9 +24,9 @@ ProfileHeaderRecentIndexViewData buildProfileHeaderRecentIndexView({
 
   if (!recentIndexReady) {
     return const ProfileHeaderRecentIndexViewData(
-      label: 'Come\u00e7ando agora',
+      label: 'Começando agora',
       description:
-          'Seu \u00edndice come\u00e7a em 0 e passa a reagir conforme suas respostas e sess\u00f5es recentes.',
+          'Seu índice começa em 0 e passa a reagir conforme suas respostas e sessões recentes.',
       index: 0,
       indexLabel: '0/100',
       accent: Color(0xFF8E96B8),
@@ -35,9 +35,9 @@ ProfileHeaderRecentIndexViewData buildProfileHeaderRecentIndexView({
 
   if (index >= 80) {
     return ProfileHeaderRecentIndexViewData(
-      label: 'Em boa sequ\u00eancia',
+      label: 'Em boa sequência',
       description:
-          'Seu ritmo est\u00e1 forte agora. Vale aproveitar essa fase para manter o embalo.',
+          'Seu ritmo está forte agora. Vale aproveitar essa fase para manter o embalo.',
       index: index,
       accent: const Color.fromARGB(255, 38, 208, 120),
     );
@@ -45,9 +45,9 @@ ProfileHeaderRecentIndexViewData buildProfileHeaderRecentIndexView({
 
   if (index >= 65) {
     return ProfileHeaderRecentIndexViewData(
-      label: 'Ganhando tra\u00e7\u00e3o',
+      label: 'Ganhando tração',
       description:
-          'Seu momento est\u00e1 melhorando. Mais alguns bons blocos podem elevar esse \u00edndice.',
+          'Seu momento está melhorando. Mais alguns bons blocos podem elevar esse índice.',
       index: index,
       accent: const Color.fromARGB(255, 28, 191, 251),
     );
@@ -55,9 +55,9 @@ ProfileHeaderRecentIndexViewData buildProfileHeaderRecentIndexView({
 
   if (index >= 50) {
     return ProfileHeaderRecentIndexViewData(
-      label: 'Ritmo est\u00e1vel',
+      label: 'Ritmo estável',
       description:
-          'Seu estudo est\u00e1 equilibrado. Consist\u00eancia e boas respostas ajudam a subir esse term\u00f4metro.',
+          'Seu estudo está equilibrado. Consistência e boas respostas ajudam a subir esse termômetro.',
       index: index,
       accent: const Color(0xFF8E7CFF),
     );
@@ -65,9 +65,9 @@ ProfileHeaderRecentIndexViewData buildProfileHeaderRecentIndexView({
 
   if (index >= 35) {
     return ProfileHeaderRecentIndexViewData(
-      label: 'Ritmo inst\u00e1vel',
+      label: 'Ritmo instável',
       description:
-          'Seu desempenho recente oscila. Um pouco mais de const\u00e2ncia j\u00e1 tende a firmar o seu ritmo.',
+          'Seu desempenho recente oscila. Um pouco mais de constência já tende a firmar o seu ritmo.',
       index: index,
       accent: const Color(0xFFFFC857),
     );
@@ -76,7 +76,7 @@ ProfileHeaderRecentIndexViewData buildProfileHeaderRecentIndexView({
   return ProfileHeaderRecentIndexViewData(
     label: 'Hora de retomar',
     description:
-        'Seu ritmo esfriou nos \u00faltimos dias. Uma nova sess\u00e3o bem feita j\u00e1 pode reacender esse momento.',
+        'Seu ritmo esfriou nos últimos dias. Uma nova sessão bem feita já pode reacender esse momento.',
     index: index,
     accent: const Color(0xFFFF8B7A),
   );
@@ -87,12 +87,12 @@ String buildProfileHeaderNextLevelMessage({
   required int pointsToNextLevel,
 }) {
   if (nextLevel == null) {
-    return 'Voc\u00ea j\u00e1 alcan\u00e7ou o n\u00edvel m\u00e1ximo. Parab\u00e9ns!';
+    return 'Você já alcançou o nível máximo. Parabáns!';
   }
   if (pointsToNextLevel <= 0) {
-    return 'Quase l\u00e1: complete mais uma a\u00e7\u00e3o para subir de n\u00edvel.';
+    return 'Quase lá: complete mais uma ação para subir de nível.';
   }
-  return 'Faltam $pointsToNextLevel pontos para o seu pr\u00f3ximo salto!';
+  return 'Faltam $pointsToNextLevel pontos para o seu próximo salto!';
 }
 
 String formatCoinsLabel(double coins) {
@@ -124,17 +124,17 @@ Color profileHeaderLevelAccent(String level, Color fallback) {
 String profileHeaderLevelEmoji(String level) {
   switch (_normalizeLevel(level)) {
     case 'iniciante':
-      return '\u{1F331}';
+      return '🌱';
     case 'em evolucao':
-      return '\u{1F680}';
+      return '🚀';
     case 'dedicado':
-      return '\u{1F4D8}';
+      return '📘';
     case 'avancado':
-      return '\u{1F3C6}';
+      return '🏆';
     case 'academico avancado':
-      return '\u{1F451}';
+      return '👑';
     default:
-      return '\u{2B50}';
+      return '⭐';
   }
 }
 
@@ -143,13 +143,13 @@ String profileHeaderDisplayLevel(String level) {
     case 'iniciante':
       return 'Iniciante';
     case 'em evolucao':
-      return 'Em evolu\u00e7\u00e3o';
+      return 'Em evolução';
     case 'dedicado':
       return 'Dedicado';
     case 'avancado':
-      return 'Avan\u00e7ado';
+      return 'Avançado';
     case 'academico avancado':
-      return 'Acad\u00eamico avan\u00e7ado';
+      return 'Acadêmico avançado';
     default:
       return level;
   }

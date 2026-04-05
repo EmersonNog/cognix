@@ -214,7 +214,7 @@ class _NativeRecentIndexBadge extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Text(
-                '\u00cdNDICE',
+                'ÍNDICE',
                 style: GoogleFonts.plusJakartaSans(
                   color: accent.withOpacity(0.92),
                   fontSize: 9.5,

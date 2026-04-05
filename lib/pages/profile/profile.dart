@@ -102,7 +102,7 @@ class ProfileTab extends StatelessWidget {
                   icon: Icons.dashboard_customize_rounded,
                   title: 'Abrir painel pessoal',
                   subtitle:
-                      'Acesse planos, metas de estudo e suporte em uma \u00e1rea mais geral da sua conta.',
+                      'Acesse planos, metas de estudo e suporte em uma área mais geral da sua conta.',
                 ),
               ],
             ),
@@ -163,7 +163,7 @@ class _ProfileErrorBanner extends StatelessWidget {
         border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Text(
-        'N\u00e3o foi poss\u00edvel atualizar o score agora. Exibindo o \u00faltimo estado local dispon\u00edvel.',
+        'Não foi possível atualizar o score agora. Exibindo o último estado local disponível.',
         style: Theme.of(
           context,
         ).textTheme.bodySmall?.copyWith(color: onSurface, height: 1.4),
@@ -195,7 +195,7 @@ class _ProfileSectionHeader extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          'Acompanhe sua distribui\u00e7\u00e3o de quest\u00f5es e a consist\u00eancia da sua rotina.',
+          'Acompanhe sua distribuição de questí5es e a consistência da sua rotina.',
           style: Theme.of(
             context,
           ).textTheme.bodyMedium?.copyWith(color: onSurfaceMuted, height: 1.4),

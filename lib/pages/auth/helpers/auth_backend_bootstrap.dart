@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
-
 import '../../../services/auth/auth_api.dart';
 
 Future<void> prepareAuthenticatedBackendSession() async {
@@ -9,7 +7,7 @@ Future<void> prepareAuthenticatedBackendSession() async {
   if (user == null) {
     throw FirebaseAuthException(
       code: 'missing-current-user',
-      message: 'Usuario autenticado nao encontrado.',
+      message: 'Usuário autenticado não encontrado.',
     );
   }
 
@@ -28,5 +26,5 @@ Future<void> prepareAuthenticatedBackendSession() async {
     }
   }
 
-  throw lastError ?? Exception('Falha ao sincronizar sessao autenticada.');
+  throw lastError ?? Exception('Falha ao sincronizar sessão autenticada.');
 }

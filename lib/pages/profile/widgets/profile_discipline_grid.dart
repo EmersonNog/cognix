@@ -17,17 +17,17 @@ const Map<String, _DisciplineDefinition> _disciplineDefinitionsByKey =
         icon: Icons.menu_book_rounded,
       ),
       'ciencias_humanas': _DisciplineDefinition(
-        label: 'Ci\u00eancias Humanas',
+        label: 'Ciências Humanas',
         accent: Color(0xFFFF8A65),
         icon: Icons.public_rounded,
       ),
       'ciencias_natureza': _DisciplineDefinition(
-        label: 'Ci\u00eancias da Natureza',
+        label: 'Ciências da Natureza',
         accent: Color(0xFF49D7A8),
         icon: Icons.eco_rounded,
       ),
       'matematica': _DisciplineDefinition(
-        label: 'Matem\u00e1tica',
+        label: 'Matemática',
         accent: Color(0xFFFFC857),
         icon: Icons.calculate_rounded,
       ),
@@ -71,10 +71,10 @@ class ProfileDisciplineGrid extends StatelessWidget {
     );
   }
 
-  List<_DisciplineTileData> _buildVisibleItems(List<ProfileDisciplineStat> source) {
-    final counts = <String, int>{
-      for (final key in _disciplineOrder) key: 0,
-    };
+  List<_DisciplineTileData> _buildVisibleItems(
+    List<ProfileDisciplineStat> source,
+  ) {
+    final counts = <String, int>{for (final key in _disciplineOrder) key: 0};
 
     for (final item in source) {
       final key = _canonicalDisciplineKey(item.discipline);
@@ -191,7 +191,11 @@ class _DisciplineChip extends StatelessWidget {
                   color: definition.accent.withOpacity(0.16),
                   borderRadius: BorderRadius.circular(9),
                 ),
-                child: Icon(definition.icon, color: definition.accent, size: 15),
+                child: Icon(
+                  definition.icon,
+                  color: definition.accent,
+                  size: 15,
+                ),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -226,10 +230,7 @@ class _DisciplineDefinition {
 }
 
 class _DisciplineTileData {
-  const _DisciplineTileData({
-    required this.definition,
-    required this.count,
-  });
+  const _DisciplineTileData({required this.definition, required this.count});
 
   final _DisciplineDefinition definition;
   final int count;
@@ -285,12 +286,12 @@ String _normalizeDiscipline(String value) {
 }
 
 String _questionsLabel(int count) {
-  return count == 1 ? 'quest\u00e3o respondida' : 'quest\u00f5es respondidas';
+  return count == 1 ? 'questão respondida' : 'questões respondidas';
 }
 
 String _disciplineCaption(int count) {
   if (count == 1) {
-    return 'In\u00edcio';
+    return 'Início';
   }
 
   if (count < 10) {
@@ -298,7 +299,7 @@ String _disciplineCaption(int count) {
   }
 
   if (count < 100) {
-    return 'Em evolu\u00e7\u00e3o';
+    return 'Em evolução';
   }
 
   return 'Consistente';

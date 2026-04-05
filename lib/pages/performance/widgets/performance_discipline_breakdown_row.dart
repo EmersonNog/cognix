@@ -46,7 +46,7 @@ class PerformanceDisciplineBreakdownRow extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Text(
-              '$count quest\u00F5es',
+              '$count questões',
               style: GoogleFonts.plusJakartaSans(
                 color: onSurfaceMuted,
                 fontSize: 11,

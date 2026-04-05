@@ -89,7 +89,7 @@ class _TrainingSummaryScreenState extends State<TrainingSummaryScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Text(
-                  'Nenhum resumo disponível para esta subcategoria.',
+                  'Nenhum resumo disponível para esta disciplina.',
                   style: GoogleFonts.inter(
                     color: widget.onSurfaceMuted,
                     fontSize: 13,

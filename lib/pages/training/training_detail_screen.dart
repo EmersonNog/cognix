@@ -91,7 +91,7 @@ class _TrainingDetailScreenState extends State<TrainingDetailScreen>
     if (hasCompletedSession) {
       return const TrainingPrimaryCtaData(
         label: 'Ver Resultados',
-        subtitle: 'Seu último simulado desta subcategoria foi concluído.',
+        subtitle: 'Seu último simulado desta disciplina foi concluído.',
         icon: Icons.assessment_rounded,
       );
     }
@@ -99,7 +99,7 @@ class _TrainingDetailScreenState extends State<TrainingDetailScreen>
     if (hasInProgressSession) {
       return const TrainingPrimaryCtaData(
         label: 'Continuar Simulado',
-        subtitle: 'Você tem um simulado em andamento nesta subcategoria.',
+        subtitle: 'Você tem um simulado em andamento nesta disciplina.',
         icon: Icons.play_circle_fill_rounded,
       );
     }

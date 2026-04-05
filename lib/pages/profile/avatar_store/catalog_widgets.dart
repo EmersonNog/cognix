@@ -146,26 +146,26 @@ class _AvatarStoreTile extends StatelessWidget {
     final accent = item.equipped
         ? const Color(0xFFFFD977)
         : item.owned
-            ? primary
-            : item.affordable
-                ? const Color(0xFF78D6B7)
-                : const Color(0xFFFF8B7A);
+        ? primary
+        : item.affordable
+        ? const Color(0xFF78D6B7)
+        : const Color(0xFFFF8B7A);
     final rarityColor = _avatarRarityColor(item.rarity, primary);
 
     final badgeText = item.equipped
         ? 'Em uso'
         : item.owned
-            ? 'Comprado'
-            : item.affordable
-                ? 'Liberar'
-                : 'Bloqueado';
+        ? 'Comprado'
+        : item.affordable
+        ? 'Liberar'
+        : 'Bloqueado';
     final priceFlagText = item.equipped
         ? 'Ativo'
         : item.owned
-            ? 'Liberado'
-            : item.costCoins <= 0
-                ? 'Gratis'
-                : '${formatCoinsLabel(item.costCoins).replaceAll('moedas', '')} \u{1FA99}';
+        ? 'Liberado'
+        : item.costCoins <= 0
+        ? 'Gratis'
+        : '${formatCoinsLabel(item.costCoins).replaceAll('moedas', '')} 🪙';
     final metadataText = item.theme.trim().isEmpty
         ? _formatAvatarRarity(item.rarity)
         : '${item.theme} · ${_formatAvatarRarity(item.rarity)}';
