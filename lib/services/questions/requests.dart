@@ -3,6 +3,23 @@ import 'models.dart';
 import 'parsers.dart';
 import 'request_helpers.dart';
 
+Future<List<String>> fetchDisciplines() async {
+  final payload = await getJson(
+    Uri.parse('${apiBaseUrl()}/questions/disciplines'),
+    errorMessage: 'Erro ao carregar disciplinas',
+  );
+
+  final items = payload['items'];
+  if (items is! List) {
+    return const [];
+  }
+
+  return items
+      .map((item) => item?.toString().trim() ?? '')
+      .where((item) => item.isNotEmpty)
+      .toList();
+}
+
 Future<AttemptResult> submitAttempt({
   required int questionId,
   required String selectedLetter,

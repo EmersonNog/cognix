@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import '../../navigation/app_route_observer.dart';
 import '../../services/profile/profile_api.dart';
 import '../../services/profile/profile_refresh_notifier.dart';
+import '../../services/study_plan/study_plan_api.dart';
+import '../../services/study_plan/study_plan_refresh_notifier.dart';
 import 'home_tab.dart';
 import 'widgets/home_shell_widgets.dart';
 import '../performance/performance_screen.dart';
@@ -22,12 +24,14 @@ class _HomeState extends State<Home> with RouteAware {
   bool _isLoading = false;
   int _currentIndex = 0;
   late Future<ProfileScoreData> _profileFuture;
+  late Future<StudyPlanData> _studyPlanFuture;
   bool _isRouteObserverSubscribed = false;
 
   @override
   void initState() {
     super.initState();
     _profileFuture = _fetchSharedProfileScore();
+    _studyPlanFuture = _fetchSharedStudyPlan();
   }
 
   @override
@@ -45,23 +49,34 @@ class _HomeState extends State<Home> with RouteAware {
     return fetchProfileScore();
   }
 
-  Future<void> _refreshSharedProfileData() async {
+  Future<StudyPlanData> _fetchSharedStudyPlan() async {
+    return fetchStudyPlan();
+  }
+
+  Future<void> _refreshSharedHubData() async {
     final nextProfileFuture = _fetchSharedProfileScore();
+    final nextStudyPlanFuture = _fetchSharedStudyPlan();
     if (mounted) {
       setState(() {
         _profileFuture = nextProfileFuture;
+        _studyPlanFuture = nextStudyPlanFuture;
       });
     }
 
     try {
       await nextProfileFuture;
     } catch (_) {}
+    try {
+      await nextStudyPlanFuture;
+    } catch (_) {}
   }
 
   @override
   void didPopNext() {
-    if (profileRefreshNotifier.consumeDirty()) {
-      _refreshSharedProfileData();
+    final shouldRefreshProfile = profileRefreshNotifier.consumeDirty();
+    final shouldRefreshStudyPlan = studyPlanRefreshNotifier.consumeDirty();
+    if (shouldRefreshProfile || shouldRefreshStudyPlan) {
+      _refreshSharedHubData();
     }
   }
 
@@ -102,6 +117,7 @@ class _HomeState extends State<Home> with RouteAware {
     return <Widget>[
       HomeTab(
         profileFuture: _profileFuture,
+        studyPlanFuture: _studyPlanFuture,
         surfaceContainer: palette.surfaceContainer,
         surfaceContainerHigh: palette.surfaceContainerHigh,
         onSurface: palette.onSurface,
@@ -109,7 +125,7 @@ class _HomeState extends State<Home> with RouteAware {
         primary: palette.primary,
         primaryDim: palette.primaryDim,
         userName: _userName,
-        onRefresh: _refreshSharedProfileData,
+        onRefresh: _refreshSharedHubData,
       ),
       TrainingTab(
         surfaceContainer: palette.surfaceContainer,
@@ -117,14 +133,14 @@ class _HomeState extends State<Home> with RouteAware {
         onSurface: palette.onSurface,
         onSurfaceMuted: palette.onSurfaceMuted,
         primary: palette.primary,
-        onRefreshHubData: _refreshSharedProfileData,
+        onRefreshHubData: _refreshSharedHubData,
       ),
       PerformanceScreen.embedded(
         profileFuture: _profileFuture,
         onSurface: palette.onSurface,
         onSurfaceMuted: palette.onSurfaceMuted,
         primary: palette.primary,
-        onRefresh: _refreshSharedProfileData,
+        onRefresh: _refreshSharedHubData,
       ),
       ProfileTab(
         profileFuture: _profileFuture,
@@ -135,7 +151,7 @@ class _HomeState extends State<Home> with RouteAware {
         primary: palette.primary,
         primaryDim: palette.primaryDim,
         userName: _userName,
-        onRefresh: _refreshSharedProfileData,
+        onRefresh: _refreshSharedHubData,
       ),
     ];
   }
