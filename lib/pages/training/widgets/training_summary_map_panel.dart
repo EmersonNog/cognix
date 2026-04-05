@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reactive_mind_map/reactive_mind_map.dart';
-
 import '../../../services/summaries/summaries_api.dart';
 import 'training_summary_locked_overlay.dart';
 import 'training_summary_map_node_card.dart';
@@ -45,7 +44,12 @@ class TrainingSummaryMapPanel extends StatelessWidget {
         : summary;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(config.outerPadding, 0, config.outerPadding, 20),
+      padding: EdgeInsets.fromLTRB(
+        config.outerPadding,
+        0,
+        config.outerPadding,
+        20,
+      ),
       child: Container(
         decoration: BoxDecoration(
           color: surfaceContainer.withOpacity(0.38),
@@ -232,27 +236,27 @@ SummaryData _buildLockedMockSummary(
       const SummaryNode(
         title: 'Conceitos centrais',
         items: [
-          'Definicoes essenciais',
-          'Relacoes principais',
-          'Interpretacao do tema',
+          'Definições essenciais',
+          'Relações principais',
+          'Interpretação do tema',
         ],
       ),
       const SummaryNode(
-        title: 'Padroes de questao',
+        title: 'Padroes de questão',
         items: [
           'Leitura do enunciado',
-          'Formulas recorrentes',
+          'Fórmulas recorrentes',
           'Erros mais comuns',
         ],
       ),
       SummaryNode(
         title: subcategoryTitle.trim().isEmpty
-            ? 'Aplicacoes'
-            : 'Aplicacoes em $subcategoryTitle',
+            ? 'Aplicações'
+            : 'Aplicações em $subcategoryTitle',
         items: const [
-          'Passo a passo de resolucao',
-          'Pontos de revisao',
-          'Atencao nas alternativas',
+          'Passo a passo de resolução',
+          'Pontos de revisão',
+          'Atenção nas alternativas',
         ],
       ),
     ],

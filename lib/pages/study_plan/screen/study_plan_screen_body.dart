@@ -171,7 +171,7 @@ class _StudyPlanFormContent extends StatelessWidget {
         StudyPlanSection(
           title: 'Estrutura da semana',
           subtitle:
-              'Organize a base do plano definindo frequência, carga diaria e melhor janela do dia.',
+              'Organize a base do plano definindo frequência, carga diária e melhor janela do dia.',
           surfaceContainer: palette.surfaceContainer,
           onSurface: palette.onSurface,
           onSurfaceMuted: palette.onSurfaceMuted,
@@ -325,7 +325,7 @@ class _StudyPlanFormContent extends StatelessWidget {
                           const SizedBox(width: 12),
                           Expanded(
                             child: StudyPlanFocusCard(
-                              title: 'Revisao',
+                              title: 'Revisão',
                               subtitle:
                                   'Puxa mais peso para tempo de estudo acumulado.',
                               icon: Icons.menu_book_rounded,
@@ -367,12 +367,12 @@ class _StudyPlanFormContent extends StatelessWidget {
         StudyPlanSection(
           title: 'Prioridades da semana',
           subtitle:
-              'Escolha as disciplinas que merecem mais atenção dentro do seu planejamento.',
+              'Escolha as área que merecem mais atenção dentro do seu planejamento.',
           surfaceContainer: palette.surfaceContainer,
           onSurface: palette.onSurface,
           onSurfaceMuted: palette.onSurfaceMuted,
           child: StudyPlanSubsection(
-            title: 'Disciplinas prioritárias',
+            title: 'Áreas prioritárias',
             subtitle:
                 'Você pode selecionar até 4 frentes para dar mais foco ao plano.',
             trailing: StudyPlanInfoBadge(

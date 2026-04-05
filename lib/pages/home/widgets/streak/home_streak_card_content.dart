@@ -129,7 +129,7 @@ class _StreakHeaderText extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'SEQUENCIA',
+          'SEQUÊNCIA',
           style: GoogleFonts.plusJakartaSans(
             color: onSurfaceMuted,
             fontSize: 11,

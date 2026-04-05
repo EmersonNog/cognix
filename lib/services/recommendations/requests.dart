@@ -5,7 +5,7 @@ import 'parsers.dart';
 Future<HomeRecommendationsData> fetchHomeRecommendations() async {
   final payload = await getJson(
     Uri.parse('${apiBaseUrl()}/users/recommendations'),
-    errorMessage: 'Erro ao carregar recomendacoes',
+    errorMessage: 'Erro ao carregar recomendaçõees',
   );
   return parseHomeRecommendationsData(payload);
 }

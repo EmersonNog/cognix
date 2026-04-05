@@ -25,7 +25,7 @@ class MomentIndicatorsSection extends StatelessWidget {
         PerformanceSectionHeader(
           title: 'Indicadores do momento',
           subtitle:
-              'Leituras derivadas da API para enxergar intensidade, distribuição e cobertura da sua rotina.',
+              'Leituras do seu histórico para enxergar intensidade, distribuição e cobertura da sua rotina.',
           onSurface: onSurface,
           onSurfaceMuted: onSurfaceMuted,
         ),

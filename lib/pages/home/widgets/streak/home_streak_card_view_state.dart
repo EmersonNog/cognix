@@ -70,7 +70,7 @@ class HomeStreakCardViewState {
           : 'Seu último registro foi ontem. Estude hoje para manter a sequência.';
 
       return HomeStreakCardViewState(
-        headline: 'Sequencia atual',
+        headline: 'Sequência atual',
         description: description,
         streakValue: '$streakDays',
         streakLabel: streakDays == 1 ? 'dia seguido' : 'dias seguidos',

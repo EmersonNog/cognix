@@ -8,9 +8,9 @@ String googleSignInErrorMessage(String code) {
     case 'uiUnavailable':
       return 'Nao foi possivel abrir a interface de login.';
     case 'clientConfigurationError':
-      return 'Falha na configuracao do cliente Google.';
+      return 'Falha na configuração do cliente Google.';
     case 'providerConfigurationError':
-      return 'Falha na configuracao do provedor Google.';
+      return 'Falha na configuração do provedor Google.';
     case 'userMismatch':
       return 'A conta usada nao corresponde a sessao atual.';
     case 'network_error':

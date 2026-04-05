@@ -61,7 +61,7 @@ class HomeDailyRhythmCard extends StatelessWidget {
                 text: TextSpan(
                   children: [
                     TextSpan(
-                      text: 'Ola, bom ver voce de\nnovo, ',
+                      text: 'Olá, bom ver você de\nnovo, ',
                       style: GoogleFonts.manrope(
                         color: onSurface,
                         fontSize: 22,
@@ -205,8 +205,8 @@ String _buildWeeklyInsightLabel(StudyPlanData plan) {
       .clamp(0, plan.activeDaysGoal);
   if (remainingActiveDays > 0) {
     return remainingActiveDays == 1
-        ? 'Falta 1 dia ativo para bater sua frequencia semanal.'
-        : 'Faltam $remainingActiveDays dias ativos para bater sua frequencia semanal.';
+        ? 'Falta 1 dia ativo para bater sua frequência semanal.'
+        : 'Faltam $remainingActiveDays dias ativos para bater sua frequência semanal.';
   }
 
   final remainingMinutes =

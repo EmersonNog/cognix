@@ -195,7 +195,7 @@ class _ProfileSectionHeader extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          'Acompanhe sua distribuição de questí5es e a consistência da sua rotina.',
+          'Acompanhe sua distribuição de questões e a consistência da sua rotina.',
           style: Theme.of(
             context,
           ).textTheme.bodyMedium?.copyWith(color: onSurfaceMuted, height: 1.4),

@@ -37,7 +37,7 @@ class HomeRecommendationsData {
 
   const HomeRecommendationsData.empty()
     : title = 'Recomendado para Hoje',
-      subtitle = 'Sem recomendacoes disponiveis por enquanto.',
+      subtitle = 'Sem recomendações disponíveis por enquanto.',
       items = const [];
 
   final String title;

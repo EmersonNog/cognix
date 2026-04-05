@@ -74,7 +74,7 @@ class TrainingSessionBody extends StatelessWidget {
       children: [
         TrainingHeader(
           title:
-              '${subcategory.toUpperCase()} - QUESTAO ${currentIndex + 1}/$totalQuestions',
+              '${subcategory.toUpperCase()} - QUESTÃO ${currentIndex + 1}/$totalQuestions',
           timeLabel: timeLabel,
           onSurface: onSurface,
           onSurfaceMuted: onSurfaceMuted,
@@ -145,7 +145,7 @@ class TrainingSessionBody extends StatelessWidget {
           GestureDetector(
             onTap: isFreshAnswerFeedback ? null : onPrevious,
             child: TrainingGhostButton(
-              label: 'Questao Anterior',
+              label: 'Questão Anterior',
               surfaceContainerHigh: surfaceContainerHigh,
               onSurfaceMuted: onSurfaceMuted,
             ),
@@ -171,7 +171,7 @@ class TrainingSessionBody extends StatelessWidget {
       if (isLastVisibleQuestion && !hasMore) {
         return 'Finalizar Simulado';
       }
-      return 'Proxima Questao';
+      return 'Proxima Questão';
     }
     if (isLoadingMore) {
       return 'Carregando...';

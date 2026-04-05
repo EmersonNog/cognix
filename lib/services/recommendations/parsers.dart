@@ -9,7 +9,7 @@ HomeRecommendationsData parseHomeRecommendationsData(
         : 'Recomendado para Hoje',
     subtitle: payload['subtitle']?.toString().trim().isNotEmpty == true
         ? payload['subtitle'].toString().trim()
-        : 'Sem recomendacoes disponiveis por enquanto.',
+        : 'Sem recomendações disponíveis por enquanto.',
     items: parseHomeRecommendationItems(payload['items']),
   );
 }

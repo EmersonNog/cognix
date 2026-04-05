@@ -20,7 +20,7 @@ class TrainingDetailQuickActions extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'ACOES RAPIDAS',
+          'AÇÕES RÁPIDAS',
           style: GoogleFonts.plusJakartaSans(
             color: onSurfaceMuted,
             fontSize: 12,

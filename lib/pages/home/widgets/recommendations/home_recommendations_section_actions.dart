@@ -24,7 +24,7 @@ Future<void> _showAllRecommendationsSheet({
                 children: [
                   Expanded(
                     child: Text(
-                      'Todas as recomendacoes',
+                      'Todas as recomendações',
                       style: GoogleFonts.manrope(
                         color: onSurface,
                         fontSize: 18,
