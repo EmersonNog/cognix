@@ -95,6 +95,7 @@ class ProfileScoreData {
     required this.completedSessions,
     required this.totalStudySeconds,
     required this.activeDaysLast30,
+    required this.currentStreakDays,
     required this.consistencyWindowDays,
     required this.lastActivityAt,
     required this.nextLevel,
@@ -127,6 +128,7 @@ class ProfileScoreData {
       completedSessions = 0,
       totalStudySeconds = 0,
       activeDaysLast30 = 0,
+      currentStreakDays = 0,
       consistencyWindowDays = 30,
       lastActivityAt = null,
       nextLevel = 'Em Evolucao',
@@ -157,6 +159,7 @@ class ProfileScoreData {
   final int completedSessions;
   final int totalStudySeconds;
   final int activeDaysLast30;
+  final int currentStreakDays;
   final int consistencyWindowDays;
   final DateTime? lastActivityAt;
   final String? nextLevel;

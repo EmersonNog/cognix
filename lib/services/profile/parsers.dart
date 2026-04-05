@@ -53,6 +53,7 @@ ProfileScoreData parseProfileScoreData(Map<String, dynamic> payload) {
     completedSessions: completedSessions,
     totalStudySeconds: int.tryParse('${payload['total_study_seconds']}') ?? 0,
     activeDaysLast30: int.tryParse('${payload['active_days_last_30']}') ?? 0,
+    currentStreakDays: int.tryParse('${payload['current_streak_days']}') ?? 0,
     consistencyWindowDays:
         int.tryParse('${payload['consistency_window_days']}') ?? 30,
     lastActivityAt: parseApiDateTime(payload['last_activity_at']?.toString()),

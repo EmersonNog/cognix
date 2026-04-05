@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../services/profile/profile_api.dart';
 import 'widgets/home_daily_rhythm_card.dart';
 import 'widgets/home_master_streak_card.dart';
 import 'widgets/home_recommendations_section.dart';
@@ -7,6 +8,7 @@ import 'widgets/home_recent_performance_card.dart';
 class HomeTab extends StatelessWidget {
   const HomeTab({
     super.key,
+    required this.profileFuture,
     required this.surfaceContainer,
     required this.surfaceContainerHigh,
     required this.onSurface,
@@ -17,6 +19,7 @@ class HomeTab extends StatelessWidget {
     required this.onRefresh,
   });
 
+  final Future<ProfileScoreData> profileFuture;
   final Color surfaceContainer;
   final Color surfaceContainerHigh;
   final Color onSurface;
@@ -47,6 +50,7 @@ class HomeTab extends StatelessWidget {
           ),
           const SizedBox(height: 18),
           HomeMasterStreakCard(
+            profileFuture: profileFuture,
             surfaceContainer: surfaceContainer,
             surfaceContainerHigh: surfaceContainerHigh,
             onSurface: onSurface,
