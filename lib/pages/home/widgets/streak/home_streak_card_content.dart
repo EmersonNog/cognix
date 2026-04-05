@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../../../services/profile/profile_api.dart';
+import '../../../../services/profile/profile_api.dart';
 import 'home_streak_card_view_state.dart';
 
 class HomeStreakCardContent extends StatelessWidget {
@@ -108,11 +107,7 @@ class _StreakIconBadge extends StatelessWidget {
         color: state.accent.withValues(alpha: 0.16),
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Icon(
-        state.icon,
-        color: state.accent,
-        size: 21,
-      ),
+      child: Icon(state.icon, color: state.accent, size: 21),
     );
   }
 }

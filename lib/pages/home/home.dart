@@ -1,7 +1,6 @@
 import 'package:cognix/widgets/cognix_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../../navigation/app_route_observer.dart';
 import '../../services/recommendations/home_recommendations_api.dart';
 import '../../services/profile/profile_api.dart';
@@ -9,7 +8,7 @@ import '../../services/profile/profile_refresh_notifier.dart';
 import '../../services/study_plan/study_plan_api.dart';
 import '../../services/study_plan/study_plan_refresh_notifier.dart';
 import 'home_tab.dart';
-import 'widgets/home_shell_widgets.dart';
+import 'widgets/shell/home_shell_widgets.dart';
 import '../performance/performance_screen.dart';
 import '../profile/profile.dart';
 import '../training/training_tab.dart';

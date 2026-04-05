@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../../../services/recommendations/home_recommendations_api.dart';
-import '../../subjects/subjects_data.dart';
-import '../../training/training_detail_screen.dart';
-
+import '../../../../services/recommendations/home_recommendations_api.dart';
+import '../../../subjects/subjects_data.dart';
+import '../../../training/training_detail_screen.dart';
 part 'home_recommendations_section_actions.dart';
 part 'home_recommendations_section_cards.dart';
 
@@ -84,8 +82,8 @@ class HomeRecommendationsSection extends StatelessWidget {
               )
             else if (snapshot.hasError)
               _RecommendationsMessageCard(
-                title: 'Nao foi possivel carregar as recomendacoes agora.',
-                subtitle: 'Atualize a Home para tentar novamente.',
+                title: 'Não foi possível carregar as recomendações agora.',
+                subtitle: 'Atualize a tela para tentar novamente.',
                 icon: Icons.auto_awesome_rounded,
                 iconColor: primary,
                 onSurface: onSurface,
@@ -95,9 +93,9 @@ class HomeRecommendationsSection extends StatelessWidget {
             else if (visibleItems.isEmpty)
               _RecommendationsMessageCard(
                 title:
-                    'As recomendacoes vao aparecer conforme seu ritmo evoluir.',
+                    'As recomendações vão aparecer conforme seu ritmo evoluir.',
                 subtitle:
-                    'Defina prioridades no plano ou avance em algumas subcategorias.',
+                    'Defina prioridades no plano ou avance em algumas disciplinas.',
                 icon: Icons.explore_rounded,
                 iconColor: primary,
                 onSurface: onSurface,

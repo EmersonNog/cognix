@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../../services/profile/profile_api.dart';
+import '../../../../services/profile/profile_api.dart';
 import 'home_streak_card_content.dart';
 import 'home_streak_card_view_state.dart';
 

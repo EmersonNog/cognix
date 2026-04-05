@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../services/profile/profile_api.dart';
+import '../../../../services/profile/profile_api.dart';
 
 class HomeStreakCardViewState {
   const HomeStreakCardViewState({
@@ -40,7 +40,7 @@ class HomeStreakCardViewState {
 
     if (isLoading) {
       return HomeStreakCardViewState(
-        headline: 'Carregando sua sequencia',
+        headline: 'Carregando sua sequência',
         description: 'Estamos calculando seus dias consecutivos de estudo.',
         streakValue: '--',
         streakLabel: 'Aguarde um instante',
@@ -66,8 +66,8 @@ class HomeStreakCardViewState {
     if (streakDays > 0) {
       final badgeLabel = daysSinceLastActivity == 0 ? 'HOJE' : 'ATIVA';
       final description = daysSinceLastActivity == 0
-          ? 'Voce ja estudou hoje e sua sequencia esta protegida.'
-          : 'Seu ultimo registro foi ontem. Estude hoje para manter a sequencia.';
+          ? 'Você já estudou hoje e sua sequência está protegida.'
+          : 'Seu último registro foi ontem. Estude hoje para manter a sequência.';
 
       return HomeStreakCardViewState(
         headline: 'Sequencia atual',
@@ -86,11 +86,11 @@ class HomeStreakCardViewState {
 
     if (activeDays > 0) {
       return HomeStreakCardViewState(
-        headline: 'Retome sua sequencia',
+        headline: 'Retome sua sequência',
         description:
-            'Sua sequencia nao esta ativa agora, mas voce pode reinicia-la ainda hoje.',
+            'Sua sequência não está ativa agora, mas você pode reiniciá-la ainda hoje.',
         streakValue: '0',
-        streakLabel: 'dias em sequencia',
+        streakLabel: 'dias em sequência',
         badgeLabel: 'VOLTE',
         recentActivityWindow: recentActivityWindow,
         icon: Icons.bolt_rounded,
@@ -102,11 +102,11 @@ class HomeStreakCardViewState {
     }
 
     return HomeStreakCardViewState(
-      headline: 'Comece sua sequencia',
+      headline: 'Comece sua sequência',
       description:
-          'Responda questoes ou conclua um simulado para iniciar sua rotina.',
+          'Responda questões ou conclua um simulado para iniciar sua rotina.',
       streakValue: '0',
-      streakLabel: 'dias em sequencia',
+      streakLabel: 'dias em sequência',
       badgeLabel: 'NOVO',
       recentActivityWindow: recentActivityWindow,
       icon: Icons.rocket_launch_rounded,

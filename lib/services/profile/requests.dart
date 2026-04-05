@@ -1,5 +1,6 @@
 import '../core/api_client.dart' show apiBaseUrl, getJson, postJson;
-import 'models.dart';
+import 'models/profile_avatar_models.dart';
+import 'models/profile_score_models.dart';
 import 'parsers.dart';
 
 Future<ProfileScoreData> fetchProfileScore() async {

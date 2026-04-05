@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import '../../services/recommendations/home_recommendations_api.dart';
 import '../../services/profile/profile_api.dart';
 import '../../services/study_plan/study_plan_api.dart';
-import 'widgets/home_daily_rhythm_card.dart';
-import 'widgets/home_master_streak_card.dart';
-import 'widgets/home_recommendations_section.dart';
-import 'widgets/home_recent_performance_card.dart';
+import 'widgets/daily_rhythm/home_daily_rhythm_card.dart';
+import 'widgets/recommendations/home_recommendations_section.dart';
+import 'widgets/recent_performance/home_recent_performance_card.dart';
+import 'widgets/streak/home_master_streak_card.dart';
 
 class HomeTab extends StatelessWidget {
   const HomeTab({
@@ -74,6 +74,7 @@ class HomeTab extends StatelessWidget {
           ),
           const SizedBox(height: 22),
           HomeRecentPerformanceCard(
+            profileFuture: profileFuture,
             surfaceContainer: surfaceContainer,
             surfaceContainerHigh: surfaceContainerHigh,
             onSurface: onSurface,

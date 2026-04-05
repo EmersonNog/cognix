@@ -148,7 +148,7 @@ class _RecommendationsPlaceholder extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              'Montando recomendacoes personalizadas para hoje...',
+              'Montando recomendações personalizadas para hoje...',
               style: GoogleFonts.inter(color: onSurfaceMuted, fontSize: 12.5),
             ),
           ),

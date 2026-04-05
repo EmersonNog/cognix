@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../services/study_plan/study_plan_api.dart';
+import '../../../../services/study_plan/study_plan_api.dart';
 
 class HomeDailyRhythmCard extends StatelessWidget {
   const HomeDailyRhythmCard({
@@ -209,8 +209,11 @@ String _buildWeeklyInsightLabel(StudyPlanData plan) {
         : 'Faltam $remainingActiveDays dias ativos para bater sua frequencia semanal.';
   }
 
-  final remainingMinutes = (plan.weeklyMinutesTarget - plan.completedMinutesThisWeek)
-      .clamp(0, plan.weeklyMinutesTarget);
+  final remainingMinutes =
+      (plan.weeklyMinutesTarget - plan.completedMinutesThisWeek).clamp(
+        0,
+        plan.weeklyMinutesTarget,
+      );
   if (remainingMinutes > 0) {
     return remainingMinutes == 1
         ? 'Falta 1 minuto para concluir sua carga semanal.'
@@ -224,9 +227,9 @@ String _buildWeeklyInsightLabel(StudyPlanData plan) {
       );
   if (remainingQuestions > 0) {
     return remainingQuestions == 1
-        ? 'Falta 1 questao para fechar sua meta semanal.'
-        : 'Faltam $remainingQuestions questoes para fechar sua meta semanal.';
+        ? 'Falta 1 questão para fechar sua meta semanal.'
+        : 'Faltam $remainingQuestions questões para fechar sua meta semanal.';
   }
 
-  return 'Sua meta semanal esta em dia. Aproveite para revisar ou avancar.';
+  return 'Sua meta semanal esta em dia. Aproveite para revisar ou avançar.';
 }

@@ -65,9 +65,9 @@ class HomeBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const destinations = <_HomeDestination>[
-      _HomeDestination(label: 'Inicio', icon: Icons.grid_view_rounded),
+      _HomeDestination(label: 'Início', icon: Icons.grid_view_rounded),
       _HomeDestination(label: 'Treino', icon: Icons.timer_rounded),
-      _HomeDestination(label: 'Analise', icon: Icons.insights_rounded),
+      _HomeDestination(label: 'Análise', icon: Icons.insights_rounded),
       _HomeDestination(label: 'Perfil', icon: Icons.person_rounded),
     ];
 
@@ -107,10 +107,7 @@ class HomeBottomNavigationBar extends StatelessWidget {
 }
 
 class _HomeDestination {
-  const _HomeDestination({
-    required this.label,
-    required this.icon,
-  });
+  const _HomeDestination({required this.label, required this.icon});
 
   final String label;
   final IconData icon;
