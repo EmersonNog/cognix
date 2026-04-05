@@ -8,10 +8,10 @@ import '../../services/study_plan/study_plan_api.dart';
 import '../../services/study_plan/study_plan_refresh_notifier.dart';
 import 'widgets/study_plan_widgets.dart';
 
-part 'study_plan_screen_actions.dart';
-part 'study_plan_screen_body.dart';
-part 'study_plan_screen_models.dart';
-part 'study_plan_screen_shell.dart';
+part 'screen/study_plan_screen_actions.dart';
+part 'screen/study_plan_screen_body.dart';
+part 'screen/study_plan_screen_models.dart';
+part 'screen/study_plan_screen_shell.dart';
 
 class StudyPlanScreen extends StatefulWidget {
   const StudyPlanScreen({super.key});
@@ -22,7 +22,7 @@ class StudyPlanScreen extends StatefulWidget {
 
 class _StudyPlanScreenState extends State<StudyPlanScreen> {
   static const _periodOptions = <String, String>{
-    'flexivel': 'Flexivel',
+    'flexivel': 'Flexível',
     'manha': 'Manha',
     'tarde': 'Tarde',
     'noite': 'Noite',

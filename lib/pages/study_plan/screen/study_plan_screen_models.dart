@@ -1,4 +1,4 @@
-part of 'study_plan_screen.dart';
+part of '../study_plan_screen.dart';
 
 class _StudyPlanDraft {
   const _StudyPlanDraft({

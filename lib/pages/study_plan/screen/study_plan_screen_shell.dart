@@ -1,4 +1,4 @@
-part of 'study_plan_screen.dart';
+part of '../study_plan_screen.dart';
 
 class _StudyPlanHeader extends StatelessWidget {
   const _StudyPlanHeader({required this.palette, required this.onClose});
@@ -233,9 +233,9 @@ class _PlanHeroCard extends StatelessWidget {
           _HeroStatsStrip(
             palette: palette,
             items: const [
-              (icon: Icons.calendar_today_rounded, label: 'frequencia'),
+              (icon: Icons.calendar_today_rounded, label: 'dias ativos'),
               (icon: Icons.schedule_rounded, label: 'minutos'),
-              (icon: Icons.quiz_rounded, label: 'questoes'),
+              (icon: Icons.quiz_rounded, label: 'questões'),
             ],
             values: [activeDaysValue, minutesValue, questionsValue],
           ),

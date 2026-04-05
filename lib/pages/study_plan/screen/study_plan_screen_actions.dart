@@ -1,4 +1,4 @@
-part of 'study_plan_screen.dart';
+part of '../study_plan_screen.dart';
 
 Future<void> _loadForState(_StudyPlanScreenState state) async {
   state._previewRequestToken += 1;
