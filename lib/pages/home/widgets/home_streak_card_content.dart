@@ -85,36 +85,6 @@ class HomeStreakCardContent extends StatelessWidget {
             accent: state.accent,
             surfaceContainerHigh: surfaceContainerHigh,
           ),
-          const SizedBox(height: 12),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            decoration: BoxDecoration(
-              color: state.footerBackgroundColor,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: state.footerBorderColor),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.calendar_month_rounded,
-                  size: 16,
-                  color: state.accent,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    state.footerLabel,
-                    style: GoogleFonts.inter(
-                      color: onSurface,
-                      fontSize: 11.5,
-                      height: 1.35,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -161,7 +131,7 @@ class _StreakHeaderText extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'SEQUÊNCIA',
+          'SEQUENCIA',
           style: GoogleFonts.plusJakartaSans(
             color: onSurfaceMuted,
             fontSize: 11,
