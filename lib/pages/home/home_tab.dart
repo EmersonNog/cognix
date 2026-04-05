@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../services/home_recommendations/home_recommendations_api.dart';
 import '../../services/profile/profile_api.dart';
 import '../../services/study_plan/study_plan_api.dart';
 import 'widgets/home_daily_rhythm_card.dart';
@@ -10,6 +11,7 @@ class HomeTab extends StatelessWidget {
   const HomeTab({
     super.key,
     required this.profileFuture,
+    required this.recommendationsFuture,
     required this.studyPlanFuture,
     required this.surfaceContainer,
     required this.surfaceContainerHigh,
@@ -22,6 +24,7 @@ class HomeTab extends StatelessWidget {
   });
 
   final Future<ProfileScoreData> profileFuture;
+  final Future<HomeRecommendationsData> recommendationsFuture;
   final Future<StudyPlanData> studyPlanFuture;
   final Color surfaceContainer;
   final Color surfaceContainerHigh;
@@ -63,6 +66,7 @@ class HomeTab extends StatelessWidget {
           ),
           const SizedBox(height: 22),
           HomeRecommendationsSection(
+            recommendationsFuture: recommendationsFuture,
             onSurface: onSurface,
             onSurfaceMuted: onSurfaceMuted,
             primary: primary,

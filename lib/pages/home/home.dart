@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../navigation/app_route_observer.dart';
+import '../../services/home_recommendations/home_recommendations_api.dart';
 import '../../services/profile/profile_api.dart';
 import '../../services/profile/profile_refresh_notifier.dart';
 import '../../services/study_plan/study_plan_api.dart';
@@ -24,6 +25,7 @@ class _HomeState extends State<Home> with RouteAware {
   bool _isLoading = false;
   int _currentIndex = 0;
   late Future<ProfileScoreData> _profileFuture;
+  late Future<HomeRecommendationsData> _recommendationsFuture;
   late Future<StudyPlanData> _studyPlanFuture;
   bool _isRouteObserverSubscribed = false;
 
@@ -31,6 +33,7 @@ class _HomeState extends State<Home> with RouteAware {
   void initState() {
     super.initState();
     _profileFuture = _fetchSharedProfileScore();
+    _recommendationsFuture = _fetchSharedRecommendations();
     _studyPlanFuture = _fetchSharedStudyPlan();
   }
 
@@ -53,18 +56,27 @@ class _HomeState extends State<Home> with RouteAware {
     return fetchStudyPlan();
   }
 
+  Future<HomeRecommendationsData> _fetchSharedRecommendations() async {
+    return fetchHomeRecommendations();
+  }
+
   Future<void> _refreshSharedHubData() async {
     final nextProfileFuture = _fetchSharedProfileScore();
+    final nextRecommendationsFuture = _fetchSharedRecommendations();
     final nextStudyPlanFuture = _fetchSharedStudyPlan();
     if (mounted) {
       setState(() {
         _profileFuture = nextProfileFuture;
+        _recommendationsFuture = nextRecommendationsFuture;
         _studyPlanFuture = nextStudyPlanFuture;
       });
     }
 
     try {
       await nextProfileFuture;
+    } catch (_) {}
+    try {
+      await nextRecommendationsFuture;
     } catch (_) {}
     try {
       await nextStudyPlanFuture;
@@ -117,6 +129,7 @@ class _HomeState extends State<Home> with RouteAware {
     return <Widget>[
       HomeTab(
         profileFuture: _profileFuture,
+        recommendationsFuture: _recommendationsFuture,
         studyPlanFuture: _studyPlanFuture,
         surfaceContainer: palette.surfaceContainer,
         surfaceContainerHigh: palette.surfaceContainerHigh,
