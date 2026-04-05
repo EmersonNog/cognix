@@ -54,6 +54,9 @@ ProfileScoreData parseProfileScoreData(Map<String, dynamic> payload) {
     totalStudySeconds: int.tryParse('${payload['total_study_seconds']}') ?? 0,
     activeDaysLast30: int.tryParse('${payload['active_days_last_30']}') ?? 0,
     currentStreakDays: int.tryParse('${payload['current_streak_days']}') ?? 0,
+    recentActivityWindow: parseProfileRecentActivityWindow(
+      payload['recent_activity_window'],
+    ),
     consistencyWindowDays:
         int.tryParse('${payload['consistency_window_days']}') ?? 30,
     lastActivityAt: parseApiDateTime(payload['last_activity_at']?.toString()),
@@ -178,4 +181,48 @@ ProfileSubcategoryInsight? parseProfileSubcategoryInsight(dynamic raw) {
     totalAttempts: int.tryParse('${raw['total_attempts']}') ?? 0,
     totalCorrect: int.tryParse('${raw['total_correct']}') ?? 0,
   );
+}
+
+List<ProfileRecentActivityDay> parseProfileRecentActivityWindow(dynamic raw) {
+  if (raw is! List) {
+    return const [];
+  }
+
+  final items = <ProfileRecentActivityDay>[];
+  for (final item in raw.whereType<Map>()) {
+    final date = _parseCalendarDate(item['date']?.toString());
+    if (date == null) {
+      continue;
+    }
+    items.add(
+      ProfileRecentActivityDay(
+        date: date,
+        active: item['active'] == true,
+        isToday: item['is_today'] == true,
+      ),
+    );
+  }
+
+  return items;
+}
+
+DateTime? _parseCalendarDate(String? rawValue) {
+  final normalized = rawValue?.trim() ?? '';
+  if (normalized.isEmpty) {
+    return null;
+  }
+
+  final match = RegExp(r'^(\d{4})-(\d{2})-(\d{2})$').firstMatch(normalized);
+  if (match == null) {
+    return null;
+  }
+
+  final year = int.tryParse(match.group(1) ?? '');
+  final month = int.tryParse(match.group(2) ?? '');
+  final day = int.tryParse(match.group(3) ?? '');
+  if (year == null || month == null || day == null) {
+    return null;
+  }
+
+  return DateTime(year, month, day);
 }

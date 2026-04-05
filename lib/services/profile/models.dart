@@ -21,6 +21,18 @@ class ProfileSubcategoryInsight {
   final int totalCorrect;
 }
 
+class ProfileRecentActivityDay {
+  const ProfileRecentActivityDay({
+    required this.date,
+    required this.active,
+    required this.isToday,
+  });
+
+  final DateTime date;
+  final bool active;
+  final bool isToday;
+}
+
 class ProfileAvatarStoreItem {
   const ProfileAvatarStoreItem({
     required this.seed,
@@ -96,6 +108,7 @@ class ProfileScoreData {
     required this.totalStudySeconds,
     required this.activeDaysLast30,
     required this.currentStreakDays,
+    required this.recentActivityWindow,
     required this.consistencyWindowDays,
     required this.lastActivityAt,
     required this.nextLevel,
@@ -129,6 +142,7 @@ class ProfileScoreData {
       totalStudySeconds = 0,
       activeDaysLast30 = 0,
       currentStreakDays = 0,
+      recentActivityWindow = const [],
       consistencyWindowDays = 30,
       lastActivityAt = null,
       nextLevel = 'Em Evolucao',
@@ -160,6 +174,7 @@ class ProfileScoreData {
   final int totalStudySeconds;
   final int activeDaysLast30;
   final int currentStreakDays;
+  final List<ProfileRecentActivityDay> recentActivityWindow;
   final int consistencyWindowDays;
   final DateTime? lastActivityAt;
   final String? nextLevel;

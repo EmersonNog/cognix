@@ -9,7 +9,7 @@ class HomeStreakCardViewState {
     required this.streakValue,
     required this.streakLabel,
     required this.badgeLabel,
-    required this.highlightedBars,
+    required this.recentActivityWindow,
     required this.icon,
     required this.accent,
     required this.frameColor,
@@ -22,7 +22,7 @@ class HomeStreakCardViewState {
   final String streakValue;
   final String streakLabel;
   final String badgeLabel;
-  final int highlightedBars;
+  final List<ProfileRecentActivityDay> recentActivityWindow;
   final IconData icon;
   final Color accent;
   final Color frameColor;
@@ -33,19 +33,24 @@ class HomeStreakCardViewState {
     ProfileScoreData profile, {
     required bool isLoading,
   }) {
+    final fallbackWindow = _buildFallbackRecentActivityWindow();
+    final recentActivityWindow = profile.recentActivityWindow.isEmpty
+        ? fallbackWindow
+        : profile.recentActivityWindow;
+
     if (isLoading) {
-      return const HomeStreakCardViewState(
+      return HomeStreakCardViewState(
         headline: 'Carregando sua sequencia',
         description: 'Estamos calculando seus dias consecutivos de estudo.',
         streakValue: '--',
         streakLabel: 'Aguarde um instante',
         badgeLabel: 'AGORA',
-        highlightedBars: 0,
+        recentActivityWindow: fallbackWindow,
         icon: Icons.local_fire_department_rounded,
-        accent: Color(0xFFA3A6FF),
-        frameColor: Color(0x1EA3A6FF),
-        badgeBackgroundColor: Color(0x1FA3A6FF),
-        badgeBorderColor: Color(0x33A3A6FF),
+        accent: const Color(0xFFA3A6FF),
+        frameColor: const Color(0x1EA3A6FF),
+        badgeBackgroundColor: const Color(0x1FA3A6FF),
+        badgeBorderColor: const Color(0x33A3A6FF),
       );
     }
 
@@ -70,7 +75,7 @@ class HomeStreakCardViewState {
         streakValue: '$streakDays',
         streakLabel: streakDays == 1 ? 'dia seguido' : 'dias seguidos',
         badgeLabel: badgeLabel,
-        highlightedBars: streakDays.clamp(0, 7),
+        recentActivityWindow: recentActivityWindow,
         icon: Icons.local_fire_department_rounded,
         accent: const Color(0xFFA3A6FF),
         frameColor: const Color(0x24A3A6FF),
@@ -80,35 +85,49 @@ class HomeStreakCardViewState {
     }
 
     if (activeDays > 0) {
-      return const HomeStreakCardViewState(
+      return HomeStreakCardViewState(
         headline: 'Retome sua sequencia',
         description:
             'Sua sequencia nao esta ativa agora, mas voce pode reinicia-la ainda hoje.',
         streakValue: '0',
         streakLabel: 'dias em sequencia',
         badgeLabel: 'VOLTE',
-        highlightedBars: 0,
+        recentActivityWindow: recentActivityWindow,
         icon: Icons.bolt_rounded,
-        accent: Color(0xFF7ED6C5),
-        frameColor: Color(0x247ED6C5),
-        badgeBackgroundColor: Color(0x1B7ED6C5),
-        badgeBorderColor: Color(0x387ED6C5),
+        accent: const Color(0xFF7ED6C5),
+        frameColor: const Color(0x247ED6C5),
+        badgeBackgroundColor: const Color(0x1B7ED6C5),
+        badgeBorderColor: const Color(0x387ED6C5),
       );
     }
 
-    return const HomeStreakCardViewState(
+    return HomeStreakCardViewState(
       headline: 'Comece sua sequencia',
       description:
           'Responda questoes ou conclua um simulado para iniciar sua rotina.',
       streakValue: '0',
       streakLabel: 'dias em sequencia',
       badgeLabel: 'NOVO',
-      highlightedBars: 0,
+      recentActivityWindow: recentActivityWindow,
       icon: Icons.rocket_launch_rounded,
-      accent: Color(0xFFA3A6FF),
-      frameColor: Color(0x1EA3A6FF),
-      badgeBackgroundColor: Color(0x1AA3A6FF),
-      badgeBorderColor: Color(0x33A3A6FF),
+      accent: const Color(0xFFA3A6FF),
+      frameColor: const Color(0x1EA3A6FF),
+      badgeBackgroundColor: const Color(0x1AA3A6FF),
+      badgeBorderColor: const Color(0x33A3A6FF),
     );
+  }
+
+  static List<ProfileRecentActivityDay> _buildFallbackRecentActivityWindow() {
+    final today = DateUtils.dateOnly(DateTime.now());
+    final start = today.subtract(const Duration(days: 6));
+
+    return List<ProfileRecentActivityDay>.generate(7, (index) {
+      final date = start.add(Duration(days: index));
+      return ProfileRecentActivityDay(
+        date: date,
+        active: false,
+        isToday: DateUtils.isSameDay(date, today),
+      );
+    });
   }
 }
