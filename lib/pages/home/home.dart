@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../navigation/app_route_observer.dart';
-import '../../services/home_recommendations/home_recommendations_api.dart';
+import '../../services/recommendations/home_recommendations_api.dart';
 import '../../services/profile/profile_api.dart';
 import '../../services/profile/profile_refresh_notifier.dart';
 import '../../services/study_plan/study_plan_api.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../services/home_recommendations/home_recommendations_api.dart';
+import '../../services/recommendations/home_recommendations_api.dart';
 import '../../services/profile/profile_api.dart';
 import '../../services/study_plan/study_plan_api.dart';
 import 'widgets/home_daily_rhythm_card.dart';
