@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../services/profile/profile_api.dart';
+import '../performance/performance_screen.dart';
 import 'widgets/support_app_info_dialog.dart';
 
 class SupportScreen extends StatelessWidget {
@@ -75,6 +77,53 @@ class SupportScreen extends StatelessWidget {
     ),
   ];
 
+  void _openAccountSecurity(BuildContext context) {
+    Navigator.of(context).pushNamed('account-security');
+  }
+
+  void _openStudyPlan(BuildContext context) {
+    Navigator.of(context).pushNamed('study-plan');
+  }
+
+  Future<void> _openPerformance(BuildContext context) async {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      final profile = await fetchProfileScore();
+      if (!context.mounted) {
+        return;
+      }
+      Navigator.of(context, rootNavigator: true).pop();
+      await Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => PerformanceScreen(
+            profile: profile,
+            onSurface: _onSurface,
+            onSurfaceMuted: _onSurfaceMuted,
+            primary: _primary,
+          ),
+        ),
+      );
+    } catch (_) {
+      if (!context.mounted) {
+        return;
+      }
+      Navigator.of(context, rootNavigator: true).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+            'Não foi possível abrir a análise agora. Tente novamente.',
+          ),
+          backgroundColor: _cardSoft,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,28 +147,31 @@ class SupportScreen extends StatelessWidget {
                   'Atalhos para os assuntos que mais ajudam a destravar sua rotina.',
             ),
             const SizedBox(height: 12),
-            const _SupportTopicCard(
+            _SupportTopicCard(
               icon: Icons.key_rounded,
-              title: 'Conta e acesso',
+              title: 'Segurança da conta',
               subtitle:
-                  'Login, recuperação de senha e primeiros passos para entrar no app.',
+                  'Senha, exclusão da conta e proteção do acesso do seu usuário.',
               accent: _primary,
+              onTap: () => _openAccountSecurity(context),
             ),
             const SizedBox(height: 12),
-            const _SupportTopicCard(
+            _SupportTopicCard(
               icon: Icons.flag_rounded,
               title: 'Plano e metas',
               subtitle:
                   'Ritmo semanal, volume de estudo e prioridades do seu planejamento.',
               accent: _secondary,
+              onTap: () => _openStudyPlan(context),
             ),
             const SizedBox(height: 12),
-            const _SupportTopicCard(
+            _SupportTopicCard(
               icon: Icons.analytics_rounded,
               title: 'Treino e desempenho',
               subtitle:
                   'Simulados, recomendações e leitura dos seus indicadores recentes.',
               accent: Color(0xFFFFC857),
+              onTap: () => _openPerformance(context),
             ),
             const SizedBox(height: 24),
             _SectionTitle(
@@ -255,59 +307,82 @@ class _SupportTopicCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.accent,
+    required this.onTap,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
   final Color accent;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: SupportScreen._card,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.04)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 46,
-            height: 46,
-            decoration: BoxDecoration(
-              color: accent.withValues(alpha: 0.16),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(icon, color: accent, size: 22),
+        child: Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: SupportScreen._card,
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.04)),
           ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.manrope(
-                    color: SupportScreen._onSurface,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w800,
-                  ),
+          child: Row(
+            children: [
+              Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.16),
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: GoogleFonts.inter(
-                    color: SupportScreen._onSurfaceMuted,
-                    fontSize: 12.5,
-                    height: 1.45,
-                  ),
+                child: Icon(icon, color: accent, size: 22),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.manrope(
+                        color: SupportScreen._onSurface,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: GoogleFonts.inter(
+                        color: SupportScreen._onSurfaceMuted,
+                        fontSize: 12.5,
+                        height: 1.45,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 12),
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.03),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.arrow_forward_rounded,
+                  color: SupportScreen._onSurfaceMuted,
+                  size: 18,
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

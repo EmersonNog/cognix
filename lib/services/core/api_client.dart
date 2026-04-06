@@ -41,6 +41,14 @@ Future<String> requireAuthToken() async {
   return token;
 }
 
+Future<String> requireFreshAuthToken() async {
+  final token = await FirebaseAuth.instance.currentUser?.getIdToken(true);
+  if (token == null || token.isEmpty) {
+    throw Exception('Usuário não autenticado.');
+  }
+  return token;
+}
+
 Future<Map<String, dynamic>> getJson(
   Uri uri, {
   required String errorMessage,

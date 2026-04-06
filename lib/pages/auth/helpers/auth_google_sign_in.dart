@@ -49,3 +49,30 @@ Future<UserCredential?> signInWithGoogle({
 
   return userCredential;
 }
+
+Future<bool> reauthenticateWithGoogle(User user) async {
+  await _ensureGoogleSignInInitialized();
+  await _googleSignIn.signOut();
+
+  GoogleSignInAccount googleUser;
+  try {
+    googleUser = await _googleSignIn.authenticate();
+  } on GoogleSignInException catch (e) {
+    if (e.code == GoogleSignInExceptionCode.canceled) {
+      return false;
+    }
+    rethrow;
+  }
+
+  final googleAuth = googleUser.authentication;
+  if (googleAuth.idToken == null) {
+    throw FirebaseAuthException(
+      code: 'missing-google-id-token',
+      message: 'Nao foi possivel autenticar com o Google.',
+    );
+  }
+
+  final credential = GoogleAuthProvider.credential(idToken: googleAuth.idToken);
+  await user.reauthenticateWithCredential(credential);
+  return true;
+}

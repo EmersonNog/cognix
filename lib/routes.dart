@@ -1,5 +1,6 @@
 import 'pages/auth/forgot_password.dart';
 import 'package:flutter/cupertino.dart';
+import 'pages/account_security/account_security_screen.dart';
 import 'pages/plan/plan_screen.dart';
 import 'pages/auth/signin.dart';
 import 'pages/auth/signup.dart';
@@ -13,6 +14,7 @@ class Routes {
         'login': (context) => const SignIn(),
         'register': (context) => const SignUp(),
         'forgot': (context) => const ForgotPassword(),
+        'account-security': (context) => const AccountSecurityScreen(),
         'home': (context) => const Home(),
         'plan': (context) => const PlanScreen(),
         'study-plan': (context) => const StudyPlanScreen(),
