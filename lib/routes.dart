@@ -5,6 +5,7 @@ import 'pages/auth/signin.dart';
 import 'pages/auth/signup.dart';
 import 'pages/home/home.dart';
 import 'pages/study_plan/study_plan_screen.dart';
+import 'pages/support/support_screen.dart';
 
 class Routes {
   static Map<String, Widget Function(BuildContext context)> routes =
@@ -15,6 +16,7 @@ class Routes {
         'home': (context) => const Home(),
         'plan': (context) => const PlanScreen(),
         'study-plan': (context) => const StudyPlanScreen(),
+        'support': (context) => const SupportScreen(),
       };
 
   static String initialRoute = 'login';

@@ -62,7 +62,9 @@ class ProfileDetailsScreen extends StatelessWidget {
                   title: 'Metas de Estudo',
                   subtitle:
                       'Defina objetivos de ritmo, volume e foco para guiar sua rotina',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).pushNamed('study-plan');
+                  },
                   surfaceContainer: surfaceContainer,
                   onSurface: onSurface,
                   onSurfaceMuted: onSurfaceMuted,
@@ -83,7 +85,9 @@ class ProfileDetailsScreen extends StatelessWidget {
               icon: Icons.help_rounded,
               title: 'Suporte e Ajuda',
               subtitle: 'Central de ajuda, contato e orientações',
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).pushNamed('support');
+              },
               surfaceContainer: surfaceContainer,
               onSurface: onSurface,
               onSurfaceMuted: onSurfaceMuted,
