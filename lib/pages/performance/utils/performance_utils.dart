@@ -197,7 +197,7 @@ String performanceAttemptsLabel(int value) {
 }
 
 String performanceAttentionHelper({required String subcategory}) {
-  return 'Alerta atual\n${performanceCompactSubcategoryName(subcategory)}';
+  return 'Atenção em ${performanceCompactSubcategoryName(subcategory)}';
 }
 
 String performanceSubcategoryHelper({

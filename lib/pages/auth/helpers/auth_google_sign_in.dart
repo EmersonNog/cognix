@@ -68,7 +68,7 @@ Future<bool> reauthenticateWithGoogle(User user) async {
   if (googleAuth.idToken == null) {
     throw FirebaseAuthException(
       code: 'missing-google-id-token',
-      message: 'Nao foi possivel autenticar com o Google.',
+      message: 'Não foi possível autenticar com o Google.',
     );
   }
 

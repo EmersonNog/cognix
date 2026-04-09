@@ -43,20 +43,20 @@ class ProfileDetailsScreen extends StatelessWidget {
             const SizedBox(height: 12),
             Column(
               children: [
-                ProfileMenuItem(
-                  icon: Icons.description_rounded,
-                  title: 'Meus Planos',
-                  subtitle: 'Plano atual e histórico de cobrança',
-                  onTap: () {
-                    Navigator.of(context).pushNamed('plan');
-                  },
-                  surfaceContainer: surfaceContainer,
-                  onSurface: onSurface,
-                  onSurfaceMuted: onSurfaceMuted,
-                  primary: primary,
-                  highlightText: 'PRO',
-                ),
-                const SizedBox(height: 12),
+                // ProfileMenuItem(
+                //   icon: Icons.description_rounded,
+                //   title: 'Meus Planos',
+                //   subtitle: 'Plano atual e histórico de cobrança',
+                //   onTap: () {
+                //     Navigator.of(context).pushNamed('plan');
+                //   },
+                //   surfaceContainer: surfaceContainer,
+                //   onSurface: onSurface,
+                //   onSurfaceMuted: onSurfaceMuted,
+                //   primary: primary,
+                //   highlightText: 'PRO',
+                // ),
+                // const SizedBox(height: 12),
                 ProfileMenuItem(
                   icon: Icons.flag_rounded,
                   title: 'Metas de Estudo',
@@ -128,10 +128,9 @@ class _SectionTitle extends StatelessWidget {
         const SizedBox(height: 6),
         Text(
           subtitle,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: onSurfaceMuted,
-            height: 1.45,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: onSurfaceMuted, height: 1.45),
         ),
       ],
     );

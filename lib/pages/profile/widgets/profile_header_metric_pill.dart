@@ -31,13 +31,13 @@ class ProfileHeaderMetricPill extends StatelessWidget {
           Text(
             label.toUpperCase(),
             maxLines: 1,
-            overflow: TextOverflow.visible,
+            overflow: TextOverflow.ellipsis,
             softWrap: false,
             style: GoogleFonts.plusJakartaSans(
               color: accent,
               fontSize: 10,
               fontWeight: FontWeight.w800,
-              letterSpacing: 0.4,
+              letterSpacing: 0.2,
             ),
           ),
           const SizedBox(height: 4),

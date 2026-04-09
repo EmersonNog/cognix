@@ -112,7 +112,7 @@ class _PlanHeroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final updatedLabel = updatedAt == null
-        ? 'Ainda nao salvo'
+        ? 'Ainda não salvo'
         : 'Atualizado ${updatedAt!.day.toString().padLeft(2, '0')}/${updatedAt!.month.toString().padLeft(2, '0')}';
 
     return Container(

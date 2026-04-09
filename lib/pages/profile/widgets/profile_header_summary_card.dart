@@ -185,7 +185,7 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: ProfileHeaderMetricPill(
-                  label: 'Consistência',
+                  label: 'Frequência',
                   value: '$activeDaysLast30/$consistencyWindowDays dias',
                   accent: levelAccent,
                   onSurface: onSurface,

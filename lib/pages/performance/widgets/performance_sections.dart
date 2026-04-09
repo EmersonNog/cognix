@@ -194,7 +194,11 @@ class DisciplineSection extends StatelessWidget {
             ),
             child: Column(
               children: [
-                for (var index = 0; index < view.disciplines.length; index++) ...[
+                for (
+                  var index = 0;
+                  index < view.disciplines.length;
+                  index++
+                ) ...[
                   PerformanceDisciplineBreakdownRow(
                     label: performanceShortDisciplineName(
                       view.disciplines[index].discipline,
@@ -287,7 +291,9 @@ class EfficiencySection extends StatelessWidget {
               Expanded(
                 child: PerformanceMetricCard(
                   label: 'Tempo por questão',
-                  value: performanceFormatSeconds(view.averageSecondsPerQuestion),
+                  value: performanceFormatSeconds(
+                    view.averageSecondsPerQuestion,
+                  ),
                   helper: view.questionsAnswered == 0
                       ? 'A média aparece com suas respostas.'
                       : 'Tempo médio gasto por questão.',
@@ -312,7 +318,7 @@ class EfficiencySection extends StatelessWidget {
                       ? 'Sem questões recentes para calcular.'
                       : view.hasWeeklyRhythmBase
                       ? 'Questões respondidas por semana, em média.'
-                      : 'Questões acumuladas nos seus primeiros dias.',
+                      : 'Questões acumuladas nos primeiros dias.',
                   icon: Icons.bolt_rounded,
                   accent: const Color(0xFFFFC857),
                   onSurface: onSurface,

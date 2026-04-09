@@ -167,7 +167,7 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
 
             if (snapshot.hasError) {
               return TrainingSessionMessageState(
-                message: 'Nao foi possivel carregar as questoes.',
+                message: 'Não foi possível carregar as questões.',
                 onSurfaceMuted: widget.onSurfaceMuted,
               );
             }

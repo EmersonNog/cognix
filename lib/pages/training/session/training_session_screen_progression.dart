@@ -84,7 +84,7 @@ Future<void> _handleNextQuestionForState(
     if (!state.mounted) return;
     showCognixMessage(
       state.context,
-      'Nao foi possivel salvar sua resposta. Tente novamente.',
+      'Não foi possível salvar sua resposta. Tente novamente.',
       type: CognixMessageType.error,
     );
   } finally {
@@ -112,7 +112,7 @@ Future<void> _advanceAfterAnswerForState(
       if (!state.mounted) return;
       showCognixMessage(
         state.context,
-        'Nao foi possivel carregar mais questoes.',
+        'Não foi possível carregar mais questões.',
         type: CognixMessageType.error,
       );
       return;
