@@ -113,7 +113,7 @@ class _DisciplineChip extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: <Color>[
@@ -138,6 +138,7 @@ class _DisciplineChip extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Row(
             children: <Widget>[
@@ -164,37 +165,42 @@ class _DisciplineChip extends StatelessWidget {
               ),
             ],
           ),
-          const Spacer(),
-          Text(
-            '$count',
-            style: theme.textTheme.headlineMedium?.copyWith(
-              color: onSurface,
-              fontWeight: FontWeight.w900,
-              height: 1.0,
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                '$count',
+                style: theme.textTheme.headlineMedium?.copyWith(
+                  color: onSurface,
+                  fontWeight: FontWeight.w900,
+                  height: 1.0,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                _questionsLabel(count),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: onSurfaceMuted,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            _questionsLabel(count),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: onSurfaceMuted,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const Spacer(),
           Row(
             children: <Widget>[
               Container(
-                width: 26,
-                height: 26,
+                width: 24,
+                height: 24,
                 decoration: BoxDecoration(
                   color: definition.accent.withOpacity(0.16),
-                  borderRadius: BorderRadius.circular(9),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
                   definition.icon,
                   color: definition.accent,
-                  size: 15,
+                  size: 14,
                 ),
               ),
               const SizedBox(width: 8),
