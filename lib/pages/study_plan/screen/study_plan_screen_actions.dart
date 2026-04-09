@@ -31,7 +31,7 @@ Future<void> _loadForState(_StudyPlanScreenState state) async {
     }
     state._applyState(() {
       state._isLoading = false;
-      state._errorMessage = 'Nao foi possivel carregar seu plano agora.';
+      state._errorMessage = 'Não foi possível carregar seu plano agora.';
     });
   }
 }
@@ -59,15 +59,19 @@ Future<void> _saveForState(_StudyPlanScreenState state) async {
       state._draft = _StudyPlanDraft.fromPlan(savedPlan);
     });
     studyPlanRefreshNotifier.markDirty();
-    ScaffoldMessenger.of(
+    showCognixMessage(
       state.context,
-    ).showSnackBar(const SnackBar(content: Text('Plano de estudos salvo.')));
+      'Plano de estudos salvo. Sua semana já foi atualizada.',
+      type: CognixMessageType.success,
+    );
   } catch (_) {
     if (!state.mounted) {
       return;
     }
-    ScaffoldMessenger.of(state.context).showSnackBar(
-      const SnackBar(content: Text('Nao foi possivel salvar o plano.')),
+    showCognixMessage(
+      state.context,
+      'Não foi possível salvar seu plano agora. Tente novamente.',
+      type: CognixMessageType.error,
     );
   } finally {
     if (state.mounted) {

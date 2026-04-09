@@ -87,7 +87,7 @@ String buildProfileHeaderNextLevelMessage({
   required int pointsToNextLevel,
 }) {
   if (nextLevel == null) {
-    return 'Você já alcançou o nível máximo. Parabáns!';
+    return 'Você já alcançou o nível máximo. Parabéns!';
   }
   if (pointsToNextLevel <= 0) {
     return 'Quase lá: complete mais uma ação para subir de nível.';
@@ -100,8 +100,8 @@ String formatCoinsLabel(double coins) {
   final scaled = (normalized * 10).round();
   final hasFraction = scaled % 10 != 0;
   return hasFraction
-      ? '${normalized.toStringAsFixed(1)} moedas'
-      : '${normalized.toStringAsFixed(0)} moedas';
+      ? '${normalized.toStringAsFixed(1)} 🪙'
+      : '${normalized.toStringAsFixed(0)} 🪙';
 }
 
 Color profileHeaderLevelAccent(String level, Color fallback) {

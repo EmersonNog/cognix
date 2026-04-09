@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../services/questions/questions_api.dart';
 import '../../services/study_plan/study_plan_api.dart';
 import '../../services/study_plan/study_plan_refresh_notifier.dart';
+import '../../widgets/cognix/cognix_messages.dart';
 import 'widgets/study_plan_widgets.dart';
 
 part 'screen/study_plan_screen_actions.dart';

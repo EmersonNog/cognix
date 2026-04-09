@@ -1,15 +1,30 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
-    // START: FlutterFire Configuration
     id("com.google.gms.google-services")
-    // END: FlutterFire Configuration
     id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+var releaseStoreFilePath: String? = null
+var hasReleaseKeystore = false
+
+if (keystorePropertiesFile.exists()) {
+    FileInputStream(keystorePropertiesFile).use { stream ->
+        keystoreProperties.load(stream)
+    }
+
+    releaseStoreFilePath = keystoreProperties.getProperty("storeFile")
+    hasReleaseKeystore = !releaseStoreFilePath.isNullOrBlank() &&
+        file(releaseStoreFilePath!!).exists()
+}
+
 android {
-    namespace = "com.example.cognix"
+    namespace = "com.cognixhub.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -23,15 +38,23 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.cognix"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        applicationId = "com.cognixhub.app"
         minSdk = 24
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         manifestPlaceholders["usesCleartextTraffic"] = "false"
+    }
+
+    signingConfigs {
+        if (hasReleaseKeystore) {
+            create("release") {
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+                storeFile = file(releaseStoreFilePath!!)
+                storePassword = keystoreProperties["storePassword"] as String
+            }
+        }
     }
 
     buildTypes {
@@ -40,9 +63,13 @@ android {
         }
         release {
             manifestPlaceholders["usesCleartextTraffic"] = "false"
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = if (hasReleaseKeystore) {
+                signingConfigs.getByName("release")
+            } else {
+                // Mantem o flutter run --release utilizavel localmente, mas nao
+                // deve ser usado para publicar em produçao real.
+                signingConfigs.getByName("debug")
+            }
         }
     }
 }

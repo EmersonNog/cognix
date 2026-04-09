@@ -117,6 +117,25 @@ String performanceShortDisciplineName(String value) {
   return value;
 }
 
+String performanceCompactDisciplineName(String value) {
+  final normalized = value.trim().toLowerCase();
+
+  if (normalized.contains('linguagens')) {
+    return 'Linguagens';
+  }
+  if (normalized.contains('humanas')) {
+    return 'Humanas';
+  }
+  if (normalized.contains('natureza')) {
+    return 'Natureza';
+  }
+  if (normalized.contains('matem')) {
+    return 'Matemática';
+  }
+
+  return value.trim();
+}
+
 String performanceShortSubcategoryName(String value) {
   final trimmed = value.trim();
   if (trimmed.length <= 28) {
@@ -124,6 +143,15 @@ String performanceShortSubcategoryName(String value) {
   }
 
   return '${trimmed.substring(0, 28).trimRight()}...';
+}
+
+String performanceCompactSubcategoryName(String value) {
+  final trimmed = value.trim();
+  if (trimmed.length <= 20) {
+    return trimmed;
+  }
+
+  return '${trimmed.substring(0, 20).trimRight()}...';
 }
 
 Color performanceDisciplineAccent(String value) {
@@ -165,7 +193,21 @@ String performanceDisciplineShare(int count, int totalQuestions) {
 }
 
 String performanceAttemptsLabel(int value) {
-  return value == 1 ? '1 tentativa.' : '$value tentativas.';
+  return value == 1 ? '1 tentativa' : '$value tentativas';
+}
+
+String performanceAttentionHelper({required String subcategory}) {
+  return 'Alerta atual\n${performanceCompactSubcategoryName(subcategory)}';
+}
+
+String performanceSubcategoryHelper({
+  required String discipline,
+  required String subcategory,
+  required int totalAttempts,
+}) {
+  return '${performanceCompactDisciplineName(discipline)} • '
+      '${performanceCompactSubcategoryName(subcategory)}\n'
+      '${performanceAttemptsLabel(totalAttempts)}';
 }
 
 String performanceFormatSeconds(int value) {

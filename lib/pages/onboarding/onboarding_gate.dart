@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import '../../services/local/onboarding_storage.dart';
+import '../auth/helpers/auth_backend_bootstrap.dart';
 import '../auth/signin.dart';
+import '../home/home.dart';
 import 'onboarding_screen.dart';
 
 class OnboardingGate extends StatelessWidget {
@@ -8,17 +12,48 @@ class OnboardingGate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: OnboardingStorage.hasSeen(),
+    return FutureBuilder<_OnboardingGateState>(
+      future: _resolveGateState(),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return const _BootPlaceholder();
         }
-        final hasSeen = snapshot.data ?? false;
-        return hasSeen ? const SignIn() : const OnboardingScreen();
+
+        final gateState = snapshot.data ?? const _OnboardingGateState();
+        if (!gateState.hasSeenOnboarding) {
+          return const OnboardingScreen();
+        }
+
+        return gateState.hasAuthenticatedUser ? const Home() : const SignIn();
       },
     );
   }
+}
+
+Future<_OnboardingGateState> _resolveGateState() async {
+  final hasSeenOnboarding = await OnboardingStorage.hasSeen();
+  final hasAuthenticatedUser = FirebaseAuth.instance.currentUser != null;
+
+  if (hasSeenOnboarding && hasAuthenticatedUser) {
+    try {
+      await prepareAuthenticatedBackendSession();
+    } catch (_) {}
+  }
+
+  return _OnboardingGateState(
+    hasSeenOnboarding: hasSeenOnboarding,
+    hasAuthenticatedUser: hasAuthenticatedUser,
+  );
+}
+
+class _OnboardingGateState {
+  const _OnboardingGateState({
+    this.hasSeenOnboarding = false,
+    this.hasAuthenticatedUser = false,
+  });
+
+  final bool hasSeenOnboarding;
+  final bool hasAuthenticatedUser;
 }
 
 class _BootPlaceholder extends StatelessWidget {

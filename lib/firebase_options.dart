@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCmrvfTa8aGScFFzSmddq-m6JSb7nPTMMg',
-    appId: '1:40435673368:android:3ae84ffc76330e4ffa166d',
+    appId: '1:40435673368:android:346ac1107b23f1d0fa166d',
     messagingSenderId: '40435673368',
     projectId: 'cognix-c0a45',
     storageBucket: 'cognix-c0a45.firebasestorage.app',

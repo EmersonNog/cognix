@@ -87,32 +87,38 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: levelAccent.withValues(alpha: 0.14),
-                            borderRadius: BorderRadius.circular(999),
-                            border: Border.all(
-                              color: levelAccent.withValues(alpha: 0.24),
-                            ),
-                          ),
-                          child: Text(
-                            '$levelEmoji ${displayedLevel.toUpperCase()}',
-                            style: GoogleFonts.plusJakartaSans(
-                              color: levelAccent,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 0.5,
+                    Row(
+                      children: <Widget>[
+                        Flexible(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: levelAccent.withValues(alpha: 0.14),
+                                borderRadius: BorderRadius.circular(999),
+                                border: Border.all(
+                                  color: levelAccent.withValues(alpha: 0.24),
+                                ),
+                              ),
+                              child: Text(
+                                '$levelEmoji ${displayedLevel.toUpperCase()}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.plusJakartaSans(
+                                  color: levelAccent,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
                             ),
                           ),
                         ),
+                        const SizedBox(width: 12),
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 12,

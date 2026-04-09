@@ -7,18 +7,26 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:40435673368:android:3ae84ffc76330e4ffa166d",
+        "mobilesdk_app_id": "1:40435673368:android:346ac1107b23f1d0fa166d",
         "android_client_info": {
-          "package_name": "com.example.cognix"
+          "package_name": "com.cognixhub.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "40435673368-ib4vghjcffmoc6nrnf4g0emdnp0ouifm.apps.googleusercontent.com",
+          "client_id": "40435673368-2rk85vhbrv5gkibrqk4mqk9ektklsbvh.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.cognix",
+            "package_name": "com.cognixhub.app",
             "certificate_hash": "42b2bb5e46550bfe1ce1ef0550294d16b5a621f4"
+          }
+        },
+        {
+          "client_id": "40435673368-p8qb6lfp5spab3tv27kuffg74j9t5l5a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cognixhub.app",
+            "certificate_hash": "10e9d9d39f58a122614de2fbff307ad649b9d40f"
           }
         },
         {

@@ -1,7 +1,7 @@
 name: cognix
 description: "App de estudos do Cognix com simulados, desempenho e acompanhamento de progresso."
 publish_to: "none"
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: ^3.9.2
@@ -33,6 +33,7 @@ flutter:
   assets:
     - assets/splash/
     - assets/onboarding/
+    - assets/icon/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
