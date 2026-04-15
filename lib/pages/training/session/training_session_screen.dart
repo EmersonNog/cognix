@@ -185,7 +185,7 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
             final isSubmitted =
                 selectedIndex != null &&
                 _lastSubmittedLetterByQuestionId[question.id] ==
-                    _optionLetter(selectedIndex);
+                    _letterForQuestionAlternative(question, selectedIndex);
             final isFreshAnswerFeedback =
                 _showingAnswerFeedback && _feedbackQuestionId == question.id;
 
@@ -258,8 +258,5 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
       visibleQuestionsCount: visibleQuestionsCount,
     );
   }
-
-  String _optionLetter(int index) => _optionLetterForIndex(index);
-
   void _update(VoidCallback action) => setState(action);
 }

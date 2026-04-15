@@ -71,10 +71,20 @@ Map<String, dynamic> serializeQuestionItem(QuestionItem question) {
   return {
     'id': question.id,
     'statement': question.statement,
-    'alternatives': question.alternatives,
+    'alternatives': question.alternatives
+        .map(
+          (alternative) => {
+            'letter': alternative.letter,
+            'text': alternative.text,
+            'fileUrl': alternative.fileUrl,
+          },
+        )
+        .toList(),
     'subcategory': question.subcategory,
     'discipline': question.discipline,
     'year': question.year,
+    'alternativesIntroduction': question.alternativesIntroduction,
+    'answerKey': question.answerKey,
     'tip': question.tip,
   };
 }
@@ -87,14 +97,79 @@ QuestionItem deserializeQuestionItem(
   return QuestionItem(
     id: int.tryParse('${row['id']}') ?? 0,
     statement: row['statement']?.toString() ?? '',
-    alternatives:
-        (row['alternatives'] as List?)?.map((e) => e.toString()).toList() ??
-        const [],
+    alternatives: _deserializeAlternatives(row['alternatives']),
     subcategory: row['subcategory']?.toString() ?? fallbackSubcategory,
     discipline: row['discipline']?.toString() ?? fallbackDiscipline,
     year: int.tryParse('${row['year']}'),
+    alternativesIntroduction:
+        row['alternativesIntroduction']?.toString() ??
+        row['introducao_alternativas']?.toString(),
+    answerKey: _normalizeStoredAnswerKey(row['answerKey'] ?? row['gabarito']),
     tip: row['tip']?.toString() ?? row['dica']?.toString(),
   );
+}
+
+List<QuestionAlternative> _deserializeAlternatives(dynamic raw) {
+  if (raw is! List) {
+    return const [];
+  }
+
+  final parsed = <QuestionAlternative>[];
+  for (var i = 0; i < raw.length; i++) {
+    final item = raw[i];
+    if (item is Map) {
+      final rawLetter = item['letter']?.toString();
+      final letter =
+          rawLetter != null && rawLetter.trim().isNotEmpty
+          ? rawLetter.trim().toUpperCase()
+          : _letterFromIndex(i);
+      final text = item['text']?.toString() ?? item['value']?.toString() ?? '';
+      final fileUrl =
+          item['fileUrl']?.toString() ??
+          item['file_url']?.toString() ??
+          item['arquivo']?.toString();
+      if (text.trim().isEmpty && (fileUrl == null || fileUrl.trim().isEmpty)) {
+        continue;
+      }
+      parsed.add(
+        QuestionAlternative(
+          letter: letter,
+          text: text,
+          fileUrl: fileUrl?.trim().isEmpty == true ? null : fileUrl?.trim(),
+        ),
+      );
+      continue;
+    }
+
+    final text = item?.toString() ?? '';
+    if (text.trim().isEmpty) continue;
+    parsed.add(QuestionAlternative(letter: _letterFromIndex(i), text: text));
+  }
+
+  return parsed;
+}
+
+String _letterFromIndex(int index) {
+  final normalizedIndex = index.clamp(0, 25);
+  return String.fromCharCode(65 + normalizedIndex);
+}
+
+String? _normalizeStoredAnswerKey(dynamic raw) {
+  final value = raw?.toString().trim();
+  if (value == null || value.isEmpty) {
+    return null;
+  }
+
+  final upper = value.toUpperCase();
+  if (upper.length == 1 && RegExp(r'^[A-Z]$').hasMatch(upper)) {
+    return upper;
+  }
+
+  final match = RegExp(
+    r'(?:alternativa|opcao|option)?\s*([A-Z])(?:\b|[\)\.\:\-])',
+    caseSensitive: false,
+  ).firstMatch(value);
+  return match?.group(1)?.toUpperCase();
 }
 
 bool matchesTrainingSessionState(

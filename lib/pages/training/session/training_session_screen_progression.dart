@@ -39,7 +39,7 @@ Future<void> _handleNextQuestionForState(
   final selectedOptionIndex = state._selections[question.id];
   if (selectedOptionIndex == null) return;
 
-  final letter = _optionLetterForIndex(selectedOptionIndex);
+  final letter = _letterForQuestionAlternative(question, selectedOptionIndex);
   final lastSubmitted = state._lastSubmittedLetterByQuestionId[question.id];
 
   if (lastSubmitted == letter) {
@@ -56,12 +56,17 @@ Future<void> _handleNextQuestionForState(
       discipline: state.widget.discipline,
       subcategory: state.widget.subcategory,
     );
-    state._isCorrectByQuestionId[question.id] = result.isCorrect;
+    final correctLetter = _resolvedCorrectLetter(result.correctLetter, question);
+    final isCorrect =
+        result.isCorrect ??
+        (correctLetter != null ? letter.toUpperCase() == correctLetter : null);
+
+    state._isCorrectByQuestionId[question.id] = isCorrect;
     state._lastSubmittedLetterByQuestionId[question.id] = letter;
 
     final correctOptionIndex = _optionIndexFromLetterForValue(
-      result.correctLetter,
-      question.alternatives.length,
+      correctLetter,
+      question.alternatives,
     );
     if (correctOptionIndex != null) {
       state._correctOptionIndexByQuestionId[question.id] = correctOptionIndex;
@@ -72,7 +77,7 @@ Future<void> _handleNextQuestionForState(
         state._showingAnswerFeedback = true;
         state._feedbackQuestionId = question.id;
         state._correctOptionIndex = correctOptionIndex;
-        state._lastAnswerWasCorrect = result.isCorrect;
+        state._lastAnswerWasCorrect = isCorrect;
       });
     }
 
@@ -162,14 +167,41 @@ String _optionLetterForIndex(int index) {
   return '${index + 1}';
 }
 
-int? _optionIndexFromLetterForValue(String? letter, int optionsCount) {
+String _letterForQuestionAlternative(QuestionItem question, int index) {
+  if (index >= 0 && index < question.alternatives.length) {
+    final value = question.alternatives[index].letter.trim().toUpperCase();
+    if (value.isNotEmpty) {
+      return value;
+    }
+  }
+  return _optionLetterForIndex(index);
+}
+
+String? _resolvedCorrectLetter(String? responseLetter, QuestionItem question) {
+  final response = responseLetter?.trim().toUpperCase();
+  if (response != null && response.isNotEmpty) {
+    return response;
+  }
+
+  final fallback = question.answerKey?.trim().toUpperCase();
+  if (fallback == null || fallback.isEmpty) {
+    return null;
+  }
+  return fallback;
+}
+
+int? _optionIndexFromLetterForValue(
+  String? letter,
+  List<QuestionAlternative> alternatives,
+) {
   if (letter == null || letter.trim().isEmpty) {
     return null;
   }
 
   final normalized = letter.trim().toUpperCase();
-  for (var i = 0; i < optionsCount; i++) {
-    if (_optionLetterForIndex(i) == normalized) {
+  for (var i = 0; i < alternatives.length; i++) {
+    final current = alternatives[i].letter.trim().toUpperCase();
+    if (current == normalized || _optionLetterForIndex(i) == normalized) {
       return i;
     }
   }

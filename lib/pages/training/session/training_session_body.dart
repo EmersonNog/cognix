@@ -87,37 +87,45 @@ class TrainingSessionBody extends StatelessWidget {
         TrainingSessionQuestionCard(
           discipline: discipline,
           statement: question.statement,
+          alternativesIntroduction: question.alternativesIntroduction,
           surfaceContainer: surfaceContainer,
           onSurface: onSurface,
           onSurfaceMuted: onSurfaceMuted,
         ),
         const SizedBox(height: 14),
         for (var i = 0; i < question.alternatives.length; i++) ...[
-          GestureDetector(
-            onTap: isShowingAnswerFeedback ? null : () => onSelectOption(i),
-            child: TrainingAnswerOption(
-              letter: _optionLetter(i),
-              text: question.alternatives[i],
-              surfaceContainer: surfaceContainer,
-              surfaceContainerHigh: surfaceContainerHigh,
-              onSurfaceMuted: onSurfaceMuted,
-              onSurface: onSurface,
-              primary: primary,
-              selected: selectedIndex == i,
-              isDisabled: isShowingAnswerFeedback,
-              showSelectedCorrect:
-                  isShowingAnswerFeedback &&
-                  selectedIndex == i &&
-                  lastAnswerWasCorrect == true,
-              showSelectedIncorrect:
-                  isShowingAnswerFeedback &&
-                  selectedIndex == i &&
-                  lastAnswerWasCorrect == false,
-              showCorrectReveal:
-                  isShowingAnswerFeedback &&
-                  lastAnswerWasCorrect == false &&
-                  correctOptionIndex == i,
-            ),
+          Builder(
+            builder: (context) {
+              final alternative = question.alternatives[i];
+              return GestureDetector(
+                onTap: isShowingAnswerFeedback ? null : () => onSelectOption(i),
+                child: TrainingAnswerOption(
+                  letter: alternative.letter,
+                  text: alternative.text,
+                  attachmentUrl: alternative.fileUrl,
+                  attachmentLabel: _attachmentLabel(alternative.fileUrl),
+                  surfaceContainer: surfaceContainer,
+                  surfaceContainerHigh: surfaceContainerHigh,
+                  onSurfaceMuted: onSurfaceMuted,
+                  onSurface: onSurface,
+                  primary: primary,
+                  selected: selectedIndex == i,
+                  isDisabled: isShowingAnswerFeedback,
+                  showSelectedCorrect:
+                      isShowingAnswerFeedback &&
+                      selectedIndex == i &&
+                      lastAnswerWasCorrect == true,
+                  showSelectedIncorrect:
+                      isShowingAnswerFeedback &&
+                      selectedIndex == i &&
+                      lastAnswerWasCorrect == false,
+                  showCorrectReveal:
+                      isShowingAnswerFeedback &&
+                      lastAnswerWasCorrect == false &&
+                      correctOptionIndex == i,
+                ),
+              );
+            },
           ),
           const SizedBox(height: 10),
         ],
@@ -179,11 +187,16 @@ class TrainingSessionBody extends StatelessWidget {
     return 'Responder';
   }
 
-  String _optionLetter(int index) {
-    const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-    if (index >= 0 && index < letters.length) {
-      return letters[index];
+  String? _attachmentLabel(String? fileUrl) {
+    final value = fileUrl?.trim();
+    if (value == null || value.isEmpty) {
+      return null;
     }
-    return '${index + 1}';
+
+    final uri = Uri.tryParse(value);
+    if (uri != null && uri.pathSegments.isNotEmpty) {
+      return uri.pathSegments.last;
+    }
+    return value;
   }
 }

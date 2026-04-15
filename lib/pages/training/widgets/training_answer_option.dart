@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'training_zoomable_network_image.dart';
+
 class TrainingAnswerOption extends StatelessWidget {
   const TrainingAnswerOption({
     super.key,
     required this.letter,
     required this.text,
+    this.attachmentUrl,
+    this.attachmentLabel,
     required this.surfaceContainer,
     required this.surfaceContainerHigh,
     required this.onSurfaceMuted,
@@ -20,6 +24,8 @@ class TrainingAnswerOption extends StatelessWidget {
 
   final String letter;
   final String text;
+  final String? attachmentUrl;
+  final String? attachmentLabel;
   final Color surfaceContainer;
   final Color surfaceContainerHigh;
   final Color onSurfaceMuted;
@@ -45,21 +51,21 @@ class TrainingAnswerOption extends StatelessWidget {
         : primary;
 
     final background = isNegative
-        ? const Color(0xFFFF6B7A).withOpacity(0.12)
+        ? const Color(0xFFFF6B7A).withValues(alpha: 0.12)
         : showCorrectReveal
-        ? const Color(0xFF4FD7A8).withOpacity(0.1)
+        ? const Color(0xFF4FD7A8).withValues(alpha: 0.1)
         : isPositive
-        ? const Color(0xFF31C48D).withOpacity(0.14)
+        ? const Color(0xFF31C48D).withValues(alpha: 0.14)
         : selected
         ? surfaceContainerHigh
         : surfaceContainer;
     final borderColor = isPositive || isNegative || selected
-        ? accentColor.withOpacity(isPositive || isNegative ? 0.7 : 0.5)
+        ? accentColor.withValues(alpha: isPositive || isNegative ? 0.7 : 0.5)
         : Colors.transparent;
     final badgeBackground = isPositive || isNegative
-        ? accentColor.withOpacity(0.16)
+        ? accentColor.withValues(alpha: 0.16)
         : selected
-        ? primary.withOpacity(0.15)
+        ? primary.withValues(alpha: 0.15)
         : surfaceContainerHigh;
     final badgeForeground = isPositive || isNegative
         ? accentColor
@@ -75,6 +81,14 @@ class TrainingAnswerOption extends StatelessWidget {
         : selected
         ? Icons.check_circle
         : null;
+    final displayText = text.trim();
+    final hasImageAttachment = _isImageUrl(attachmentUrl);
+    final resolvedAttachmentLabel = hasImageAttachment
+        ? 'Pressione e segure para ampliar'
+        : attachmentLabel?.trim();
+    final attachmentIcon = hasImageAttachment
+        ? Icons.touch_app_rounded
+        : Icons.attach_file_rounded;
 
     return Container(
       padding: const EdgeInsets.all(14),
@@ -84,6 +98,7 @@ class TrainingAnswerOption extends StatelessWidget {
         border: Border.all(color: borderColor),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: 28,
@@ -105,14 +120,56 @@ class TrainingAnswerOption extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              text,
-              style: GoogleFonts.inter(
-                color: isDisabled && !isPositive && !isNegative
-                    ? onSurface.withOpacity(0.92)
-                    : onSurface,
-                fontSize: 12.5,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (displayText.isNotEmpty || !hasImageAttachment)
+                  Text(
+                    displayText.isEmpty
+                        ? 'Arquivo complementar disponivel.'
+                        : text,
+                    style: GoogleFonts.inter(
+                      color: isDisabled && !isPositive && !isNegative
+                          ? onSurface.withValues(alpha: 0.92)
+                          : onSurface,
+                      fontSize: 12.5,
+                    ),
+                  ),
+                if (hasImageAttachment) ...[
+                  if (displayText.isNotEmpty) const SizedBox(height: 10),
+                  TrainingZoomableNetworkImage(
+                    imageUrl: attachmentUrl!.trim(),
+                    borderColor: borderColor,
+                    placeholderColor: badgeForeground,
+                    borderRadius: 12,
+                    maxHeight: 220,
+                    showOverlayHint: false,
+                    expandToWidth: true,
+                  ),
+                ],
+                if (resolvedAttachmentLabel != null &&
+                    resolvedAttachmentLabel.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(attachmentIcon, size: 14, color: badgeForeground),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          resolvedAttachmentLabel,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.inter(
+                            color: badgeForeground,
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ],
             ),
           ),
           if (trailingIcon != null)
@@ -120,5 +177,25 @@ class TrainingAnswerOption extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  bool _isImageUrl(String? value) {
+    final normalized = value?.trim();
+    if (normalized == null || normalized.isEmpty) {
+      return false;
+    }
+
+    final uri = Uri.tryParse(normalized);
+    if (uri == null || !uri.hasScheme) {
+      return false;
+    }
+    if (uri.scheme != 'http' && uri.scheme != 'https') {
+      return false;
+    }
+
+    return RegExp(
+      r'\.(png|jpe?g|gif|webp|bmp)(?:\?|#|$)',
+      caseSensitive: false,
+    ).hasMatch(normalized);
   }
 }

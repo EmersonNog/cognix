@@ -10,6 +10,18 @@ class SubcategoryItem {
   final String discipline;
 }
 
+class QuestionAlternative {
+  const QuestionAlternative({
+    required this.letter,
+    required this.text,
+    this.fileUrl,
+  });
+
+  final String letter;
+  final String text;
+  final String? fileUrl;
+}
+
 class QuestionItem {
   const QuestionItem({
     required this.id,
@@ -18,15 +30,19 @@ class QuestionItem {
     required this.subcategory,
     required this.discipline,
     required this.year,
+    this.alternativesIntroduction,
+    this.answerKey,
     this.tip,
   });
 
   final int id;
   final String statement;
-  final List<String> alternatives;
+  final List<QuestionAlternative> alternatives;
   final String subcategory;
   final String discipline;
   final int? year;
+  final String? alternativesIntroduction;
+  final String? answerKey;
   final String? tip;
 }
 
