@@ -1,7 +1,7 @@
 name: cognix
 description: "App de estudos do Cognix com simulados, desempenho e acompanhamento de progresso."
 publish_to: "none"
-version: 1.0.0+2
+version: 1.0.0+4
 
 environment:
   sdk: ^3.9.2

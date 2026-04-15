@@ -30,6 +30,14 @@
           }
         },
         {
+          "client_id": "40435673368-r8esh7lrj9ccq873ps4fef3o54cinhho.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cognixhub.app",
+            "certificate_hash": "72f2ae08ee68d745e5ca25a50be8c8358031c82d"
+          }
+        },
+        {
           "client_id": "40435673368-t2rqg31t5jtt8hrb46uie59eufsbgb83.apps.googleusercontent.com",
           "client_type": 3
         }

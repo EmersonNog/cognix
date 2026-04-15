@@ -20,7 +20,7 @@ if (keystorePropertiesFile.exists()) {
 
     releaseStoreFilePath = keystoreProperties.getProperty("storeFile")
     hasReleaseKeystore = !releaseStoreFilePath.isNullOrBlank() &&
-        file(releaseStoreFilePath!!).exists()
+        rootProject.file(releaseStoreFilePath!!).exists()
 }
 
 android {
@@ -51,7 +51,7 @@ android {
             create("release") {
                 keyAlias = keystoreProperties["keyAlias"] as String
                 keyPassword = keystoreProperties["keyPassword"] as String
-                storeFile = file(releaseStoreFilePath!!)
+                storeFile = rootProject.file(releaseStoreFilePath!!)
                 storePassword = keystoreProperties["storePassword"] as String
             }
         }
