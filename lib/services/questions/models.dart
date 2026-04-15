@@ -61,10 +61,17 @@ class QuestionsPage {
 }
 
 class TrainingSessionState {
-  const TrainingSessionState({required this.state, required this.updatedAt});
+  const TrainingSessionState({
+    required this.state,
+    required this.updatedAt,
+    this.savedAt,
+    this.stateVersion,
+  });
 
   final Map<String, dynamic> state;
   final DateTime? updatedAt;
+  final DateTime? savedAt;
+  final int? stateVersion;
 }
 
 class TrainingSessionOverviewItem {
@@ -75,7 +82,7 @@ class TrainingSessionOverviewItem {
     required this.answeredQuestions,
     required this.totalQuestions,
     required this.progress,
-    required this.updatedAt,
+    required this.sessionAt,
   });
 
   final String discipline;
@@ -84,7 +91,7 @@ class TrainingSessionOverviewItem {
   final int answeredQuestions;
   final int totalQuestions;
   final double progress;
-  final DateTime? updatedAt;
+  final DateTime? sessionAt;
 }
 
 class TrainingSessionsOverview {

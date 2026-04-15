@@ -1,6 +1,8 @@
 import '../../../services/questions/questions_api.dart';
 import 'training_session_models.dart';
 
+const int currentTrainingSessionStateVersion = 2;
+
 Map<String, dynamic> buildTrainingSessionPayload({
   required String discipline,
   required String subcategory,
@@ -21,15 +23,15 @@ Map<String, dynamic> buildTrainingSessionPayload({
   required bool? lastAnswerWasCorrect,
 }) {
   return <String, dynamic>{
+    'stateVersion': currentTrainingSessionStateVersion,
     'discipline': discipline,
     'subcategory': subcategory,
+    'completed': false,
     'currentIndex': currentIndex,
     'questionIds': questions.map((q) => q.id).toList(),
     'selections': selections.map((k, v) => MapEntry('$k', v)),
     'lastSubmitted': lastSubmittedByQuestionId.map((k, v) => MapEntry('$k', v)),
-    'isCorrect': isCorrectByQuestionId.map(
-      (k, v) => MapEntry('$k', v ?? 'null'),
-    ),
+    'isCorrect': isCorrectByQuestionId.map((k, v) => MapEntry('$k', v)),
     'correctOptionIndexByQuestionId': correctOptionIndexByQuestionId.map(
       (k, v) => MapEntry('$k', v),
     ),
@@ -53,6 +55,7 @@ Map<String, dynamic> buildCompletedTrainingSessionPayload({
   required TrainingCompletedSessionResult result,
 }) {
   return <String, dynamic>{
+    'stateVersion': currentTrainingSessionStateVersion,
     'discipline': discipline,
     'subcategory': subcategory,
     'completed': true,
@@ -119,8 +122,7 @@ List<QuestionAlternative> _deserializeAlternatives(dynamic raw) {
     final item = raw[i];
     if (item is Map) {
       final rawLetter = item['letter']?.toString();
-      final letter =
-          rawLetter != null && rawLetter.trim().isNotEmpty
+      final letter = rawLetter != null && rawLetter.trim().isNotEmpty
           ? rawLetter.trim().toUpperCase()
           : _letterFromIndex(i);
       final text = item['text']?.toString() ?? item['value']?.toString() ?? '';
@@ -335,14 +337,19 @@ Map<String, dynamic>? chooseTrainingSessionState({
   Map<String, dynamic>? localState,
   TrainingSessionState? remoteState,
 }) {
-  final localSavedAt = localState?['savedAt'];
-  final localSavedAtMs = int.tryParse('${localSavedAt ?? ''}');
-  final remoteSavedAtMs = remoteState?.updatedAt
-      ?.toUtc()
-      .millisecondsSinceEpoch;
+  final localSavedAtMs = _extractTrainingSessionSavedAtMs(localState);
+  final remoteSavedAtMs =
+      remoteState?.savedAt?.toUtc().millisecondsSinceEpoch ??
+      remoteState?.updatedAt?.toUtc().millisecondsSinceEpoch;
+  final localStateVersion = _extractTrainingSessionStateVersion(localState);
+  final remoteStateVersion = remoteState?.stateVersion ?? 0;
 
   if (localState != null && remoteState != null) {
     if ((remoteSavedAtMs ?? 0) > (localSavedAtMs ?? 0)) {
+      return remoteState.state;
+    }
+    if ((remoteSavedAtMs ?? 0) == (localSavedAtMs ?? 0) &&
+        remoteStateVersion > localStateVersion) {
       return remoteState.state;
     }
     return localState;
@@ -353,4 +360,18 @@ Map<String, dynamic>? chooseTrainingSessionState({
   }
 
   return localState;
+}
+
+int? _extractTrainingSessionSavedAtMs(Map<String, dynamic>? state) {
+  if (state == null) {
+    return null;
+  }
+  return int.tryParse('${state['savedAt'] ?? ''}');
+}
+
+int _extractTrainingSessionStateVersion(Map<String, dynamic>? state) {
+  if (state == null) {
+    return 0;
+  }
+  return int.tryParse('${state['stateVersion'] ?? ''}') ?? 0;
 }

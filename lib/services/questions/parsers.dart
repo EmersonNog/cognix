@@ -69,7 +69,18 @@ QuestionsPage parseQuestionsPage(
 TrainingSessionState parseTrainingSessionState(Map<String, dynamic> payload) {
   final state = (payload['state'] as Map?)?.cast<String, dynamic>() ?? {};
   final updatedAt = parseApiDateTime(payload['updated_at']?.toString());
-  return TrainingSessionState(state: state, updatedAt: updatedAt);
+  final savedAt =
+      parseApiDateTime(payload['saved_at']?.toString()) ??
+      _parseSavedAtMilliseconds(state['savedAt']);
+  final stateVersion = int.tryParse(
+    '${payload['state_version'] ?? state['stateVersion']}',
+  );
+  return TrainingSessionState(
+    state: state,
+    updatedAt: updatedAt,
+    savedAt: savedAt,
+    stateVersion: stateVersion,
+  );
 }
 
 TrainingSessionsOverview parseTrainingSessionsOverview(
@@ -90,7 +101,9 @@ TrainingSessionsOverview parseTrainingSessionsOverview(
         0.0,
         1.0,
       ),
-      updatedAt: parseApiDateTime(latestRaw['updated_at']?.toString()),
+      sessionAt:
+          parseApiDateTime(latestRaw['session_at']?.toString()) ??
+          parseApiDateTime(latestRaw['updated_at']?.toString()),
     );
   }
 
@@ -187,13 +200,16 @@ List<QuestionAlternative> parseAlternatives(String raw) {
   );
   final matches = optionRegex.allMatches(normalized).toList();
   if (matches.length > 1) {
-    return matches.map((match) {
-      final letter = _normalizeAlternativeLetter(match.group(1)) ?? 'A';
-      return QuestionAlternative(
-        letter: letter,
-        text: (match.group(2) ?? '').trim(),
-      );
-    }).where((item) => item.text.isNotEmpty).toList();
+    return matches
+        .map((match) {
+          final letter = _normalizeAlternativeLetter(match.group(1)) ?? 'A';
+          return QuestionAlternative(
+            letter: letter,
+            text: (match.group(2) ?? '').trim(),
+          );
+        })
+        .where((item) => item.text.isNotEmpty)
+        .toList();
   }
 
   return _buildIndexedAlternatives([text]);
@@ -249,10 +265,9 @@ List<QuestionAlternative> _parseStructuredAlternatives(List raw) {
           _letterFromIndex(i);
       final text =
           _optionalText(item['text'] ?? item['value'] ?? item['content']) ?? '';
-      final fileUrl =
-          _optionalText(
-            item['fileUrl'] ?? item['file_url'] ?? item['arquivo'] ?? item['url'],
-          );
+      final fileUrl = _optionalText(
+        item['fileUrl'] ?? item['file_url'] ?? item['arquivo'] ?? item['url'],
+      );
       if (text.isEmpty && fileUrl == null) {
         continue;
       }
@@ -305,4 +320,12 @@ String? _optionalText(dynamic raw) {
     return null;
   }
   return value;
+}
+
+DateTime? _parseSavedAtMilliseconds(dynamic raw) {
+  final milliseconds = int.tryParse('$raw');
+  if (milliseconds == null || milliseconds <= 0) {
+    return null;
+  }
+  return DateTime.fromMillisecondsSinceEpoch(milliseconds, isUtc: true);
 }
