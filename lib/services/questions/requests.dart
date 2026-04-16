@@ -47,6 +47,26 @@ Future<AttemptResult> submitAttempt({
   );
 }
 
+Future<void> reportQuestion({
+  required int questionId,
+  required List<String> reasons,
+  required String discipline,
+  required String subcategory,
+  String? details,
+}) async {
+  await postJson(
+    Uri.parse('${apiBaseUrl()}/questions/$questionId/report'),
+    body: {
+      'reasons': reasons,
+      'discipline': discipline,
+      'subcategory': subcategory,
+      if (details != null && details.trim().isNotEmpty)
+        'details': details.trim(),
+    },
+    errorMessage: 'Erro ao reportar questão',
+  );
+}
+
 Future<List<SubcategoryItem>> fetchSubcategories(String discipline) async {
   return loadSubcategoriesWithFallback(discipline);
 }

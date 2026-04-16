@@ -11,6 +11,7 @@ import 'training_session_body.dart';
 import 'training_session_feedback.dart';
 import 'training_session_models.dart';
 import 'training_session_question_loader.dart';
+import 'training_question_report_dialog.dart';
 import 'training_session_state_codec.dart';
 import 'training_session_storage.dart';
 
@@ -70,6 +71,7 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
   bool _showingAnswerFeedback = false;
   bool? _lastAnswerWasCorrect;
   bool _submitting = false;
+  bool _reportingQuestion = false;
   bool _paused = false;
   bool _restoringSession = false;
   bool _restoredNoticeShown = false;
@@ -147,6 +149,20 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
               fontWeight: FontWeight.w700,
             ),
           ),
+          actions: [
+            if (_currentQuestionForReport() != null)
+              IconButton(
+                tooltip: 'Reportar questão',
+                icon: Icon(Icons.flag_outlined, color: widget.onSurface),
+                onPressed: _reportingQuestion
+                    ? null
+                    : () {
+                        final question = _currentQuestionForReport();
+                        if (question == null) return;
+                        _showReportQuestionDialog(question);
+                      },
+              ),
+          ],
         ),
         body: FutureBuilder<void>(
           future: _initialLoadFuture,
@@ -258,5 +274,59 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
       visibleQuestionsCount: visibleQuestionsCount,
     );
   }
+
+  QuestionItem? _currentQuestionForReport() {
+    if (_questions.isEmpty ||
+        _restoringSession ||
+        _completedSessionResult != null) {
+      return null;
+    }
+
+    final index = _currentIndex.clamp(0, _questions.length - 1);
+    return _questions[index];
+  }
+
+  Future<void> _showReportQuestionDialog(QuestionItem question) async {
+    if (_reportingQuestion) return;
+
+    final draft = await showTrainingQuestionReportDialog(
+      context,
+      surfaceContainer: widget.surfaceContainer,
+      surfaceContainerHigh: widget.surfaceContainerHigh,
+      onSurface: widget.onSurface,
+      onSurfaceMuted: widget.onSurfaceMuted,
+      primary: widget.primary,
+    );
+    if (draft == null || !mounted) return;
+
+    setState(() => _reportingQuestion = true);
+    try {
+      await reportQuestion(
+        questionId: question.id,
+        reasons: draft.reasons,
+        discipline: widget.discipline,
+        subcategory: widget.subcategory,
+        details: draft.details,
+      );
+      if (!mounted) return;
+      showCognixMessage(
+        context,
+        'Reporte enviado. Obrigado por ajudar a revisar essa questão.',
+        type: CognixMessageType.success,
+      );
+    } catch (_) {
+      if (!mounted) return;
+      showCognixMessage(
+        context,
+        'Não foi possível enviar o reporte agora.',
+        type: CognixMessageType.error,
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _reportingQuestion = false);
+      }
+    }
+  }
+
   void _update(VoidCallback action) => setState(action);
 }
