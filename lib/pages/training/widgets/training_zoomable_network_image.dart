@@ -81,7 +81,7 @@ class TrainingZoomableNetworkImage extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Text(
-                              'Nao foi possivel carregar a imagem.',
+                              'Não foi possível carregar a imagem.',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.inter(
                                 color: placeholderColor,
@@ -368,7 +368,7 @@ class TrainingZoomableNetworkImage extends StatelessWidget {
                                                             horizontal: 24,
                                                           ),
                                                       child: Text(
-                                                        'Nao foi possivel carregar a imagem.',
+                                                        'Não foi possível carregar a imagem.',
                                                         textAlign:
                                                             TextAlign.center,
                                                         style:
