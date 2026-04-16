@@ -6,7 +6,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../services/multiplayer/multiplayer_api.dart';
 import 'widgets/multiplayer_create_widgets.dart';
-import 'widgets/multiplayer_widgets.dart';
+import 'widgets/multiplayer_dialogs.dart';
+import 'widgets/multiplayer_lobby_widgets.dart';
+import 'widgets/multiplayer_palette.dart';
+import 'widgets/multiplayer_scaffold.dart';
 
 class MultiplayerCreateRoomScreen extends StatefulWidget {
   const MultiplayerCreateRoomScreen({super.key});

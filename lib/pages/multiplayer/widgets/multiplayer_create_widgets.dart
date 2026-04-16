@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../services/multiplayer/multiplayer_api.dart';
-import 'multiplayer_widgets.dart';
+import 'multiplayer_lobby_widgets.dart';
+import 'multiplayer_palette.dart';
 
 class MultiplayerCreateParticipantsSection extends StatelessWidget {
   const MultiplayerCreateParticipantsSection({

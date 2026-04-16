@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../services/multiplayer/multiplayer_api.dart';
-import 'multiplayer_widgets.dart';
+import 'multiplayer_lobby_widgets.dart';
+import 'multiplayer_palette.dart';
 
 class MultiplayerJoinForm extends StatelessWidget {
   const MultiplayerJoinForm({
@@ -42,7 +43,7 @@ class MultiplayerJoinForm extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'Use o codigo de 6 digitos para entrar no lobby multiplayer.',
+            'Use o código de 6 digitos para entrar no lobby multiplayer.',
             style: GoogleFonts.inter(
               color: palette.onSurfaceMuted,
               fontSize: 12.5,

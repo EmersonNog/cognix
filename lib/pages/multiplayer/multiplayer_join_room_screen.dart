@@ -4,8 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/multiplayer/multiplayer_api.dart';
+import 'widgets/multiplayer_dialogs.dart';
 import 'widgets/multiplayer_join_widgets.dart';
-import 'widgets/multiplayer_widgets.dart';
+import 'widgets/multiplayer_palette.dart';
+import 'widgets/multiplayer_scaffold.dart';
 
 class MultiplayerJoinRoomScreen extends StatefulWidget {
   const MultiplayerJoinRoomScreen({super.key});
