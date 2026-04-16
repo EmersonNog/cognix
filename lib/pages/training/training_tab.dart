@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../navigation/app_route_observer.dart';
-import '../../services/questions/questions_api.dart';
 import '../subjects/subjects_area_screen.dart';
 import '../subjects/subjects_data.dart';
+import 'controllers/training_tab_data_loader.dart';
 import 'models/training_tab_models.dart';
-import 'widgets/training_area_card.dart';
-import 'widgets/training_rhythm_card.dart';
+import 'widgets/training_tab_body.dart';
 
 class TrainingTab extends StatefulWidget {
   const TrainingTab({
@@ -32,6 +30,8 @@ class TrainingTab extends StatefulWidget {
 }
 
 class _TrainingTabState extends State<TrainingTab> with RouteAware {
+  final _dataLoader = TrainingTabDataLoader();
+
   late Future<TrainingRhythmData> _rhythmFuture;
   late Future<Map<SubjectsArea, int>> _areaTotalsFuture;
   bool _isRouteObserverSubscribed = false;
@@ -54,92 +54,13 @@ class _TrainingTabState extends State<TrainingTab> with RouteAware {
   }
 
   void _scheduleRefresh() {
-    _rhythmFuture = _loadRhythmData();
-    _areaTotalsFuture = _loadAreaTotals();
-  }
-
-  Future<TrainingRhythmData> _loadRhythmData() async {
-    try {
-      final overview = await fetchTrainingSessionsOverview();
-      final latest = overview.latestSession;
-      final completedCountLabel =
-          '${overview.completedSessions} '
-          '${overview.completedSessions == 1 ? 'simulado concluído' : 'simulados concluídos'}';
-
-      if (latest == null) {
-        if (overview.inProgressSessions > 0) {
-          final inProgressLabel =
-              '${overview.inProgressSessions} '
-              '${overview.inProgressSessions == 1 ? 'simulado em andamento' : 'simulados em andamento'}';
-          return TrainingRhythmData(
-            subtitle: 'Você ainda tem treino para retomar',
-            badgeLabel: '${overview.inProgressSessions}x',
-            completedCountLabel: inProgressLabel,
-          );
-        }
-
-        if (overview.completedSessions > 0) {
-          return TrainingRhythmData(
-            subtitle: 'Seu histórico recente já está salvo',
-            badgeLabel: '${overview.completedSessions}x',
-            completedCountLabel: completedCountLabel,
-          );
-        }
-
-        return const TrainingRhythmData.empty();
-      }
-
-      if (latest.completed) {
-        final percent = latest.totalQuestions <= 0
-            ? 0
-            : ((latest.answeredQuestions / latest.totalQuestions) * 100)
-                  .round();
-        return TrainingRhythmData(
-          subtitle: latest.subcategory.isEmpty
-              ? 'último simulado concluído'
-              : 'último simulado concluído em ${latest.subcategory}',
-          badgeLabel: '$percent%',
-          completedCountLabel: completedCountLabel,
-        );
-      }
-
-      return TrainingRhythmData(
-        subtitle: latest.subcategory.isEmpty
-            ? 'Simulado em andamento'
-            : 'Continuando ${latest.subcategory}',
-        badgeLabel: latest.totalQuestions <= 0
-            ? '${latest.answeredQuestions}'
-            : '${latest.answeredQuestions}/${latest.totalQuestions}',
-        completedCountLabel: completedCountLabel,
-      );
-    } catch (_) {
-      return const TrainingRhythmData.error();
-    }
-  }
-
-  Future<Map<SubjectsArea, int>> _loadAreaTotals() async {
-    final totals = <SubjectsArea, int>{};
-
-    for (final item in trainingAreas) {
-      try {
-        final subcategories = await fetchSubcategories(
-          subjectsAreaTitle(item.area),
-        );
-        totals[item.area] = subcategories.fold<int>(
-          0,
-          (sum, subcategory) => sum + subcategory.total,
-        );
-      } catch (_) {
-        totals[item.area] = 0;
-      }
-    }
-
-    return totals;
+    _rhythmFuture = _dataLoader.loadRhythmData();
+    _areaTotalsFuture = _dataLoader.loadAreaTotals();
   }
 
   Future<void> _refreshData() async {
-    final rhythmFuture = _loadRhythmData();
-    final areaTotalsFuture = _loadAreaTotals();
+    final rhythmFuture = _dataLoader.loadRhythmData();
+    final areaTotalsFuture = _dataLoader.loadAreaTotals();
     if (!mounted) return;
 
     setState(() {
@@ -187,252 +108,16 @@ class _TrainingTabState extends State<TrainingTab> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
+    return TrainingTabBody(
+      rhythmFuture: _rhythmFuture,
+      areaTotalsFuture: _areaTotalsFuture,
+      surfaceContainer: widget.surfaceContainer,
+      surfaceContainerHigh: widget.surfaceContainerHigh,
+      onSurface: widget.onSurface,
+      onSurfaceMuted: widget.onSurfaceMuted,
+      primary: widget.primary,
       onRefresh: _handlePullToRefresh,
-      color: widget.primary,
-      backgroundColor: widget.surfaceContainer,
-      child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(20, 24, 20, 120),
-        children: [
-          Text(
-            'Áreas de Conhecimento',
-            style: GoogleFonts.manrope(
-              color: widget.onSurface,
-              fontSize: 26,
-              fontWeight: FontWeight.w800,
-              height: 1.05,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Escolha uma área para iniciar seu treino personalizado.',
-            style: GoogleFonts.inter(
-              color: widget.onSurfaceMuted,
-              fontSize: 13,
-            ),
-          ),
-          const SizedBox(height: 18),
-          _MultiplayerEntryCard(
-            surfaceContainer: widget.surfaceContainer,
-            surfaceContainerHigh: widget.surfaceContainerHigh,
-            onSurface: widget.onSurface,
-            onSurfaceMuted: widget.onSurfaceMuted,
-            primary: widget.primary,
-          ),
-          const SizedBox(height: 20),
-          FutureBuilder<TrainingRhythmData>(
-            future: _rhythmFuture,
-            builder: (context, snapshot) {
-              final rhythm =
-                  snapshot.connectionState == ConnectionState.waiting &&
-                      !snapshot.hasData
-                  ? const TrainingRhythmData.loading()
-                  : snapshot.data ??
-                        (snapshot.hasError
-                            ? const TrainingRhythmData.error()
-                            : const TrainingRhythmData.empty());
-
-              return TrainingRhythmCard(
-                data: rhythm,
-                surfaceContainerHigh: widget.surfaceContainerHigh,
-                primary: widget.primary,
-                onSurface: widget.onSurface,
-                onSurfaceMuted: widget.onSurfaceMuted,
-              );
-            },
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'LISTA DE AREAS',
-            style: GoogleFonts.plusJakartaSans(
-              color: widget.onSurfaceMuted,
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1.0,
-            ),
-          ),
-          const SizedBox(height: 10),
-          FutureBuilder<Map<SubjectsArea, int>>(
-            future: _areaTotalsFuture,
-            builder: (context, snapshot) {
-              final totals = snapshot.data ?? const <SubjectsArea, int>{};
-
-              return Column(
-                children: [
-                  for (final area in trainingAreas) ...[
-                    TrainingAreaCard(
-                      item: area,
-                      totalQuestions: totals[area.area] ?? 0,
-                      surfaceContainer: widget.surfaceContainer,
-                      surfaceContainerHigh: widget.surfaceContainerHigh,
-                      onSurface: widget.onSurface,
-                      onSurfaceMuted: widget.onSurfaceMuted,
-                      onTap: () => _openArea(area),
-                    ),
-                    const SizedBox(height: 12),
-                  ],
-                ],
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MultiplayerEntryCard extends StatelessWidget {
-  const _MultiplayerEntryCard({
-    required this.surfaceContainer,
-    required this.surfaceContainerHigh,
-    required this.onSurface,
-    required this.onSurfaceMuted,
-    required this.primary,
-  });
-
-  final Color surfaceContainer;
-  final Color surfaceContainerHigh;
-  final Color onSurface;
-  final Color onSurfaceMuted;
-  final Color primary;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: surfaceContainer,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: primary.withValues(alpha: 0.22)),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [primary.withValues(alpha: 0.12), surfaceContainer],
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 46,
-                height: 46,
-                decoration: BoxDecoration(
-                  color: primary.withValues(alpha: 0.16),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Icon(Icons.groups_2_rounded, color: primary, size: 23),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Desafio multiplayer',
-                      style: GoogleFonts.manrope(
-                        color: onSurface,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      'Crie uma sala com PIN ou entre em uma disputa existente.',
-                      style: GoogleFonts.inter(
-                        color: onSurfaceMuted,
-                        fontSize: 12.3,
-                        height: 1.3,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
-          Row(
-            children: [
-              Expanded(
-                child: _MultiplayerActionButton(
-                  label: 'Criar sala',
-                  icon: Icons.add_rounded,
-                  backgroundColor: primary,
-                  foregroundColor: Colors.white,
-                  onTap: () =>
-                      Navigator.of(context).pushNamed('multiplayer-create'),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _MultiplayerActionButton(
-                  label: 'Entrar',
-                  icon: Icons.login_rounded,
-                  backgroundColor: surfaceContainerHigh,
-                  foregroundColor: onSurface,
-                  onTap: () =>
-                      Navigator.of(context).pushNamed('multiplayer-join'),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MultiplayerActionButton extends StatelessWidget {
-  const _MultiplayerActionButton({
-    required this.label,
-    required this.icon,
-    required this.backgroundColor,
-    required this.foregroundColor,
-    required this.onTap,
-  });
-
-  final String label;
-  final IconData icon;
-  final Color backgroundColor;
-  final Color foregroundColor;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(15),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: foregroundColor, size: 18),
-              const SizedBox(width: 6),
-              Flexible(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.plusJakartaSans(
-                    color: foregroundColor,
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      onOpenArea: _openArea,
     );
   }
 }
