@@ -28,6 +28,7 @@ class _MultiplayerJoinRoomScreenState extends State<MultiplayerJoinRoomScreen> {
   bool _wasRemoved = false;
   bool _handledRemovalRedirect = false;
   bool _handledRoomClosedRedirect = false;
+  bool _isOpeningMatch = false;
 
   @override
   void dispose() {
@@ -54,6 +55,7 @@ class _MultiplayerJoinRoomScreenState extends State<MultiplayerJoinRoomScreen> {
       _isJoining = true;
       _errorMessage = null;
       _wasRemoved = false;
+      _isOpeningMatch = false;
     });
 
     try {
@@ -63,12 +65,16 @@ class _MultiplayerJoinRoomScreenState extends State<MultiplayerJoinRoomScreen> {
       );
       if (!mounted) return;
       setState(() => _room = room);
+      if (room.isInProgress) {
+        _openMatch(room);
+        return;
+      }
       _startPolling();
     } catch (error) {
       if (!mounted) return;
       setState(() => _errorMessage = humanizeMultiplayerError(error));
     } finally {
-      if (mounted) {
+      if (mounted && !_isOpeningMatch) {
         setState(() => _isJoining = false);
       }
     }
@@ -84,7 +90,11 @@ class _MultiplayerJoinRoomScreenState extends State<MultiplayerJoinRoomScreen> {
 
   Future<void> _refreshRoom({bool silent = false}) async {
     final room = _room;
-    if (room == null || _isRefreshing || room.isInProgress || _wasRemoved) {
+    if (room == null || _isRefreshing || _wasRemoved) {
+      return;
+    }
+    if (room.isInProgress) {
+      _openMatch(room);
       return;
     }
 
@@ -106,6 +116,10 @@ class _MultiplayerJoinRoomScreenState extends State<MultiplayerJoinRoomScreen> {
       if (updatedRoom.isInProgress || wasRemoved) {
         _refreshTimer?.cancel();
       }
+      if (updatedRoom.isInProgress) {
+        _openMatch(updatedRoom);
+        return;
+      }
       if (wasRemoved) {
         _handleRemovedFromRoom();
       }
@@ -119,7 +133,7 @@ class _MultiplayerJoinRoomScreenState extends State<MultiplayerJoinRoomScreen> {
       }
     } finally {
       _isRefreshing = false;
-      if (!silent && mounted) {
+      if (!silent && mounted && !_isOpeningMatch) {
         setState(() {});
       }
     }
@@ -204,6 +218,18 @@ class _MultiplayerJoinRoomScreenState extends State<MultiplayerJoinRoomScreen> {
       if (!mounted) return;
       Navigator.of(context).pushNamedAndRemoveUntil('home', (route) => false);
     });
+  }
+
+  void _openMatch(MultiplayerRoom room) {
+    if (_isOpeningMatch || !mounted) {
+      return;
+    }
+
+    _isOpeningMatch = true;
+    _refreshTimer?.cancel();
+    Navigator.of(
+      context,
+    ).pushReplacementNamed('multiplayer-match', arguments: room);
   }
 
   void _handleBack() {

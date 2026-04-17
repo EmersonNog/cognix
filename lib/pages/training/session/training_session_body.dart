@@ -179,7 +179,7 @@ class TrainingSessionBody extends StatelessWidget {
       if (isLastVisibleQuestion && !hasMore) {
         return 'Finalizar Simulado';
       }
-      return 'Proxima Questão';
+      return 'Próxima Questão';
     }
     if (isLoadingMore) {
       return 'Carregando...';

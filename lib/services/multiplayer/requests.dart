@@ -21,6 +21,22 @@ Future<MultiplayerRoom> createMultiplayerRoom({
   return parseMultiplayerRoom(payload);
 }
 
+Future<MultiplayerAnswerResult> submitMultiplayerAnswer({
+  required int roomId,
+  required int questionId,
+  required String selectedLetter,
+}) async {
+  final payload = await postJson(
+    Uri.parse('${apiBaseUrl()}/multiplayer/rooms/$roomId/answers'),
+    body: <String, dynamic>{
+      'question_id': questionId,
+      'selected_letter': selectedLetter,
+    },
+    errorMessage: 'Nao consegui enviar sua resposta agora.',
+  );
+  return parseMultiplayerAnswerResult(payload);
+}
+
 Future<MultiplayerRoom> joinMultiplayerRoom({
   required String pin,
   String? displayName,

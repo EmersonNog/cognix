@@ -28,6 +28,7 @@ class _MultiplayerCreateRoomScreenState
   bool _isRefreshing = false;
   bool _isStarting = false;
   bool _isClosing = false;
+  bool _isOpeningMatch = false;
   final Set<int> _removingParticipantIds = <int>{};
 
   @override
@@ -86,7 +87,11 @@ class _MultiplayerCreateRoomScreenState
 
   Future<void> _refreshRoom({bool silent = false}) async {
     final room = _room;
-    if (room == null || _isRefreshing || room.isInProgress) {
+    if (room == null || _isRefreshing) {
+      return;
+    }
+    if (room.isInProgress) {
+      _openMatch(room);
       return;
     }
 
@@ -99,7 +104,7 @@ class _MultiplayerCreateRoomScreenState
       if (!mounted) return;
       setState(() => _room = updatedRoom);
       if (updatedRoom.isInProgress) {
-        _refreshTimer?.cancel();
+        _openMatch(updatedRoom);
       }
     } catch (error) {
       if (!silent) {
@@ -107,7 +112,7 @@ class _MultiplayerCreateRoomScreenState
       }
     } finally {
       _isRefreshing = false;
-      if (!silent && mounted) {
+      if (!silent && mounted && !_isOpeningMatch) {
         setState(() {});
       }
     }
@@ -147,21 +152,26 @@ class _MultiplayerCreateRoomScreenState
       final updatedRoom = await startMultiplayerRoom(room.id);
       if (!mounted) return;
       setState(() => _room = updatedRoom);
-      _refreshTimer?.cancel();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Partida iniciada. A tela do jogo entra na próxima etapa.',
-          ),
-        ),
-      );
+      _openMatch(updatedRoom);
     } catch (error) {
       _showError(error);
     } finally {
-      if (mounted) {
+      if (mounted && !_isOpeningMatch) {
         setState(() => _isStarting = false);
       }
     }
+  }
+
+  void _openMatch(MultiplayerRoom room) {
+    if (_isOpeningMatch || !mounted) {
+      return;
+    }
+
+    _isOpeningMatch = true;
+    _refreshTimer?.cancel();
+    Navigator.of(
+      context,
+    ).pushReplacementNamed('multiplayer-match', arguments: room);
   }
 
   Future<void> _handleBack() async {
@@ -277,7 +287,7 @@ class _MultiplayerCreateRoomScreenState
       MultiplayerRoomStatusCard(
         title: room.isInProgress ? 'Partida iniciada' : 'Sala em espera',
         subtitle: room.isInProgress
-            ? 'O lobby ja foi fechado para iniciar o jogo.'
+            ? 'O lobby já foi fechado para iniciar o jogo.'
             : 'A lista atualiza automaticamente. Você pode remover participantes antes de iniciar.',
         icon: room.isInProgress
             ? Icons.play_circle_fill_rounded

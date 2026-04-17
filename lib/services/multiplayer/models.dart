@@ -8,7 +8,11 @@ class MultiplayerRoom {
     required this.maxParticipants,
     required this.participantCount,
     required this.participants,
+    this.questionIds = const <int>[],
+    this.currentQuestionIndex = 0,
+    this.roundDurationSeconds = 60,
     this.startedAt,
+    this.roundStartedAt,
     this.finishedAt,
     this.createdAt,
     this.updatedAt,
@@ -22,13 +26,19 @@ class MultiplayerRoom {
   final int maxParticipants;
   final int participantCount;
   final List<MultiplayerParticipant> participants;
+  final List<int> questionIds;
+  final int currentQuestionIndex;
+  final int roundDurationSeconds;
   final DateTime? startedAt;
+  final DateTime? roundStartedAt;
   final DateTime? finishedAt;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
   bool get isWaiting => status == 'waiting';
   bool get isInProgress => status == 'in_progress';
+  bool get isFinished => status == 'finished';
+  bool get hasMatchQuestions => questionIds.isNotEmpty;
 
   bool hasParticipantFirebaseUid(String? firebaseUid) {
     final normalized = firebaseUid?.trim();
@@ -56,6 +66,9 @@ class MultiplayerParticipant {
     required this.displayName,
     required this.role,
     required this.status,
+    this.score = 0,
+    this.correctAnswers = 0,
+    this.answeredCurrentQuestion = false,
     this.joinedAt,
     this.removedAt,
     this.createdAt,
@@ -69,6 +82,9 @@ class MultiplayerParticipant {
   final String displayName;
   final String role;
   final String status;
+  final int score;
+  final int correctAnswers;
+  final bool answeredCurrentQuestion;
   final DateTime? joinedAt;
   final DateTime? removedAt;
   final DateTime? createdAt;
@@ -81,4 +97,18 @@ class MultiplayerParticipant {
 
   bool get isHost => role == 'host';
   bool get isJoined => status == 'joined';
+}
+
+class MultiplayerAnswerResult {
+  const MultiplayerAnswerResult({
+    required this.room,
+    this.isCorrect,
+    this.correctLetter,
+    this.score,
+  });
+
+  final MultiplayerRoom room;
+  final bool? isCorrect;
+  final String? correctLetter;
+  final int? score;
 }

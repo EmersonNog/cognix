@@ -189,6 +189,14 @@ class MultiplayerParticipantTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final subtitle = participant.score > 0
+        ? '${participant.score} pts'
+        : participant.answeredCurrentQuestion
+        ? 'Resposta enviada'
+        : participant.isHost
+        ? 'Criador da sala'
+        : 'Participante';
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
       decoration: BoxDecoration(
@@ -226,7 +234,7 @@ class MultiplayerParticipantTile extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  participant.isHost ? 'Criador da sala' : 'Participante',
+                  subtitle,
                   style: GoogleFonts.inter(
                     color: palette.onSurfaceMuted,
                     fontSize: 11,
@@ -247,10 +255,14 @@ class MultiplayerParticipantTile extends StatelessWidget {
             )
           else
             Icon(
-              participant.isHost
+              participant.answeredCurrentQuestion
+                  ? Icons.task_alt_rounded
+                  : participant.isHost
                   ? Icons.workspace_premium_rounded
                   : Icons.check_circle_rounded,
-              color: participant.isHost
+              color: participant.answeredCurrentQuestion
+                  ? palette.primary
+                  : participant.isHost
                   ? palette.primary
                   : palette.onSurfaceMuted,
               size: 20,

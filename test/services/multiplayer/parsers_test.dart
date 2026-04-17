@@ -9,9 +9,13 @@ void main() {
         'pin': '123456',
         'host_user_id': 2,
         'host_firebase_uid': 'host-uid',
-        'status': 'waiting',
+        'status': 'finished',
         'max_participants': 8,
         'participant_count': 2,
+        'question_ids': [101, '102', {'question_id': 103}],
+        'current_question_index': 1,
+        'round_duration_seconds': 45,
+        'round_started_at': '2026-04-17T12:00:00Z',
         'participants': [
           {
             'id': 1,
@@ -30,17 +34,51 @@ void main() {
             'display_name': 'Player',
             'role': 'player',
             'status': 'joined',
+            'score': 200,
+            'correct_answers': 2,
+            'answered_current_question': true,
           },
         ],
       });
 
       expect(room.id, 12);
       expect(room.pin, '123456');
-      expect(room.isWaiting, isTrue);
+      expect(room.isFinished, isTrue);
       expect(room.participants, hasLength(2));
       expect(room.participants.first.isHost, isTrue);
       expect(room.hasParticipantFirebaseUid('player-uid'), isTrue);
       expect(room.isHostFirebaseUid('host-uid'), isTrue);
+      expect(room.questionIds, [101, 102, 103]);
+      expect(room.currentQuestionIndex, 1);
+      expect(room.roundDurationSeconds, 45);
+      expect(room.roundStartedAt, isNotNull);
+      expect(room.participants.last.score, 200);
+      expect(room.participants.last.correctAnswers, 2);
+      expect(room.participants.last.answeredCurrentQuestion, isTrue);
+    });
+
+    test('converte payload de resposta multiplayer com sala aninhada', () {
+      final result = parseMultiplayerAnswerResult({
+        'is_correct': true,
+        'correct_letter': 'B',
+        'score': 300,
+        'room': {
+          'id': 12,
+          'pin': '123456',
+          'host_user_id': 2,
+          'host_firebase_uid': 'host-uid',
+          'status': 'in_progress',
+          'question_ids': [101, 102],
+          'current_question_index': 0,
+          'participants': const [],
+        },
+      });
+
+      expect(result.isCorrect, isTrue);
+      expect(result.correctLetter, 'B');
+      expect(result.score, 300);
+      expect(result.room.id, 12);
+      expect(result.room.questionIds, [101, 102]);
     });
   });
 }
