@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../subjects/subjects_data.dart';
 import '../models/training_tab_models.dart';
 import 'training_area_card.dart';
-import 'training_multiplayer_entry_card.dart';
 import 'training_rhythm_card.dart';
 
 class TrainingTabBody extends StatelessWidget {
@@ -56,14 +55,6 @@ class TrainingTabBody extends StatelessWidget {
             style: GoogleFonts.inter(color: onSurfaceMuted, fontSize: 13),
           ),
           const SizedBox(height: 18),
-          TrainingMultiplayerEntryCard(
-            surfaceContainer: surfaceContainer,
-            surfaceContainerHigh: surfaceContainerHigh,
-            onSurface: onSurface,
-            onSurfaceMuted: onSurfaceMuted,
-            primary: primary,
-          ),
-          const SizedBox(height: 20),
           FutureBuilder<TrainingRhythmData>(
             future: rhythmFuture,
             builder: (context, snapshot) {
