@@ -47,7 +47,6 @@ void _startMatchRoundTimer(_MultiplayerMatchScreenState state) {
   state._roundTimer?.cancel();
   state._roundTimer = Timer.periodic(const Duration(seconds: 1), (_) {
     if (!state.mounted ||
-        state._hasSubmittedAnswer ||
         (state._room?.isFinished ?? false)) {
       return;
     }
@@ -71,7 +70,6 @@ Future<void> _handleMatchRoundTimeout(
       room == null ||
       room.isFinished ||
       !room.hasMatchQuestions ||
-      state._hasSubmittedAnswer ||
       state._isResolvingRoundTimeout) {
     return;
   }
