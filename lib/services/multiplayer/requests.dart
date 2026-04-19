@@ -2,18 +2,24 @@ import '../core/api_client.dart' show apiBaseUrl, deleteJson, getJson, postJson;
 import 'models.dart';
 import 'parsers.dart';
 
-Future<MultiplayerRoom> createMultiplayerRoom({
-  String? displayName,
-  int maxParticipants = 8,
-}) async {
-  final body = <String, dynamic>{'max_participants': maxParticipants};
+Uri _multiplayerUri(String path) => Uri.parse('${apiBaseUrl()}$path');
+
+void _putDisplayName(Map<String, dynamic> body, String? displayName) {
   final normalizedDisplayName = displayName?.trim();
   if (normalizedDisplayName != null && normalizedDisplayName.isNotEmpty) {
     body['display_name'] = normalizedDisplayName;
   }
+}
+
+Future<MultiplayerRoom> createMultiplayerRoom({
+  String? displayName,
+  int maxParticipants = 10,
+}) async {
+  final body = <String, dynamic>{'max_participants': maxParticipants};
+  _putDisplayName(body, displayName);
 
   final payload = await postJson(
-    Uri.parse('${apiBaseUrl()}/multiplayer/rooms'),
+    _multiplayerUri('/multiplayer/rooms'),
     body: body,
     errorMessage:
         'Não consegui criar a sala agora. Tente de novo em instantes.',
@@ -27,7 +33,7 @@ Future<MultiplayerAnswerResult> submitMultiplayerAnswer({
   required String selectedLetter,
 }) async {
   final payload = await postJson(
-    Uri.parse('${apiBaseUrl()}/multiplayer/rooms/$roomId/answers'),
+    _multiplayerUri('/multiplayer/rooms/$roomId/answers'),
     body: <String, dynamic>{
       'question_id': questionId,
       'selected_letter': selectedLetter,
@@ -42,13 +48,10 @@ Future<MultiplayerRoom> joinMultiplayerRoom({
   String? displayName,
 }) async {
   final body = <String, dynamic>{'pin': pin.trim()};
-  final normalizedDisplayName = displayName?.trim();
-  if (normalizedDisplayName != null && normalizedDisplayName.isNotEmpty) {
-    body['display_name'] = normalizedDisplayName;
-  }
+  _putDisplayName(body, displayName);
 
   final payload = await postJson(
-    Uri.parse('${apiBaseUrl()}/multiplayer/rooms/join'),
+    _multiplayerUri('/multiplayer/rooms/join'),
     body: body,
     errorMessage: 'Não encontrei essa sala. Confira o PIN e tente novamente.',
   );
@@ -57,7 +60,7 @@ Future<MultiplayerRoom> joinMultiplayerRoom({
 
 Future<MultiplayerRoom> fetchMultiplayerRoom(int roomId) async {
   final payload = await getJson(
-    Uri.parse('${apiBaseUrl()}/multiplayer/rooms/$roomId'),
+    _multiplayerUri('/multiplayer/rooms/$roomId'),
     errorMessage: 'Não consegui atualizar a sala agora.',
   );
   return parseMultiplayerRoom(payload);
@@ -65,7 +68,7 @@ Future<MultiplayerRoom> fetchMultiplayerRoom(int roomId) async {
 
 Future<MultiplayerRoom> fetchMultiplayerRoomByPin(String pin) async {
   final payload = await getJson(
-    Uri.parse('${apiBaseUrl()}/multiplayer/rooms/pin/${pin.trim()}'),
+    _multiplayerUri('/multiplayer/rooms/pin/${pin.trim()}'),
     errorMessage: 'Não encontrei uma sala com esse PIN.',
   );
   return parseMultiplayerRoom(payload);
@@ -76,9 +79,7 @@ Future<MultiplayerRoom> removeMultiplayerParticipant({
   required int participantId,
 }) async {
   await deleteJson(
-    Uri.parse(
-      '${apiBaseUrl()}/multiplayer/rooms/$roomId/participants/$participantId',
-    ),
+    _multiplayerUri('/multiplayer/rooms/$roomId/participants/$participantId'),
     errorMessage: 'Não consegui remover esse participante agora.',
   );
   return fetchMultiplayerRoom(roomId);
@@ -86,7 +87,7 @@ Future<MultiplayerRoom> removeMultiplayerParticipant({
 
 Future<void> leaveMultiplayerRoom(int roomId) async {
   await postJson(
-    Uri.parse('${apiBaseUrl()}/multiplayer/rooms/$roomId/leave'),
+    _multiplayerUri('/multiplayer/rooms/$roomId/leave'),
     body: const <String, dynamic>{},
     errorMessage: 'Não consegui tirar você da sala agora.',
   );
@@ -94,7 +95,7 @@ Future<void> leaveMultiplayerRoom(int roomId) async {
 
 Future<MultiplayerRoom> startMultiplayerRoom(int roomId) async {
   final payload = await postJson(
-    Uri.parse('${apiBaseUrl()}/multiplayer/rooms/$roomId/start'),
+    _multiplayerUri('/multiplayer/rooms/$roomId/start'),
     body: const <String, dynamic>{},
     errorMessage: 'Ainda não consegui iniciar a partida.',
   );

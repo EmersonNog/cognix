@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'multiplayer_palette.dart';
+import 'palette.dart';
 
 class MultiplayerScaffold extends StatelessWidget {
   const MultiplayerScaffold({

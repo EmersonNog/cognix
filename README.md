@@ -27,7 +27,7 @@ Em builds de release, o app usa por padrao:
 https://sua-api.com
 ```
 
-Se voce quiser sobrescrever a URL da API no build, use `API_BASE_URL` com
+Se você quiser sobrescrever a URL da API no build, use `API_BASE_URL` com
 HTTPS:
 
 ```bash
@@ -56,7 +56,7 @@ Em desenvolvimento:
 - Android emulator usa `http://10.0.2.2:8000`
 - iOS simulator e desktop usam `http://localhost:8000`
 
-Se voce quiser usar outra URL em desenvolvimento:
+Se você quiser usar outra URL em desenvolvimento:
 
 ```bash
 flutter run --dart-define=API_BASE_URL=http://192.168.0.10:8000

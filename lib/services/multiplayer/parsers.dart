@@ -10,12 +10,13 @@ MultiplayerRoom parseMultiplayerRoom(Map<String, dynamic> payload) {
     hostUserId: _parseInt(payload['host_user_id']),
     hostFirebaseUid: _parseString(payload['host_firebase_uid']),
     status: _parseString(payload['status'], fallback: 'waiting'),
-    maxParticipants: _parseInt(payload['max_participants'], fallback: 8),
+    maxParticipants: _parseInt(payload['max_participants'], fallback: 10),
     participantCount: _parseInt(
       payload['participant_count'],
       fallback: participants.length,
     ),
     participants: participants,
+    ranking: _parseParticipants(payload['ranking']),
     questionIds: _parseQuestionIds(payload),
     currentQuestionIndex: _parseInt(
       payload['current_question_index'] ?? payload['current_round_index'],
@@ -24,6 +25,7 @@ MultiplayerRoom parseMultiplayerRoom(Map<String, dynamic> payload) {
       payload['round_duration_seconds'],
       fallback: 60,
     ),
+    serverTime: parseApiDateTime(payload['server_time']?.toString()),
     startedAt: parseApiDateTime(payload['started_at']?.toString()),
     roundStartedAt: parseApiDateTime(payload['round_started_at']?.toString()),
     finishedAt: parseApiDateTime(payload['finished_at']?.toString()),

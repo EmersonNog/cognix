@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'multiplayer_palette.dart';
+import 'palette.dart';
 
 Future<bool> showMultiplayerLeaveConfirmation(
   BuildContext context, {
@@ -101,7 +101,9 @@ Future<bool> showMultiplayerLeaveConfirmation(
                         style: OutlinedButton.styleFrom(
                           foregroundColor: palette.onSurface,
                           side: BorderSide(
-                            color: palette.onSurfaceMuted.withValues(alpha: 0.2),
+                            color: palette.onSurfaceMuted.withValues(
+                              alpha: 0.2,
+                            ),
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 13),
                           shape: RoundedRectangleBorder(

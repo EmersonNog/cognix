@@ -8,9 +8,11 @@ class MultiplayerRoom {
     required this.maxParticipants,
     required this.participantCount,
     required this.participants,
+    this.ranking = const <MultiplayerParticipant>[],
     this.questionIds = const <int>[],
     this.currentQuestionIndex = 0,
     this.roundDurationSeconds = 60,
+    this.serverTime,
     this.startedAt,
     this.roundStartedAt,
     this.finishedAt,
@@ -26,9 +28,11 @@ class MultiplayerRoom {
   final int maxParticipants;
   final int participantCount;
   final List<MultiplayerParticipant> participants;
+  final List<MultiplayerParticipant> ranking;
   final List<int> questionIds;
   final int currentQuestionIndex;
   final int roundDurationSeconds;
+  final DateTime? serverTime;
   final DateTime? startedAt;
   final DateTime? roundStartedAt;
   final DateTime? finishedAt;
@@ -38,6 +42,7 @@ class MultiplayerRoom {
   bool get isWaiting => status == 'waiting';
   bool get isInProgress => status == 'in_progress';
   bool get isFinished => status == 'finished';
+  bool get isClosed => status == 'closed';
   bool get hasMatchQuestions => questionIds.isNotEmpty;
 
   bool hasParticipantFirebaseUid(String? firebaseUid) {

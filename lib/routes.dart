@@ -1,8 +1,8 @@
-import 'pages/multiplayer/multiplayer_create_room_screen.dart';
-import 'pages/multiplayer/multiplayer_join_room_screen.dart';
+import 'pages/multiplayer/lobby/multiplayer_create_room_screen.dart';
+import 'pages/multiplayer/join_pin/multiplayer_join_room_screen.dart';
 import 'pages/account_security/account_security_screen.dart';
-import 'pages/multiplayer/multiplayer_match_screen.dart';
-import 'services/multiplayer/multiplayer_api.dart';
+import 'pages/multiplayer/match/multiplayer_match_screen.dart';
+import 'services/multiplayer/models.dart';
 import 'pages/study_plan/study_plan_screen.dart';
 import 'pages/support/support_screen.dart';
 import 'pages/auth/forgot_password.dart';

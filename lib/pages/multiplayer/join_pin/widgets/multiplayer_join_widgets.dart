@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../services/multiplayer/multiplayer_api.dart';
-import 'multiplayer_lobby_widgets.dart';
-import 'multiplayer_palette.dart';
+import '../../../../services/multiplayer/models.dart';
+import '../../shared/widgets/room_widgets.dart';
+import '../../shared/widgets/palette.dart';
 
 class MultiplayerJoinForm extends StatelessWidget {
   const MultiplayerJoinForm({
@@ -43,7 +43,7 @@ class MultiplayerJoinForm extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'Use o código de 6 digitos para entrar no lobby multiplayer.',
+            'Use o código de 6 dígitos para entrar no lobby multiplayer.',
             style: GoogleFonts.inter(
               color: palette.onSurfaceMuted,
               fontSize: 12.5,
@@ -156,7 +156,7 @@ class MultiplayerJoinedRoomPreview extends StatelessWidget {
         ? 'Você foi removido'
         : room.isInProgress
         ? 'Partida iniciada'
-        : 'Aguardando inicio';
+        : 'Aguardando início';
     final statusSubtitle = wasRemoved
         ? 'O criador removeu sua entrada desta sala.'
         : room.isInProgress
