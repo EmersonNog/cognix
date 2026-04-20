@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../models/training_detail_models.dart';
 
 class TrainingDetailActiveCard extends StatelessWidget {
@@ -54,7 +55,7 @@ class TrainingDetailActiveCard extends StatelessWidget {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: badgeColor.withOpacity(0.15),
+                  color: badgeColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
@@ -94,7 +95,7 @@ class TrainingDetailActiveCard extends StatelessWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: badgeColor.withOpacity(0.18),
+                  color: badgeColor.withValues(alpha: 0.18),
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: Text(

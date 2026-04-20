@@ -12,6 +12,7 @@ class _AvatarShopHero extends StatelessWidget {
     required this.rarityLabel,
     required this.themeLabel,
     required this.rarityColor,
+    required this.palette,
     required this.description,
     required this.primary,
     required this.onSurface,
@@ -28,6 +29,7 @@ class _AvatarShopHero extends StatelessWidget {
   final String? rarityLabel;
   final String? themeLabel;
   final Color rarityColor;
+  final _AvatarStorePalette palette;
   final String description;
   final Color primary;
   final Color onSurface;
@@ -39,18 +41,15 @@ class _AvatarShopHero extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: <Color>[
-            Color(0xFF182242),
-            Color(0xFF141E39),
-            Color(0xFF11192F),
+            palette.surfaceContainerHigh,
+            palette.surfaceContainer,
           ],
         ),
-        border: Border(
-          bottom: BorderSide(color: Colors.white.withValues(alpha: 0.06)),
-        ),
+        border: Border(bottom: BorderSide(color: palette.border)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,10 +125,8 @@ class _AvatarShopHero extends StatelessWidget {
                   onPressed: onClose,
                   padding: EdgeInsets.zero,
                   style: IconButton.styleFrom(
-                    backgroundColor: Colors.white.withValues(alpha: 0.06),
-                    side: BorderSide(
-                      color: Colors.white.withValues(alpha: 0.05),
-                    ),
+                    backgroundColor: palette.surfaceContainerHigh,
+                    side: BorderSide(color: palette.border),
                   ),
                   icon: Icon(Icons.close_rounded, color: onSurface, size: 22),
                 ),
@@ -186,6 +183,7 @@ class _AvatarShopHero extends StatelessWidget {
             description: description,
             primary: primary,
             onSurface: onSurface,
+            palette: palette,
             compact: true,
           ),
         ],

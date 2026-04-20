@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../theme/cognix_theme_colors.dart';
 import 'profile_header_utils.dart';
 
 class ProfileHeaderRecentIndexCardNative extends StatefulWidget {
@@ -32,13 +33,16 @@ class _ProfileHeaderRecentIndexCardNativeState
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFF1A2140).withOpacity(0.92),
+        color: colors.surfaceContainerHigh.withValues(alpha: 0.96),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.03)),
+        border: Border.all(
+          color: widget.onSurfaceMuted.withValues(alpha: 0.12),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,15 +188,16 @@ class _NativeRecentIndexBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     return Container(
       padding: const EdgeInsets.fromLTRB(13, 11, 13, 12),
       decoration: BoxDecoration(
-        color: const Color(0xFF28304F),
+        color: colors.surfaceContainer,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: accent.withOpacity(0.3)),
+        border: Border.all(color: accent.withValues(alpha: 0.3)),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: Colors.black.withOpacity(0.16),
+            color: accent.withValues(alpha: 0.08),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -216,7 +221,7 @@ class _NativeRecentIndexBadge extends StatelessWidget {
               Text(
                 'ÍNDICE',
                 style: GoogleFonts.plusJakartaSans(
-                  color: accent.withOpacity(0.92),
+                  color: accent.withValues(alpha: 0.92),
                   fontSize: 9.5,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.45,
@@ -252,7 +257,10 @@ class _NativeRecentIndexBar extends StatelessWidget {
       borderRadius: BorderRadius.circular(999),
       child: Stack(
         children: <Widget>[
-          Container(height: 8, color: Colors.white.withOpacity(0.06)),
+          Container(
+            height: 8,
+            color: context.cognixColors.onSurfaceMuted.withValues(alpha: 0.12),
+          ),
           FractionallySizedBox(
             widthFactor: index / 100,
             child: Container(

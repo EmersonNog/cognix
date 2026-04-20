@@ -4,14 +4,16 @@ Color _recentPerformanceAccentForAccuracy(
   double accuracyPercent, {
   required double attentionThreshold,
   required Color primary,
+  required Color success,
+  required Color danger,
 }) {
   if (accuracyPercent < attentionThreshold) {
-    return const Color(0xFFFF6B78);
+    return danger;
   }
   if (accuracyPercent >= 85) {
     return primary;
   }
-  return const Color(0xFF7ED6C5);
+  return success;
 }
 
 String _buildRelativeCompletionLabel(DateTime? completedAt, DateTime now) {

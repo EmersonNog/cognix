@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../../theme/cognix_theme_colors.dart';
 import 'profile_avatar_display.dart';
 import 'profile_header_metric_pill.dart';
 import 'profile_header_recent_index_card.dart';
@@ -46,6 +48,7 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 22, 20, 24),
@@ -53,17 +56,17 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
         gradient: LinearGradient(
           colors: <Color>[
-            const Color(0xFF2A275A),
+            colors.surfaceContainer,
             Color.lerp(primaryDim, levelAccent, 0.35)!.withValues(alpha: 0.28),
-            const Color(0xFF121B35),
+            colors.surfaceContainerHigh,
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.04)),
+        border: Border.all(color: onSurfaceMuted.withValues(alpha: 0.12)),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.32),
+            color: levelAccent.withValues(alpha: 0.12),
             blurRadius: 30,
             offset: const Offset(0, 20),
           ),
@@ -125,20 +128,16 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(
-                              0xFFFFC857,
-                            ).withValues(alpha: 0.16),
+                            color: colors.accent.withValues(alpha: 0.16),
                             borderRadius: BorderRadius.circular(999),
                             border: Border.all(
-                              color: const Color(
-                                0xFFFFC857,
-                              ).withValues(alpha: 0.28),
+                              color: colors.accent.withValues(alpha: 0.28),
                             ),
                           ),
                           child: Text(
                             coinsLabel.toUpperCase(),
                             style: GoogleFonts.plusJakartaSans(
-                              color: const Color(0xFFFFD977),
+                              color: colors.accent,
                               fontSize: 11,
                               fontWeight: FontWeight.w800,
                               letterSpacing: 0.5,

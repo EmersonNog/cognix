@@ -13,6 +13,7 @@ class _ResultHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     final label = hasActiveSearch
         ? 'Resultados encontrados'
         : 'Temas disponíveis';
@@ -29,7 +30,7 @@ class _ResultHeader extends StatelessWidget {
               Text(
                 label,
                 style: GoogleFonts.manrope(
-                  color: _WritingThemeScreenState._onSurface,
+                  color: colors.onSurface,
                   fontSize: 17,
                   fontWeight: FontWeight.w800,
                 ),
@@ -38,7 +39,7 @@ class _ResultHeader extends StatelessWidget {
               Text(
                 'Navegue pelos temas disponíveis sem sair da tela.',
                 style: GoogleFonts.inter(
-                  color: _WritingThemeScreenState._onSurfaceMuted,
+                  color: colors.onSurfaceMuted,
                   fontSize: 12,
                 ),
               ),
@@ -48,13 +49,13 @@ class _ResultHeader extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
-            color: _WritingThemeScreenState._surfaceContainerHigh,
+            color: colors.surfaceContainerHigh,
             borderRadius: BorderRadius.circular(999),
           ),
           child: Text(
             detail,
             style: GoogleFonts.inter(
-              color: _WritingThemeScreenState._onSurfaceMuted,
+              color: colors.onSurfaceMuted,
               fontSize: 11.5,
               fontWeight: FontWeight.w700,
             ),
@@ -73,7 +74,9 @@ class _ThemeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     final categoryAccent = _categoryAccent(theme.category);
+    final difficultyStyle = _difficultyStyle(theme.difficulty);
 
     return Material(
       color: Colors.transparent,
@@ -83,11 +86,9 @@ class _ThemeCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.fromLTRB(14, 13, 14, 13),
           decoration: BoxDecoration(
-            color: _WritingThemeScreenState._surfaceContainer,
+            color: colors.surfaceContainer,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: _WritingThemeScreenState._primary.withValues(alpha: 0.12),
-            ),
+            border: Border.all(color: colors.primary.withValues(alpha: 0.12)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,18 +104,14 @@ class _ThemeCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   _ThemeBadge(
                     label: _formatDifficultyLabel(theme.difficulty),
-                    backgroundColor: _difficultyStyle(
-                      theme.difficulty,
-                    ).background,
-                    foregroundColor: _difficultyStyle(
-                      theme.difficulty,
-                    ).foreground,
+                    backgroundColor: difficultyStyle.background,
+                    foregroundColor: difficultyStyle.foreground,
                   ),
                   const Spacer(),
-                  const Icon(
+                  Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 15,
-                    color: _WritingThemeScreenState._onSurfaceMuted,
+                    color: colors.onSurfaceMuted,
                   ),
                 ],
               ),
@@ -124,7 +121,7 @@ class _ThemeCard extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.manrope(
-                  color: _WritingThemeScreenState._onSurface,
+                  color: colors.onSurface,
                   fontSize: 14.8,
                   fontWeight: FontWeight.w900,
                   height: 1.18,
@@ -136,7 +133,7 @@ class _ThemeCard extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.inter(
-                  color: _WritingThemeScreenState._onSurfaceMuted,
+                  color: colors.onSurfaceMuted,
                   fontSize: 12,
                   height: 1.35,
                 ),
@@ -167,16 +164,18 @@ class _KeywordPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: _WritingThemeScreenState._surfaceContainerHigh,
+        color: colors.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
         label,
         style: GoogleFonts.inter(
-          color: _WritingThemeScreenState._onSurfaceMuted,
+          color: colors.onSurfaceMuted,
           fontSize: 11,
           fontWeight: FontWeight.w600,
         ),
@@ -198,6 +197,7 @@ class _LoadMoreButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     final count = remainingCount > _WritingThemeScreenState._pageSize
         ? _WritingThemeScreenState._pageSize
         : remainingCount;
@@ -210,37 +210,35 @@ class _LoadMoreButton extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           decoration: BoxDecoration(
-            color: _WritingThemeScreenState._surfaceContainerHigh,
+            color: colors.surfaceContainerHigh,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: _WritingThemeScreenState._accent.withValues(alpha: 0.18),
-            ),
+            border: Border.all(color: colors.accent.withValues(alpha: 0.18)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (isLoading) ...[
-                const SizedBox(
+                SizedBox(
                   width: 16,
                   height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(colors.accent),
+                  ),
                 ),
                 const SizedBox(width: 10),
               ],
               Text(
                 isLoading ? 'Carregando...' : 'Carregar mais $count temas',
                 style: GoogleFonts.inter(
-                  color: _WritingThemeScreenState._accent,
+                  color: colors.accent,
                   fontSize: 13.5,
                   fontWeight: FontWeight.w800,
                 ),
               ),
               if (!isLoading) ...[
                 const SizedBox(width: 8),
-                const Icon(
-                  Icons.expand_more_rounded,
-                  color: _WritingThemeScreenState._accent,
-                ),
+                Icon(Icons.expand_more_rounded, color: colors.accent),
               ],
             ],
           ),
@@ -263,18 +261,18 @@ class _ThemeBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
       decoration: BoxDecoration(
-        color:
-            backgroundColor ??
-            _WritingThemeScreenState._accent.withValues(alpha: 0.12),
+        color: backgroundColor ?? colors.accent.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
         label.toUpperCase(),
         style: GoogleFonts.plusJakartaSans(
-          color: foregroundColor ?? _WritingThemeScreenState._accent,
+          color: foregroundColor ?? colors.accent,
           fontSize: 9.4,
           fontWeight: FontWeight.w900,
           letterSpacing: 0.8,

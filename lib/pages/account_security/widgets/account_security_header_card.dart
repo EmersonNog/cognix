@@ -21,10 +21,10 @@ class AccountSecurityHeaderCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AccountSecurityPalette.card,
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.04)),
+        border: Border.all(color: AccountSecurityPalette.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.22),
+            color: AccountSecurityPalette.shadow,
             blurRadius: 24,
             offset: const Offset(0, 14),
           ),
@@ -37,16 +37,19 @@ class AccountSecurityHeaderCard extends StatelessWidget {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF9A8CFF), Color(0xFF5F6BFF)],
+              gradient: LinearGradient(
+                colors: [
+                  AccountSecurityPalette.primary,
+                  AccountSecurityPalette.primaryDim,
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(18),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.shield_rounded,
-              color: Colors.white,
+              color: AccountSecurityPalette.primaryForeground,
               size: 28,
             ),
           ),
@@ -92,7 +95,7 @@ class AccountSecurityHeaderCard extends StatelessWidget {
                       _AccountSecurityInfoChip(
                         icon: Icons.person_outline_rounded,
                         label: displayName!,
-                        color: const Color(0xFFFFC857),
+                        color: AccountSecurityPalette.accent,
                       ),
                   ],
                 ),

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../services/profile/profile_refresh_notifier.dart';
 import '../../../services/questions/questions_api.dart';
+import '../../../theme/cognix_theme_colors.dart';
 import '../../../widgets/cognix/cognix_messages.dart';
 import '../results/training_results_screen.dart';
 import 'training_session_body.dart';
@@ -106,6 +107,8 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     if (_restoredNoticeShown) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
@@ -128,7 +131,7 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
         navigator.pop();
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFF060E20),
+        backgroundColor: colors.surface,
         appBar: AppBar(
           backgroundColor: widget.surfaceContainerHigh,
           elevation: 0,

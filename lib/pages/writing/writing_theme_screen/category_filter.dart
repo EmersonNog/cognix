@@ -13,6 +13,8 @@ class _CategoryDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -22,19 +24,13 @@ class _CategoryDropdown extends StatelessWidget {
           width: 52,
           height: 52,
           decoration: BoxDecoration(
-            color: _WritingThemeScreenState._surfaceContainerHigh.withValues(
-              alpha: 0.92,
-            ),
+            color: colors.surfaceContainerHigh.withValues(alpha: 0.92),
             borderRadius: BorderRadius.circular(18),
           ),
           child: Stack(
             alignment: Alignment.center,
             children: [
-              const Icon(
-                Icons.tune_rounded,
-                size: 19,
-                color: _WritingThemeScreenState._accent,
-              ),
+              Icon(Icons.tune_rounded, size: 19, color: colors.accent),
               if (selectedCategory != null)
                 Positioned(
                   top: 11,
@@ -43,13 +39,11 @@ class _CategoryDropdown extends StatelessWidget {
                     width: 8,
                     height: 8,
                     decoration: BoxDecoration(
-                      color: _WritingThemeScreenState._accent,
+                      color: colors.accent,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: _WritingThemeScreenState._accent.withValues(
-                            alpha: 0.38,
-                          ),
+                          color: colors.accent.withValues(alpha: 0.38),
                           blurRadius: 8,
                         ),
                       ],
@@ -93,6 +87,7 @@ class _CategorySheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     final items = <String?>[null, ...categories];
 
     return SafeArea(
@@ -100,11 +95,9 @@ class _CategorySheet extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
         child: Container(
           decoration: BoxDecoration(
-            color: _WritingThemeScreenState._surfaceContainer,
+            color: colors.surfaceContainer,
             borderRadius: BorderRadius.circular(28),
-            border: Border.all(
-              color: _WritingThemeScreenState._primary.withValues(alpha: 0.14),
-            ),
+            border: Border.all(color: colors.primary.withValues(alpha: 0.14)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -114,9 +107,7 @@ class _CategorySheet extends StatelessWidget {
                 width: 44,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: _WritingThemeScreenState._onSurfaceMuted.withValues(
-                    alpha: 0.24,
-                  ),
+                  color: colors.onSurfaceMuted.withValues(alpha: 0.24),
                   borderRadius: BorderRadius.circular(999),
                 ),
               ),
@@ -128,7 +119,7 @@ class _CategorySheet extends StatelessWidget {
                       child: Text(
                         'Escolha a categoria',
                         style: GoogleFonts.manrope(
-                          color: _WritingThemeScreenState._onSurface,
+                          color: colors.onSurface,
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
                         ),
@@ -137,7 +128,7 @@ class _CategorySheet extends StatelessWidget {
                     IconButton(
                       onPressed: () => Navigator.of(context).pop(),
                       icon: const Icon(Icons.close_rounded),
-                      color: _WritingThemeScreenState._onSurfaceMuted,
+                      color: colors.onSurfaceMuted,
                     ),
                   ],
                 ),
@@ -165,17 +156,12 @@ class _CategorySheet extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? _WritingThemeScreenState._accent.withValues(
-                                    alpha: 0.12,
-                                  )
-                                : _WritingThemeScreenState
-                                      ._surfaceContainerHigh,
+                                ? colors.accent.withValues(alpha: 0.12)
+                                : colors.surfaceContainerHigh,
                             borderRadius: BorderRadius.circular(18),
                             border: Border.all(
                               color: isSelected
-                                  ? _WritingThemeScreenState._accent.withValues(
-                                      alpha: 0.28,
-                                    )
+                                  ? colors.accent.withValues(alpha: 0.28)
                                   : Colors.transparent,
                             ),
                           ),
@@ -186,18 +172,15 @@ class _CategorySheet extends StatelessWidget {
                                   label,
                                   style: GoogleFonts.inter(
                                     color: isSelected
-                                        ? _WritingThemeScreenState._accent
-                                        : _WritingThemeScreenState._onSurface,
+                                        ? colors.accent
+                                        : colors.onSurface,
                                     fontSize: 13.5,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ),
                               if (isSelected)
-                                const Icon(
-                                  Icons.check_rounded,
-                                  color: _WritingThemeScreenState._accent,
-                                ),
+                                Icon(Icons.check_rounded, color: colors.accent),
                             ],
                           ),
                         ),

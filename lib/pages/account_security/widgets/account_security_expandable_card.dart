@@ -30,9 +30,7 @@ class AccountSecurityExpandableCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AccountSecurityPalette.card,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: borderColor ?? Colors.white.withValues(alpha: 0.04),
-        ),
+        border: Border.all(color: borderColor ?? AccountSecurityPalette.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

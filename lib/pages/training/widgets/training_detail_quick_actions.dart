@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../models/training_detail_models.dart';
 
 class TrainingDetailQuickActions extends StatelessWidget {
@@ -7,11 +8,13 @@ class TrainingDetailQuickActions extends StatelessWidget {
     super.key,
     required this.actions,
     required this.surfaceContainerHigh,
+    required this.onSurface,
     required this.onSurfaceMuted,
   });
 
   final List<TrainingQuickActionData> actions;
   final Color surfaceContainerHigh;
+  final Color onSurface;
   final Color onSurfaceMuted;
 
   @override
@@ -37,6 +40,7 @@ class TrainingDetailQuickActions extends StatelessWidget {
                 label: actions[i].label,
                 subtitle: actions[i].subtitle,
                 surfaceContainerHigh: surfaceContainerHigh,
+                onSurface: onSurface,
                 onSurfaceMuted: onSurfaceMuted,
                 onTap: actions[i].onTap,
               ),
@@ -55,6 +59,7 @@ class _QuickActionItem extends StatelessWidget {
     required this.label,
     required this.subtitle,
     required this.surfaceContainerHigh,
+    required this.onSurface,
     required this.onSurfaceMuted,
     required this.onTap,
   });
@@ -63,6 +68,7 @@ class _QuickActionItem extends StatelessWidget {
   final String label;
   final String subtitle;
   final Color surfaceContainerHigh;
+  final Color onSurface;
   final Color onSurfaceMuted;
   final VoidCallback onTap;
 
@@ -85,7 +91,7 @@ class _QuickActionItem extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: onSurfaceMuted.withOpacity(0.06),
+                  color: onSurfaceMuted.withValues(alpha: 0.06),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(icon, color: onSurfaceMuted, size: 20),
@@ -98,7 +104,7 @@ class _QuickActionItem extends StatelessWidget {
                     Text(
                       label,
                       style: GoogleFonts.manrope(
-                        color: Colors.white,
+                        color: onSurface,
                         fontWeight: FontWeight.w700,
                       ),
                     ),

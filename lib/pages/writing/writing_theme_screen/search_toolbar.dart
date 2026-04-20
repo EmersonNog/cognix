@@ -44,26 +44,26 @@ class _SearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Container(
       height: 52,
       decoration: BoxDecoration(
-        color: _WritingThemeScreenState._surfaceContainerHigh.withValues(
-          alpha: 0.92,
-        ),
+        color: colors.surfaceContainerHigh.withValues(alpha: 0.92),
         borderRadius: BorderRadius.circular(18),
       ),
       child: TextField(
         controller: controller,
         onChanged: onChanged,
         style: GoogleFonts.inter(
-          color: _WritingThemeScreenState._onSurface,
+          color: colors.onSurface,
           fontSize: 14,
           fontWeight: FontWeight.w600,
         ),
         decoration: InputDecoration(
           hintText: 'Buscar tema',
           hintStyle: GoogleFonts.inter(
-            color: _WritingThemeScreenState._onSurfaceMuted,
+            color: colors.onSurfaceMuted,
             fontSize: 13,
           ),
           prefixIcon: Container(
@@ -72,10 +72,10 @@ class _SearchField extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.04),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.search_rounded,
               size: 18,
-              color: _WritingThemeScreenState._onSurfaceMuted,
+              color: colors.onSurfaceMuted,
             ),
           ),
           prefixIconConstraints: const BoxConstraints(

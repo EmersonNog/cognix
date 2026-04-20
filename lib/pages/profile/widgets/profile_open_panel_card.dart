@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../theme/cognix_theme_colors.dart';
+
 class ProfileOpenPanelCard extends StatelessWidget {
   const ProfileOpenPanelCard({
     super.key,
@@ -27,14 +29,20 @@ class ProfileOpenPanelCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     final backgroundColor = isFeatured
-        ? Color.alphaBlend(primary.withOpacity(0.14), const Color(0xFF141E39))
-        : const Color(0xFF141E39);
+        ? Color.alphaBlend(
+            primary.withValues(alpha: 0.14),
+            colors.surfaceContainerHigh,
+          )
+        : colors.surfaceContainer;
     final borderColor = isFeatured
-        ? primary.withOpacity(0.26)
-        : Colors.white.withOpacity(0.04);
-    final iconContainerColor = primary.withOpacity(isFeatured ? 0.18 : 0.14);
-    final titleColor = isFeatured ? Colors.white : onSurface;
+        ? primary.withValues(alpha: 0.26)
+        : onSurfaceMuted.withValues(alpha: 0.12);
+    final iconContainerColor = primary.withValues(
+      alpha: isFeatured ? 0.18 : 0.14,
+    );
+    final titleColor = onSurface;
     final trailingColor = isFeatured ? primary : onSurfaceMuted;
 
     return InkWell(
@@ -49,13 +57,13 @@ class ProfileOpenPanelCard extends StatelessWidget {
           border: Border.all(color: borderColor),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.18),
+              color: primary.withValues(alpha: isFeatured ? 0.12 : 0.07),
               blurRadius: 18,
               offset: const Offset(0, 10),
             ),
             if (isFeatured)
               BoxShadow(
-                color: primary.withOpacity(0.12),
+                color: primary.withValues(alpha: 0.12),
                 blurRadius: 22,
                 offset: const Offset(0, 12),
               ),
@@ -85,9 +93,11 @@ class ProfileOpenPanelCard extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: primary.withOpacity(0.14),
+                        color: primary.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(999),
-                        border: Border.all(color: primary.withOpacity(0.18)),
+                        border: Border.all(
+                          color: primary.withValues(alpha: 0.18),
+                        ),
                       ),
                       child: Text(
                         badge!,

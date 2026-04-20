@@ -32,6 +32,8 @@ class HomeStreakCardViewState {
   factory HomeStreakCardViewState.fromProfile(
     ProfileScoreData profile, {
     required bool isLoading,
+    required Color primary,
+    required Color success,
   }) {
     final fallbackWindow = _buildFallbackRecentActivityWindow();
     final recentActivityWindow = profile.recentActivityWindow.isEmpty
@@ -47,10 +49,10 @@ class HomeStreakCardViewState {
         badgeLabel: 'AGORA',
         recentActivityWindow: fallbackWindow,
         icon: Icons.local_fire_department_rounded,
-        accent: const Color(0xFFA3A6FF),
-        frameColor: const Color(0x1EA3A6FF),
-        badgeBackgroundColor: const Color(0x1FA3A6FF),
-        badgeBorderColor: const Color(0x33A3A6FF),
+        accent: primary,
+        frameColor: primary.withValues(alpha: 0.12),
+        badgeBackgroundColor: primary.withValues(alpha: 0.13),
+        badgeBorderColor: primary.withValues(alpha: 0.2),
       );
     }
 
@@ -77,10 +79,10 @@ class HomeStreakCardViewState {
         badgeLabel: badgeLabel,
         recentActivityWindow: recentActivityWindow,
         icon: Icons.local_fire_department_rounded,
-        accent: const Color(0xFFA3A6FF),
-        frameColor: const Color(0x24A3A6FF),
-        badgeBackgroundColor: const Color(0x18A3A6FF),
-        badgeBorderColor: const Color(0x38A3A6FF),
+        accent: primary,
+        frameColor: primary.withValues(alpha: 0.14),
+        badgeBackgroundColor: primary.withValues(alpha: 0.1),
+        badgeBorderColor: primary.withValues(alpha: 0.22),
       );
     }
 
@@ -94,10 +96,10 @@ class HomeStreakCardViewState {
         badgeLabel: 'VOLTE',
         recentActivityWindow: recentActivityWindow,
         icon: Icons.bolt_rounded,
-        accent: const Color(0xFF7ED6C5),
-        frameColor: const Color(0x247ED6C5),
-        badgeBackgroundColor: const Color(0x1B7ED6C5),
-        badgeBorderColor: const Color(0x387ED6C5),
+        accent: success,
+        frameColor: success.withValues(alpha: 0.14),
+        badgeBackgroundColor: success.withValues(alpha: 0.1),
+        badgeBorderColor: success.withValues(alpha: 0.22),
       );
     }
 
@@ -110,10 +112,10 @@ class HomeStreakCardViewState {
       badgeLabel: 'NOVO',
       recentActivityWindow: recentActivityWindow,
       icon: Icons.rocket_launch_rounded,
-      accent: const Color(0xFFA3A6FF),
-      frameColor: const Color(0x1EA3A6FF),
-      badgeBackgroundColor: const Color(0x1AA3A6FF),
-      badgeBorderColor: const Color(0x33A3A6FF),
+      accent: primary,
+      frameColor: primary.withValues(alpha: 0.12),
+      badgeBackgroundColor: primary.withValues(alpha: 0.1),
+      badgeBorderColor: primary.withValues(alpha: 0.2),
     );
   }
 

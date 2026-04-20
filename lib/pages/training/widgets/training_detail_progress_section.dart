@@ -54,10 +54,7 @@ class TrainingDetailProgressSection extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               '$answered de $total questões respondidas nesta sessão',
-              style: GoogleFonts.inter(
-                color: onSurfaceMuted,
-                fontSize: 12,
-              ),
+              style: GoogleFonts.inter(color: onSurfaceMuted, fontSize: 12),
             ),
             const SizedBox(height: 8),
             ClipRRect(
@@ -65,7 +62,7 @@ class TrainingDetailProgressSection extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: progress,
                 minHeight: 8,
-                backgroundColor: onSurfaceMuted.withOpacity(0.12),
+                backgroundColor: onSurfaceMuted.withValues(alpha: 0.12),
                 valueColor: AlwaysStoppedAnimation<Color>(primary),
               ),
             ),

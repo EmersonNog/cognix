@@ -70,13 +70,18 @@ class AccountSecurityDeleteAccountPanel extends StatelessWidget {
           const SizedBox(height: 18),
           const FieldLabel(text: 'DIGITE EXCLUIR PARA CONFIRMAR'),
           const SizedBox(height: 8),
-          InputField(
+          _DeleteConfirmationField(
             controller: deleteConfirmationController,
             focusNode: deleteConfirmationFocus,
-            hintText: 'EXCLUIR',
-            icon: Icons.warning_amber_rounded,
-            background: AccountSecurityPalette.cardSoft,
-            primary: AccountSecurityPalette.danger,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Essa confirmação evita exclusões acidentais.',
+            style: GoogleFonts.inter(
+              color: AccountSecurityPalette.onSurfaceMuted,
+              fontSize: 11.8,
+              height: 1.35,
+            ),
           ),
           if (supportsPasswordProvider) ...[
             const SizedBox(height: 16),
@@ -104,7 +109,7 @@ class AccountSecurityDeleteAccountPanel extends StatelessWidget {
           ] else if (supportsGoogleProvider) ...[
             const SizedBox(height: 16),
             Text(
-              'Ao confirmar, você tambem vai validar sua conta Google para concluir a exclusão.',
+              'Ao confirmar, você também vai validar sua conta Google para concluir a exclusão.',
               style: GoogleFonts.inter(
                 color: AccountSecurityPalette.onSurfaceMuted,
                 fontSize: 12.5,
@@ -115,13 +120,111 @@ class AccountSecurityDeleteAccountPanel extends StatelessWidget {
           const SizedBox(height: 18),
           PrimaryButton(
             text: 'Excluir minha conta',
-            gradient: const LinearGradient(
-              colors: [Color(0xFFFF7B7B), Color(0xFFD94E4E)],
+            gradient: LinearGradient(
+              colors: [
+                AccountSecurityPalette.dangerSoft,
+                AccountSecurityPalette.danger,
+              ],
             ),
             onPressed: onSubmit,
             isLoading: isDeletingAccount,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _DeleteConfirmationField extends StatelessWidget {
+  const _DeleteConfirmationField({
+    required this.controller,
+    required this.focusNode,
+  });
+
+  final TextEditingController controller;
+  final FocusNode focusNode;
+
+  @override
+  Widget build(BuildContext context) {
+    return Focus(
+      focusNode: focusNode,
+      child: Builder(
+        builder: (context) {
+          final isFocused = Focus.of(context).hasFocus;
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeOut,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+            decoration: BoxDecoration(
+              color: AccountSecurityPalette.danger.withValues(
+                alpha: AccountSecurityPalette.isDark ? 0.08 : 0.06,
+              ),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: AccountSecurityPalette.danger.withValues(
+                  alpha: isFocused ? 0.58 : 0.24,
+                ),
+                width: isFocused ? 1.4 : 1,
+              ),
+              boxShadow: isFocused
+                  ? [
+                      BoxShadow(
+                        color: AccountSecurityPalette.danger.withValues(
+                          alpha: 0.16,
+                        ),
+                        blurRadius: 14,
+                        offset: const Offset(0, 6),
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    color: AccountSecurityPalette.danger.withValues(
+                      alpha: 0.14,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.warning_amber_rounded,
+                    color: AccountSecurityPalette.danger,
+                    size: 18,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextField(
+                    controller: controller,
+                    textCapitalization: TextCapitalization.characters,
+                    textInputAction: TextInputAction.next,
+                    style: GoogleFonts.plusJakartaSans(
+                      color: AccountSecurityPalette.onSurface,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.2,
+                    ),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'EXCLUIR',
+                      hintStyle: GoogleFonts.plusJakartaSans(
+                        color: AccountSecurityPalette.onSurfaceMuted.withValues(
+                          alpha: 0.62,
+                        ),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -139,8 +242,8 @@ class _AccountDangerBullet extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 2),
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
             child: Icon(
               Icons.circle,
               size: 8,

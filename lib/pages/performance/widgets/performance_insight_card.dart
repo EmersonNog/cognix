@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../theme/cognix_theme_colors.dart';
+
 class PerformanceInsightCard extends StatelessWidget {
   const PerformanceInsightCard({
     required this.title,
@@ -8,6 +10,7 @@ class PerformanceInsightCard extends StatelessWidget {
     required this.primary,
     required this.onSurface,
     required this.onSurfaceMuted,
+    required this.surfaceContainerHigh,
     super.key,
   });
 
@@ -16,23 +19,27 @@ class PerformanceInsightCard extends StatelessWidget {
   final Color primary;
   final Color onSurface;
   final Color onSurfaceMuted;
+  final Color surfaceContainerHigh;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF111C38), Color(0xFF0D1730)],
+        gradient: LinearGradient(
+          colors: [colors.surfaceContainer, surfaceContainerHigh],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: Colors.white.withOpacity(0.04)),
+        border: Border.all(
+          color: colors.onSurfaceMuted.withValues(alpha: 0.12),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.16),
+            color: primary.withValues(alpha: 0.08),
             blurRadius: 18,
             offset: const Offset(0, 10),
           ),
@@ -48,7 +55,7 @@ class PerformanceInsightCard extends StatelessWidget {
                 width: 42,
                 height: 42,
                 decoration: BoxDecoration(
-                  color: primary.withOpacity(0.14),
+                  color: primary.withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(Icons.insights_rounded, color: primary, size: 20),
@@ -70,7 +77,7 @@ class PerformanceInsightCard extends StatelessWidget {
                     Text(
                       'Resumo editorial do seu momento atual',
                       style: GoogleFonts.inter(
-                        color: onSurfaceMuted.withOpacity(0.9),
+                        color: onSurfaceMuted.withValues(alpha: 0.9),
                         fontSize: 11.5,
                         fontWeight: FontWeight.w500,
                       ),
@@ -85,9 +92,11 @@ class PerformanceInsightCard extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.035),
+              color: colors.surface.withValues(alpha: 0.35),
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: Colors.white.withOpacity(0.04)),
+              border: Border.all(
+                color: colors.onSurfaceMuted.withValues(alpha: 0.12),
+              ),
             ),
             child: Text(
               description,

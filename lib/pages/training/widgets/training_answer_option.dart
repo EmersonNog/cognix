@@ -126,7 +126,7 @@ class TrainingAnswerOption extends StatelessWidget {
                 if (displayText.isNotEmpty || !hasImageAttachment)
                   Text(
                     displayText.isEmpty
-                        ? 'Arquivo complementar disponivel.'
+                        ? 'Arquivo complementar disponível.'
                         : text,
                     style: GoogleFonts.inter(
                       color: isDisabled && !isPositive && !isNegative

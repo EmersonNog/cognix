@@ -21,11 +21,13 @@ class _WritingInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Container(
       margin: EdgeInsets.only(bottom: isLast ? 0 : 12),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: _editorSurfaceContainerHigh,
+        color: colors.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(18),
       ),
       child: Column(
@@ -37,17 +39,17 @@ class _WritingInput extends StatelessWidget {
                 width: 30,
                 height: 30,
                 decoration: BoxDecoration(
-                  color: _editorPrimary.withValues(alpha: 0.12),
+                  color: colors.primary.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(icon, color: _editorPrimary, size: 16),
+                child: Icon(icon, color: colors.primary, size: 16),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   label,
                   style: GoogleFonts.manrope(
-                    color: _editorOnSurface,
+                    color: colors.onSurface,
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
                   ),
@@ -59,7 +61,7 @@ class _WritingInput extends StatelessWidget {
           Text(
             hint,
             style: GoogleFonts.inter(
-              color: _editorOnSurfaceMuted,
+              color: colors.onSurfaceMuted,
               fontSize: 12,
             ),
           ),
@@ -70,35 +72,35 @@ class _WritingInput extends StatelessWidget {
             maxLines: null,
             onChanged: onChanged,
             style: GoogleFonts.inter(
-              color: _editorOnSurface,
+              color: colors.onSurface,
               fontSize: 13.6,
               height: 1.45,
             ),
-            cursorColor: _editorPrimary,
+            cursorColor: colors.primary,
             decoration: InputDecoration(
               filled: true,
-              fillColor: _editorSurface,
+              fillColor: colors.surface,
               hintText: 'Escreva aqui',
               hintStyle: GoogleFonts.inter(
-                color: _editorOnSurfaceMuted.withValues(alpha: 0.65),
+                color: colors.onSurfaceMuted.withValues(alpha: 0.65),
                 fontSize: 13,
               ),
               contentPadding: const EdgeInsets.all(14),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide(
-                  color: _editorPrimary.withValues(alpha: 0.08),
+                  color: colors.primary.withValues(alpha: 0.08),
                 ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide(
-                  color: _editorPrimary.withValues(alpha: 0.08),
+                  color: colors.primary.withValues(alpha: 0.08),
                 ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
-                borderSide: const BorderSide(color: _editorPrimary),
+                borderSide: BorderSide(color: colors.primary),
               ),
             ),
           ),
@@ -115,6 +117,8 @@ class _ComposeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -123,22 +127,18 @@ class _ComposeButton extends StatelessWidget {
         child: Ink(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            color: _editorAccent.withValues(alpha: 0.1),
+            color: colors.accent.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(18),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.post_add_rounded,
-                size: 18,
-                color: _editorAccent,
-              ),
+              Icon(Icons.post_add_rounded, size: 18, color: colors.accent),
               const SizedBox(width: 8),
               Text(
                 'Montar texto com a estrutura',
                 style: GoogleFonts.plusJakartaSans(
-                  color: _editorAccent,
+                  color: colors.accent,
                   fontSize: 13,
                   fontWeight: FontWeight.w800,
                 ),
@@ -168,15 +168,18 @@ class _PrimaryActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return SizedBox(
       height: 54,
       child: ElevatedButton(
         onPressed: isLoading || !isEnabled ? null : onTap,
         style: ElevatedButton.styleFrom(
-          backgroundColor: _editorPrimary,
-          foregroundColor: const Color(0xFF060E20),
-          disabledBackgroundColor: _editorPrimary.withValues(alpha: 0.82),
-          disabledForegroundColor: const Color(0xFF060E20),
+          backgroundColor: colors.primary,
+          foregroundColor: colorScheme.onPrimary,
+          disabledBackgroundColor: colors.primary.withValues(alpha: 0.82),
+          disabledForegroundColor: colorScheme.onPrimary,
           elevation: isLoading ? 0 : 2,
           textStyle: GoogleFonts.plusJakartaSans(
             fontSize: 14,
@@ -203,10 +206,10 @@ class _PrimaryActionButton extends StatelessWidget {
                         color: Colors.black.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(999),
                       ),
-                      child: const CircularProgressIndicator(
+                      child: CircularProgressIndicator(
                         strokeWidth: 2.2,
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          Color(0xFF060E20),
+                          colorScheme.onPrimary,
                         ),
                       ),
                     ),

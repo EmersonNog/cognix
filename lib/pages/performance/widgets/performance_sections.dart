@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../theme/cognix_theme_colors.dart';
 import '../utils/performance_utils.dart';
 import 'performance_widgets.dart';
 
@@ -136,6 +137,8 @@ class DisciplineSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -188,9 +191,11 @@ class DisciplineSection extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF101A33),
+              color: colors.surfaceContainer,
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.045)),
+              border: Border.all(
+                color: colors.onSurfaceMuted.withValues(alpha: 0.12),
+              ),
             ),
             child: Column(
               children: [

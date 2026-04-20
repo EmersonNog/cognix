@@ -22,7 +22,7 @@ Color _categoryAccent(String category) {
     case 'seguranca':
       return const Color(0xFFFFA36E);
     default:
-      return _WritingHistoryScreenState._primary;
+      return const Color(0xFFA3A6FF);
   }
 }
 

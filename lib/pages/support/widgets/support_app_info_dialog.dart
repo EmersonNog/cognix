@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import 'support_palette.dart';
+import '../../../theme/cognix_theme_colors.dart';
 
 Future<void> showSupportAppInfoDialog(BuildContext context) async {
   final packageInfo = await PackageInfo.fromPlatform();
@@ -10,6 +10,13 @@ Future<void> showSupportAppInfoDialog(BuildContext context) async {
   if (!context.mounted) {
     return;
   }
+
+  final colors = context.cognixColors;
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  final borderColor = colors.onSurfaceMuted.withValues(
+    alpha: isDark ? 0.12 : 0.18,
+  );
+  final primaryForeground = isDark ? const Color(0xFF060E20) : Colors.white;
 
   return showDialog<void>(
     context: context,
@@ -20,12 +27,12 @@ Future<void> showSupportAppInfoDialog(BuildContext context) async {
         insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
         child: Container(
           decoration: BoxDecoration(
-            color: supportCard,
+            color: colors.surfaceContainer,
             borderRadius: BorderRadius.circular(28),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+            border: Border.all(color: borderColor),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.28),
+                color: Colors.black.withValues(alpha: isDark ? 0.28 : 0.1),
                 blurRadius: 28,
                 offset: const Offset(0, 18),
               ),
@@ -37,13 +44,18 @@ Future<void> showSupportAppInfoDialog(BuildContext context) async {
             children: [
               Container(
                 padding: const EdgeInsets.fromLTRB(22, 22, 22, 18),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Color(0xFF162448), Color(0xFF121D38)],
+                    colors: [
+                      colors.surfaceContainerHigh,
+                      colors.surfaceContainer,
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(28),
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -53,17 +65,17 @@ Future<void> showSupportAppInfoDialog(BuildContext context) async {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            supportPrimary.withValues(alpha: 0.34),
-                            const Color(0xFF5C6BFF).withValues(alpha: 0.18),
+                            colors.primary.withValues(alpha: 0.34),
+                            colors.primaryDim.withValues(alpha: 0.18),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
                         borderRadius: BorderRadius.circular(18),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.school_rounded,
-                        color: Colors.white,
+                        color: primaryForeground,
                         size: 26,
                       ),
                     ),
@@ -75,7 +87,7 @@ Future<void> showSupportAppInfoDialog(BuildContext context) async {
                           Text(
                             'Cognix',
                             style: GoogleFonts.manrope(
-                              color: supportOnSurface,
+                              color: colors.onSurface,
                               fontSize: 24,
                               fontWeight: FontWeight.w800,
                             ),
@@ -87,13 +99,13 @@ Future<void> showSupportAppInfoDialog(BuildContext context) async {
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: supportPrimary.withValues(alpha: 0.12),
+                              color: colors.primary.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(999),
                             ),
                             child: Text(
                               'Versão $appVersion',
                               style: GoogleFonts.plusJakartaSans(
-                                color: supportPrimary,
+                                color: colors.primary,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -110,7 +122,7 @@ Future<void> showSupportAppInfoDialog(BuildContext context) async {
                 child: Text(
                   'Ferramenta de estudo e acompanhamento para organizar sua rotina, praticar com simulados e acompanhar sua evolução.',
                   style: GoogleFonts.inter(
-                    color: supportOnSurfaceMuted,
+                    color: colors.onSurfaceMuted,
                     fontSize: 13,
                     height: 1.55,
                   ),
@@ -121,10 +133,10 @@ Future<void> showSupportAppInfoDialog(BuildContext context) async {
                 child: Wrap(
                   spacing: 8,
                   runSpacing: 8,
-                  children: const [
-                    _InfoChip(label: 'Plano'),
-                    _InfoChip(label: 'Treino'),
-                    _InfoChip(label: 'Desempenho'),
+                  children: [
+                    _InfoChip(label: 'Plano', colors: colors),
+                    _InfoChip(label: 'Treino', colors: colors),
+                    _InfoChip(label: 'Desempenho', colors: colors),
                   ],
                 ),
               ),
@@ -145,7 +157,7 @@ Future<void> showSupportAppInfoDialog(BuildContext context) async {
                           );
                         },
                         style: TextButton.styleFrom(
-                          foregroundColor: supportOnSurfaceMuted,
+                          foregroundColor: colors.onSurfaceMuted,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
@@ -159,8 +171,8 @@ Future<void> showSupportAppInfoDialog(BuildContext context) async {
                       child: FilledButton(
                         onPressed: () => Navigator.of(dialogContext).pop(),
                         style: FilledButton.styleFrom(
-                          backgroundColor: supportPrimary,
-                          foregroundColor: Colors.white,
+                          backgroundColor: colors.primary,
+                          foregroundColor: primaryForeground,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
@@ -190,22 +202,23 @@ String _formatAppVersion(PackageInfo packageInfo) {
 }
 
 class _InfoChip extends StatelessWidget {
-  const _InfoChip({required this.label});
+  const _InfoChip({required this.label, required this.colors});
 
   final String label;
+  final CognixThemeColors colors;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.05),
+        color: colors.surfaceContainerHigh.withValues(alpha: 0.72),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
         label,
         style: GoogleFonts.plusJakartaSans(
-          color: supportOnSurfaceMuted,
+          color: colors.onSurfaceMuted,
           fontSize: 10.5,
           fontWeight: FontWeight.w700,
         ),

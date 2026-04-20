@@ -7,6 +7,7 @@ class _AvatarSpotlightCard extends StatelessWidget {
     required this.rarityLabel,
     required this.themeLabel,
     required this.rarityColor,
+    required this.palette,
     required this.description,
     required this.primary,
     required this.onSurface,
@@ -18,6 +19,7 @@ class _AvatarSpotlightCard extends StatelessWidget {
   final String? rarityLabel;
   final String? themeLabel;
   final Color rarityColor;
+  final _AvatarStorePalette palette;
   final String description;
   final Color primary;
   final Color onSurface;
@@ -28,10 +30,10 @@ class _AvatarSpotlightCard extends StatelessWidget {
     final accent = item?.equipped == true
         ? const Color(0xFFFFD977)
         : item?.owned == true
-            ? primary
-            : item?.affordable == true
-                ? const Color(0xFF78D6B7)
-                : const Color(0xFFFF8B7A);
+        ? primary
+        : item?.affordable == true
+        ? const Color(0xFF78D6B7)
+        : const Color(0xFFFF8B7A);
 
     final title = item?.title ?? 'Sem avatar selecionado';
 
@@ -41,19 +43,17 @@ class _AvatarSpotlightCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(compact ? 22 : 24),
         color: item == null
-            ? const Color(0xFF141E39)
+            ? palette.surfaceContainerHigh
             : Color.alphaBlend(
                 accent.withValues(alpha: compact ? 0.1 : 0.12),
-                const Color(0xFF141E39),
+                palette.surfaceContainerHigh,
               ),
         border: Border.all(
-          color: item == null
-              ? Colors.white.withValues(alpha: 0.05)
-              : accent.withValues(alpha: 0.2),
+          color: item == null ? palette.border : accent.withValues(alpha: 0.2),
         ),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: Colors.black.withValues(alpha: compact ? 0.12 : 0.18),
+            color: palette.shadow.withValues(alpha: compact ? 0.62 : 0.82),
             blurRadius: compact ? 14 : 18,
             offset: Offset(0, compact ? 8 : 10),
           ),
@@ -68,7 +68,9 @@ class _AvatarSpotlightCard extends StatelessWidget {
             padding: EdgeInsets.all(compact ? 5 : 6),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withValues(alpha: 0.92),
+              color: palette.isDark
+                  ? Colors.white.withValues(alpha: 0.92)
+                  : palette.surfaceContainer,
               border: Border.all(
                 color: accent.withValues(alpha: 0.28),
                 width: 2,
@@ -76,7 +78,7 @@ class _AvatarSpotlightCard extends StatelessWidget {
             ),
             child: ClipOval(
               child: item == null
-                  ? Container(color: Colors.white.withValues(alpha: 0.04))
+                  ? Container(color: palette.surfaceContainerHigh)
                   : RandomAvatar(item!.seed),
             ),
           ),
@@ -97,7 +99,7 @@ class _AvatarSpotlightCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(999),
                       ),
                       child: Text(
-                        priceLabel ?? 'Selecao',
+                        priceLabel ?? 'Seleção',
                         style: GoogleFonts.plusJakartaSans(
                           color: accent,
                           fontSize: 10,
@@ -143,7 +145,8 @@ class _AvatarSpotlightCard extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                if (themeLabel != null && themeLabel!.trim().isNotEmpty) ...<Widget>[
+                if (themeLabel != null &&
+                    themeLabel!.trim().isNotEmpty) ...<Widget>[
                   SizedBox(height: compact ? 3 : 4),
                   Text(
                     themeLabel!,
@@ -158,7 +161,9 @@ class _AvatarSpotlightCard extends StatelessWidget {
                 Text(
                   description,
                   maxLines: compact ? 3 : null,
-                  overflow: compact ? TextOverflow.ellipsis : TextOverflow.visible,
+                  overflow: compact
+                      ? TextOverflow.ellipsis
+                      : TextOverflow.visible,
                   style: GoogleFonts.inter(
                     color: onSurface.withValues(alpha: 0.72),
                     fontSize: compact ? 11 : 11.5,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../models/training_tab_models.dart';
 
 class TrainingRhythmCard extends StatelessWidget {
@@ -50,7 +51,7 @@ class TrainingRhythmCard extends StatelessWidget {
             width: 46,
             height: 46,
             decoration: BoxDecoration(
-              color: primary.withOpacity(0.18),
+              color: primary.withValues(alpha: 0.18),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(Icons.auto_graph_rounded, color: primary, size: 22),
@@ -76,7 +77,7 @@ class TrainingRhythmCard extends StatelessWidget {
                 Text(
                   data.completedCountLabel,
                   style: GoogleFonts.inter(
-                    color: onSurfaceMuted.withOpacity(0.82),
+                    color: onSurfaceMuted.withValues(alpha: 0.82),
                     fontSize: 11,
                   ),
                 ),
@@ -87,7 +88,7 @@ class TrainingRhythmCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: primary.withOpacity(0.2),
+              color: primary.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(999),
             ),
             child: badgeChild,

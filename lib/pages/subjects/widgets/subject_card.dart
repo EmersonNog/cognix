@@ -134,7 +134,7 @@ class _StatusTag extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: foregroundColor.withOpacity(0.24)),
+        border: Border.all(color: foregroundColor.withValues(alpha: 0.24)),
       ),
       child: Text(
         label,
@@ -164,11 +164,11 @@ class _FooterRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _AvatarDot(color: primary.withOpacity(0.85)),
+        _AvatarDot(color: primary.withValues(alpha: 0.85)),
         const SizedBox(width: 6),
-        _AvatarDot(color: primary.withOpacity(0.6)),
+        _AvatarDot(color: primary.withValues(alpha: 0.6)),
         const SizedBox(width: 6),
-        _AvatarDot(color: primary.withOpacity(0.4)),
+        _AvatarDot(color: primary.withValues(alpha: 0.4)),
         const SizedBox(width: 10),
         Text(
           text,
@@ -192,7 +192,10 @@ class _AvatarDot extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withOpacity(0.08), width: 1),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.08),
+          width: 1,
+        ),
       ),
     );
   }

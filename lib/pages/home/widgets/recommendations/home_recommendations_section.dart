@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../services/recommendations/home_recommendations_api.dart';
+import '../../../../theme/cognix_theme_colors.dart';
 import '../../../subjects/subjects_data.dart';
 import '../../../training/training_detail_screen.dart';
 part 'home_recommendations_section_actions.dart';
@@ -13,6 +14,8 @@ class HomeRecommendationsSection extends StatelessWidget {
     required this.onSurface,
     required this.onSurfaceMuted,
     required this.primary,
+    required this.success,
+    required this.danger,
     required this.surfaceContainerHigh,
   });
 
@@ -20,6 +23,8 @@ class HomeRecommendationsSection extends StatelessWidget {
   final Color onSurface;
   final Color onSurfaceMuted;
   final Color primary;
+  final Color success;
+  final Color danger;
   final Color surfaceContainerHigh;
 
   @override
@@ -55,6 +60,8 @@ class HomeRecommendationsSection extends StatelessWidget {
                           onSurface: onSurface,
                           onSurfaceMuted: onSurfaceMuted,
                           primary: primary,
+                          success: success,
+                          danger: danger,
                           surfaceContainerHigh: surfaceContainerHigh,
                         )
                       : null,
@@ -104,7 +111,11 @@ class HomeRecommendationsSection extends StatelessWidget {
               )
             else
               ...visibleItems.map((item) {
-                final badgeColor = _badgeColorForTone(item.badgeTone);
+                final badgeColor = _badgeColorForTone(
+                  item.badgeTone,
+                  success: success,
+                  danger: danger,
+                );
                 final icon = _iconForRecommendation(item.discipline);
 
                 return Padding(
@@ -124,6 +135,8 @@ class HomeRecommendationsSection extends StatelessWidget {
                       onSurface: onSurface,
                       onSurfaceMuted: onSurfaceMuted,
                       primary: primary,
+                      success: success,
+                      danger: danger,
                     ),
                   ),
                 );

@@ -49,13 +49,34 @@ class _StudyPlanDraft {
 }
 
 class _StudyPlanPalette {
-  const _StudyPlanPalette();
+  const _StudyPlanPalette({
+    required this.surface,
+    required this.surfaceContainer,
+    required this.surfaceContainerHigh,
+    required this.onSurface,
+    required this.onSurfaceMuted,
+    required this.primary,
+    required this.secondary,
+  });
 
-  final Color surface = const Color(0xFF060E20);
-  final Color surfaceContainer = const Color(0xFF0F1930);
-  final Color surfaceContainerHigh = const Color(0xFF141F38);
-  final Color onSurface = const Color(0xFFDEE5FF);
-  final Color onSurfaceMuted = const Color(0xFF9AA6C5);
-  final Color primary = const Color(0xFFA3A6FF);
-  final Color secondary = const Color(0xFF7D62F1);
+  factory _StudyPlanPalette.fromContext(BuildContext context) {
+    final colors = context.cognixColors;
+    return _StudyPlanPalette(
+      surface: colors.surface,
+      surfaceContainer: colors.surfaceContainer,
+      surfaceContainerHigh: colors.surfaceContainerHigh,
+      onSurface: colors.onSurface,
+      onSurfaceMuted: colors.onSurfaceMuted,
+      primary: colors.primary,
+      secondary: colors.secondaryDim,
+    );
+  }
+
+  final Color surface;
+  final Color surfaceContainer;
+  final Color surfaceContainerHigh;
+  final Color onSurface;
+  final Color onSurfaceMuted;
+  final Color primary;
+  final Color secondary;
 }

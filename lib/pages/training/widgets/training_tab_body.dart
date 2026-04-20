@@ -78,7 +78,7 @@ class TrainingTabBody extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            'LISTA DE AREAS',
+            'LISTA DE ÁREAS',
             style: GoogleFonts.plusJakartaSans(
               color: onSurfaceMuted,
               fontSize: 11,

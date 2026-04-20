@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../services/profile/profile_api.dart';
+import '../../theme/cognix_theme_colors.dart';
 import 'widgets/profile_menu_item.dart';
 
 class ProfileDetailsScreen extends StatelessWidget {
@@ -21,8 +22,9 @@ class ProfileDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     return Scaffold(
-      backgroundColor: const Color(0xFF05051A),
+      backgroundColor: colors.surface,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         foregroundColor: onSurface,

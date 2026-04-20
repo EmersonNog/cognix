@@ -13,6 +13,8 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -23,7 +25,7 @@ class _SectionHeader extends StatelessWidget {
               Text(
                 title,
                 style: GoogleFonts.manrope(
-                  color: _WritingHistoryDetailScreenState._onSurface,
+                  color: colors.onSurface,
                   fontSize: 19,
                   fontWeight: FontWeight.w900,
                 ),
@@ -32,7 +34,7 @@ class _SectionHeader extends StatelessWidget {
               Text(
                 subtitle,
                 style: GoogleFonts.inter(
-                  color: _WritingHistoryDetailScreenState._onSurfaceMuted,
+                  color: colors.onSurfaceMuted,
                   fontSize: 12.5,
                   height: 1.35,
                 ),
@@ -44,13 +46,13 @@ class _SectionHeader extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
           decoration: BoxDecoration(
-            color: _WritingHistoryDetailScreenState._surfaceContainerHigh,
+            color: colors.surfaceContainerHigh,
             borderRadius: BorderRadius.circular(999),
           ),
           child: Text(
             pillLabel,
             style: GoogleFonts.inter(
-              color: _WritingHistoryDetailScreenState._onSurfaceMuted,
+              color: colors.onSurfaceMuted,
               fontSize: 11.5,
               fontWeight: FontWeight.w700,
             ),
@@ -78,17 +80,18 @@ class _VersionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: _WritingHistoryDetailScreenState._surfaceContainer,
+        color: colors.surfaceContainer,
         borderRadius: BorderRadius.circular(22),
         border: Border.all(
           color: isLatest
-              ? _WritingHistoryDetailScreenState._accent.withValues(alpha: 0.22)
-              : _WritingHistoryDetailScreenState._primary.withValues(
-                  alpha: 0.12,
-                ),
+              ? colors.accent.withValues(alpha: 0.22)
+              : colors.primary.withValues(alpha: 0.12),
         ),
       ),
       child: Column(
@@ -99,23 +102,21 @@ class _VersionCard extends StatelessWidget {
               _Pill(
                 icon: Icons.layers_rounded,
                 label: 'Versão ${version.versionNumber}',
-                accent: isLatest
-                    ? _WritingHistoryDetailScreenState._accent
-                    : _WritingHistoryDetailScreenState._primary,
+                accent: isLatest ? colors.accent : colors.primary,
               ),
               if (isLatest) ...[
                 const SizedBox(width: 8),
                 _Pill(
                   icon: Icons.star_rounded,
                   label: 'Atual',
-                  accent: _WritingHistoryDetailScreenState._success,
+                  accent: colors.success,
                 ),
               ],
               const Spacer(),
               Text(
                 '${version.estimatedScore}',
                 style: GoogleFonts.manrope(
-                  color: _WritingHistoryDetailScreenState._onSurface,
+                  color: colors.onSurface,
                   fontSize: 22,
                   fontWeight: FontWeight.w900,
                 ),
@@ -128,7 +129,7 @@ class _VersionCard extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: GoogleFonts.inter(
-              color: _WritingHistoryDetailScreenState._onSurfaceMuted,
+              color: colors.onSurfaceMuted,
               fontSize: 12.5,
               height: 1.34,
             ),
@@ -161,10 +162,9 @@ class _VersionCard extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: onOpenDiagnosis,
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: _WritingHistoryDetailScreenState._accent,
+                    foregroundColor: colors.accent,
                     side: BorderSide(
-                      color: _WritingHistoryDetailScreenState._accent
-                          .withValues(alpha: 0.22),
+                      color: colors.accent.withValues(alpha: 0.22),
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -178,8 +178,8 @@ class _VersionCard extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: onContinue,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _WritingHistoryDetailScreenState._primary,
-                    foregroundColor: const Color(0xFF060E20),
+                    backgroundColor: colors.primary,
+                    foregroundColor: colorScheme.onPrimary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
@@ -237,25 +237,23 @@ class _TinyMetric extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: _WritingHistoryDetailScreenState._surfaceContainerHigh,
+        color: colors.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 14,
-            color: _WritingHistoryDetailScreenState._onSurfaceMuted,
-          ),
+          Icon(icon, size: 14, color: colors.onSurfaceMuted),
           const SizedBox(width: 6),
           Text(
             label,
             style: GoogleFonts.inter(
-              color: _WritingHistoryDetailScreenState._onSurfaceMuted,
+              color: colors.onSurfaceMuted,
               fontSize: 11.5,
               fontWeight: FontWeight.w600,
             ),
@@ -279,6 +277,7 @@ class _LoadMoreButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     final count = remainingCount > _WritingHistoryDetailScreenState._pageSize
         ? _WritingHistoryDetailScreenState._pageSize
         : remainingCount;
@@ -292,29 +291,28 @@ class _LoadMoreButton extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           decoration: BoxDecoration(
-            color: _WritingHistoryDetailScreenState._surfaceContainerHigh,
+            color: colors.surfaceContainerHigh,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: _WritingHistoryDetailScreenState._accent.withValues(
-                alpha: 0.18,
-              ),
-            ),
+            border: Border.all(color: colors.accent.withValues(alpha: 0.18)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (isLoading) ...[
-                const SizedBox(
+                SizedBox(
                   width: 16,
                   height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(colors.accent),
+                  ),
                 ),
                 const SizedBox(width: 10),
               ],
               Text(
                 isLoading ? 'Carregando...' : 'Carregar mais $count $label',
                 style: GoogleFonts.inter(
-                  color: _WritingHistoryDetailScreenState._accent,
+                  color: colors.accent,
                   fontSize: 13.5,
                   fontWeight: FontWeight.w800,
                 ),

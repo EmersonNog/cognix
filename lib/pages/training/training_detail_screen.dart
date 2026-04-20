@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../../navigation/app_route_observer.dart';
 import '../../services/summaries/summaries_api.dart';
+import '../../theme/cognix_theme_colors.dart';
 import '../../widgets/cognix/cognix_messages.dart';
 import '../subjects/subjects_area_screen.dart';
 import '../subjects/subjects_data.dart';
-import 'session/training_session_screen.dart';
 import 'models/training_detail_models.dart';
+import 'session/training_session_screen.dart';
 import 'training_summary_screen.dart';
 import 'widgets/training_detail_active_card.dart';
 import 'widgets/training_detail_header.dart';
@@ -205,7 +207,7 @@ class _TrainingDetailScreenState extends State<TrainingDetailScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF060E20),
+      backgroundColor: context.cognixColors.surface,
       appBar: AppBar(
         title: Text(
           widget.title,
@@ -251,6 +253,7 @@ class _TrainingDetailScreenState extends State<TrainingDetailScreen>
             TrainingDetailQuickActions(
               actions: _buildQuickActions(),
               surfaceContainerHigh: widget.surfaceContainerHigh,
+              onSurface: widget.onSurface,
               onSurfaceMuted: widget.onSurfaceMuted,
             ),
             const SizedBox(height: 18),

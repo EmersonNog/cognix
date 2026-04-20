@@ -67,7 +67,7 @@ class TrainingResultsMetricCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(999),
             child: Container(
               height: barHeight,
-              color: trackColor ?? accentColor.withOpacity(0.22),
+              color: trackColor ?? accentColor.withValues(alpha: 0.22),
               child: FractionallySizedBox(
                 widthFactor: progress.clamp(0, 1),
                 alignment: Alignment.centerLeft,
@@ -77,7 +77,10 @@ class TrainingResultsMetricCard extends StatelessWidget {
                     gradient: solidFill
                         ? null
                         : LinearGradient(
-                            colors: [accentColor.withOpacity(0.5), accentColor],
+                            colors: [
+                              accentColor.withValues(alpha: 0.5),
+                              accentColor,
+                            ],
                           ),
                   ),
                 ),

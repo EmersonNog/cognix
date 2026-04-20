@@ -7,10 +7,12 @@ class _CompetencyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: WritingResultScreen._surfaceContainer,
+        color: colors.surfaceContainer,
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
@@ -20,14 +22,14 @@ class _CompetencyCard extends StatelessWidget {
             width: 54,
             padding: const EdgeInsets.symmetric(vertical: 8),
             decoration: BoxDecoration(
-              color: WritingResultScreen._primary.withValues(alpha: 0.12),
+              color: colors.primary.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(15),
             ),
             child: Text(
               '${competency.score}',
               textAlign: TextAlign.center,
               style: GoogleFonts.manrope(
-                color: WritingResultScreen._primary,
+                color: colors.primary,
                 fontSize: 17,
                 fontWeight: FontWeight.w900,
               ),
@@ -41,7 +43,7 @@ class _CompetencyCard extends StatelessWidget {
                 Text(
                   competency.title,
                   style: GoogleFonts.inter(
-                    color: WritingResultScreen._onSurface,
+                    color: colors.onSurface,
                     fontSize: 13.5,
                     fontWeight: FontWeight.w900,
                   ),
@@ -50,7 +52,7 @@ class _CompetencyCard extends StatelessWidget {
                 Text(
                   competency.comment,
                   style: GoogleFonts.inter(
-                    color: WritingResultScreen._onSurfaceMuted,
+                    color: colors.onSurfaceMuted,
                     fontSize: 12.3,
                     height: 1.35,
                   ),
@@ -71,14 +73,14 @@ class _RewriteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Container(
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: WritingResultScreen._surfaceContainer,
+        color: colors.surfaceContainer,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: WritingResultScreen._accent.withValues(alpha: 0.14),
-        ),
+        border: Border.all(color: colors.accent.withValues(alpha: 0.14)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +88,7 @@ class _RewriteCard extends StatelessWidget {
           Text(
             suggestion.section.toUpperCase(),
             style: GoogleFonts.plusJakartaSans(
-              color: WritingResultScreen._accent,
+              color: colors.accent,
               fontSize: 10,
               letterSpacing: 0.8,
               fontWeight: FontWeight.w900,
@@ -96,7 +98,7 @@ class _RewriteCard extends StatelessWidget {
           Text(
             suggestion.issue,
             style: GoogleFonts.manrope(
-              color: WritingResultScreen._onSurface,
+              color: colors.onSurface,
               fontSize: 15,
               fontWeight: FontWeight.w900,
             ),
@@ -105,7 +107,7 @@ class _RewriteCard extends StatelessWidget {
           Text(
             suggestion.suggestion,
             style: GoogleFonts.inter(
-              color: WritingResultScreen._onSurfaceMuted,
+              color: colors.onSurfaceMuted,
               fontSize: 12.7,
               height: 1.4,
             ),
@@ -115,13 +117,13 @@ class _RewriteCard extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: WritingResultScreen._surfaceContainerHigh,
+              color: colors.surfaceContainerHigh,
               borderRadius: BorderRadius.circular(15),
             ),
             child: Text(
               suggestion.example,
               style: GoogleFonts.inter(
-                color: WritingResultScreen._onSurface,
+                color: colors.onSurface,
                 fontSize: 12.5,
                 height: 1.4,
                 fontStyle: FontStyle.italic,

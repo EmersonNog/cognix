@@ -61,7 +61,7 @@ class PerformanceDisciplineBreakdownRow extends StatelessWidget {
           child: LinearProgressIndicator(
             value: share.clamp(0.0, 1.0),
             minHeight: 8,
-            backgroundColor: Colors.white.withOpacity(0.05),
+            backgroundColor: Colors.white.withValues(alpha: 0.05),
             valueColor: AlwaysStoppedAnimation<Color>(accent),
           ),
         ),

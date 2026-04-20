@@ -5,25 +5,30 @@ class _LoadingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: _WritingThemeScreenState._surfaceContainer,
+        color: colors.surfaceContainer,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
         children: [
-          const SizedBox(
+          SizedBox(
             width: 22,
             height: 22,
-            child: CircularProgressIndicator(strokeWidth: 2),
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(colors.accent),
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
             child: Text(
-              'Carregando temas de redaÃ§Ã£o...',
+              'Carregando temas de redação...',
               style: GoogleFonts.inter(
-                color: _WritingThemeScreenState._onSurfaceMuted,
+                color: colors.onSurfaceMuted,
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
               ),
@@ -48,10 +53,12 @@ class _InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: _WritingThemeScreenState._surfaceContainer,
+        color: colors.surfaceContainer,
         borderRadius: BorderRadius.circular(22),
       ),
       child: Row(
@@ -60,10 +67,10 @@ class _InfoCard extends StatelessWidget {
             width: 46,
             height: 46,
             decoration: BoxDecoration(
-              color: _WritingThemeScreenState._accent.withValues(alpha: 0.12),
+              color: colors.accent.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon, color: _WritingThemeScreenState._accent),
+            child: Icon(icon, color: colors.accent),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -73,7 +80,7 @@ class _InfoCard extends StatelessWidget {
                 Text(
                   title,
                   style: GoogleFonts.manrope(
-                    color: _WritingThemeScreenState._onSurface,
+                    color: colors.onSurface,
                     fontSize: 15.5,
                     fontWeight: FontWeight.w900,
                   ),
@@ -82,7 +89,7 @@ class _InfoCard extends StatelessWidget {
                 Text(
                   subtitle,
                   style: GoogleFonts.inter(
-                    color: _WritingThemeScreenState._onSurfaceMuted,
+                    color: colors.onSurfaceMuted,
                     fontSize: 12.5,
                     height: 1.35,
                   ),

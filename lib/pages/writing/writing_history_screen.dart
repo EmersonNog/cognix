@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../services/writing/writing_api.dart';
+import '../../theme/cognix_theme_colors.dart';
 import '../../utils/api_datetime.dart';
 import '../../widgets/cognix/cognix_page_layout.dart';
 import 'writing_route_args.dart';
@@ -18,13 +19,6 @@ class WritingHistoryScreen extends StatefulWidget {
 }
 
 class _WritingHistoryScreenState extends State<WritingHistoryScreen> {
-  static const _surface = Color(0xFF060E20);
-  static const _surfaceContainer = Color(0xFF0F1930);
-  static const _surfaceContainerHigh = Color(0xFF141F38);
-  static const _onSurface = Color(0xFFDEE5FF);
-  static const _onSurfaceMuted = Color(0xFF9AA6C5);
-  static const _primary = Color(0xFFA3A6FF);
-  static const _accent = Color(0xFFFFC56E);
   static const _pageSize = 5;
 
   late Future<void> _future;
@@ -79,25 +73,26 @@ class _WritingHistoryScreenState extends State<WritingHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     final latest = _items.isEmpty ? null : _items.first;
 
     return Scaffold(
-      backgroundColor: _surface,
+      backgroundColor: colors.surface,
       body: CognixPageLayout(
         title: 'Histórico de redação',
-        backgroundColor: _surface,
-        topBarColor: _surfaceContainerHigh,
-        titleColor: _onSurface,
+        backgroundColor: colors.surface,
+        topBarColor: colors.surfaceContainerHigh,
+        titleColor: colors.onSurface,
         leadingIcon: Icons.history_rounded,
-        leadingColor: _accent,
+        leadingColor: colors.accent,
         trailing: IconButton(
           onPressed: () => Navigator.of(context).pop(),
           icon: const Icon(Icons.close_rounded),
-          color: _onSurfaceMuted,
+          color: colors.onSurfaceMuted,
         ),
-        backgroundLayers: const [
-          _Glow(top: -90, right: -50, color: _accent),
-          _Glow(top: 200, left: -70, color: _primary),
+        backgroundLayers: [
+          _Glow(top: -90, right: -50, color: colors.accent),
+          _Glow(top: 200, left: -70, color: colors.primary),
         ],
         child: FutureBuilder<void>(
           future: _future,
@@ -107,7 +102,7 @@ class _WritingHistoryScreenState extends State<WritingHistoryScreen> {
                 _items.isEmpty;
 
             return RefreshIndicator(
-              color: _accent,
+              color: colors.accent,
               onRefresh: _reload,
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:random_avatar/random_avatar.dart';
 
 import '../../services/profile/profile_api.dart';
+import '../../theme/cognix_theme_colors.dart';
 import 'widgets/profile_header_utils.dart';
 
 part 'avatar_store/dialog_logic.dart';
@@ -10,6 +11,9 @@ part 'avatar_store/formatters.dart';
 part 'avatar_store/header_widgets.dart';
 part 'avatar_store/spotlight_widgets.dart';
 part 'avatar_store/catalog_widgets.dart';
+part 'avatar_store/catalog_widgets/empty_state.dart';
+part 'avatar_store/catalog_widgets/rarity_dropdown.dart';
+part 'avatar_store/catalog_widgets/store_tile.dart';
 part 'avatar_store/footer_widgets.dart';
 
 class AvatarSelectorDialog extends StatefulWidget {
@@ -141,6 +145,7 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final palette = _AvatarStorePalette.fromContext(context);
     final selectedItem = _selectedItem;
     final visibleItems = _visibleItems;
     final maxHeight = MediaQuery.sizeOf(context).height * 0.8;
@@ -173,19 +178,19 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: <Color>[
-                Colors.white.withValues(alpha: 0.08),
-                const Color(0xFF1A2748),
-                const Color(0xFF0C1430),
+                palette.border,
+                palette.surfaceContainerHigh,
+                palette.surfaceContainer,
               ],
             ),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.22),
+                color: palette.shadow,
                 blurRadius: 24,
                 offset: const Offset(0, 14),
               ),
               BoxShadow(
-                color: const Color(0xFF6170E8).withValues(alpha: 0.08),
+                color: widget.primary.withValues(alpha: 0.08),
                 blurRadius: 26,
                 spreadRadius: -8,
                 offset: const Offset(0, 6),
@@ -196,8 +201,8 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
             margin: const EdgeInsets.all(1.1),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(29),
-              color: const Color(0xFF10192F),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.035)),
+              color: palette.surfaceContainer,
+              border: Border.all(color: palette.border),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(29),
@@ -219,22 +224,24 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
                     themeLabel: selectedItem?.theme,
                     rarityColor: selectedItem == null
                         ? widget.primary
-                        : _avatarRarityColor(selectedItem.rarity, widget.primary),
+                        : _avatarRarityColor(
+                            selectedItem.rarity,
+                            widget.primary,
+                          ),
+                    palette: palette,
                     description: spotlightDescription,
                     primary: widget.primary,
                     onSurface: widget.onSurface,
-                    onClose: _isSubmitting ? null : () => Navigator.pop(context),
+                    onClose: _isSubmitting
+                        ? null
+                        : () => Navigator.pop(context),
                   ),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF10192F),
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.white.withValues(alpha: 0.05),
-                        ),
-                      ),
+                      color: palette.surfaceContainer,
+                      border: Border(bottom: BorderSide(color: palette.border)),
                     ),
                     child: Wrap(
                       spacing: 10,
@@ -245,6 +252,7 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
                           selected: _activeFilter == _AvatarStoreFilter.all,
                           primary: widget.primary,
                           onSurface: widget.onSurface,
+                          palette: palette,
                           onTap: () => _changeFilter(_AvatarStoreFilter.all),
                         ),
                         _AvatarFilterChip(
@@ -252,6 +260,7 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
                           selected: _activeFilter == _AvatarStoreFilter.owned,
                           primary: widget.primary,
                           onSurface: widget.onSurface,
+                          palette: palette,
                           onTap: () => _changeFilter(_AvatarStoreFilter.owned),
                         ),
                         _AvatarFilterChip(
@@ -260,6 +269,7 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
                               _activeFilter == _AvatarStoreFilter.unlockable,
                           primary: widget.primary,
                           onSurface: widget.onSurface,
+                          palette: palette,
                           onTap: () =>
                               _changeFilter(_AvatarStoreFilter.unlockable),
                         ),
@@ -268,6 +278,7 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
                           availableRarities: _availableRarities,
                           primary: widget.primary,
                           onSurface: widget.onSurface,
+                          palette: palette,
                           onSelected: _changeRarity,
                         ),
                       ],
@@ -279,6 +290,7 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
                             padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
                             child: _AvatarEmptyState(
                               onSurface: widget.onSurface,
+                              palette: palette,
                             ),
                           )
                         : GridView.builder(
@@ -298,6 +310,7 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
                                 isSelected: _selectedSeed == item.seed,
                                 primary: widget.primary,
                                 onSurface: widget.onSurface,
+                                palette: palette,
                                 onTap: () {
                                   setState(() {
                                     _selectedSeed = item.seed;
@@ -309,6 +322,7 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
                   ),
                   _AvatarStoreFooter(
                     onSurface: widget.onSurface,
+                    palette: palette,
                     isSubmitting: _isSubmitting,
                     canSubmit: _canSubmit,
                     primaryActionColor: primaryButtonColor,
@@ -325,4 +339,38 @@ class _AvatarSelectorDialogState extends State<AvatarSelectorDialog> {
       ),
     );
   }
+}
+
+class _AvatarStorePalette {
+  const _AvatarStorePalette({
+    required this.surfaceContainer,
+    required this.surfaceContainerHigh,
+    required this.onSurfaceMuted,
+    required this.primaryForeground,
+    required this.border,
+    required this.shadow,
+    required this.isDark,
+  });
+
+  factory _AvatarStorePalette.fromContext(BuildContext context) {
+    final colors = context.cognixColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return _AvatarStorePalette(
+      surfaceContainer: colors.surfaceContainer,
+      surfaceContainerHigh: colors.surfaceContainerHigh,
+      onSurfaceMuted: colors.onSurfaceMuted,
+      primaryForeground: isDark ? const Color(0xFF060E20) : Colors.white,
+      border: colors.onSurfaceMuted.withValues(alpha: isDark ? 0.12 : 0.18),
+      shadow: Colors.black.withValues(alpha: isDark ? 0.22 : 0.08),
+      isDark: isDark,
+    );
+  }
+
+  final Color surfaceContainer;
+  final Color surfaceContainerHigh;
+  final Color onSurfaceMuted;
+  final Color primaryForeground;
+  final Color border;
+  final Color shadow;
+  final bool isDark;
 }

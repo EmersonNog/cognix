@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../services/writing/writing_api.dart';
+import '../../theme/app_theme.dart';
+import '../../theme/cognix_theme_colors.dart';
 import '../../widgets/cognix/cognix_messages.dart';
 import 'writing_route_args.dart';
 
@@ -179,6 +181,7 @@ class _WritingEditorScreenState extends State<WritingEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     final draft = _buildDraft();
     final checklist = _writingService.buildChecklist(draft);
     final completedCount = checklist.where((item) => item.completed).length;
@@ -191,10 +194,10 @@ class _WritingEditorScreenState extends State<WritingEditorScreen> {
     final hasInitialDraft = widget.args.initialDraft != null;
 
     return Scaffold(
-      backgroundColor: _editorSurface,
+      backgroundColor: colors.surface,
       appBar: AppBar(
-        backgroundColor: _editorSurface,
-        foregroundColor: _editorOnSurface,
+        backgroundColor: colors.surface,
+        foregroundColor: colors.onSurface,
         elevation: 0,
         titleSpacing: 0,
         title: Text(
@@ -303,7 +306,7 @@ class _WritingEditorScreenState extends State<WritingEditorScreen> {
               'Preencha ${_formatMissingSectionsMessage(missingRequiredSections)} para liberar a análise.',
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
-                color: _editorOnSurfaceMuted,
+                color: colors.onSurfaceMuted,
                 fontSize: 12.2,
                 fontWeight: FontWeight.w600,
               ),
@@ -314,7 +317,7 @@ class _WritingEditorScreenState extends State<WritingEditorScreen> {
               'Altere o texto antes de pedir uma nova análise de IA.',
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
-                color: _editorOnSurfaceMuted,
+                color: colors.onSurfaceMuted,
                 fontSize: 12.2,
                 fontWeight: FontWeight.w600,
               ),

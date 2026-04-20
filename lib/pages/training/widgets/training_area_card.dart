@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../models/training_tab_models.dart';
 
 class TrainingAreaCard extends StatelessWidget {
@@ -43,7 +44,7 @@ class TrainingAreaCard extends StatelessWidget {
                 width: 46,
                 height: 46,
                 decoration: BoxDecoration(
-                  color: item.accent.withOpacity(0.15),
+                  color: item.accent.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(item.icon, color: item.accent, size: 22),

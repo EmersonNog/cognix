@@ -21,6 +21,9 @@ class HomeTab extends StatelessWidget {
     required this.onSurfaceMuted,
     required this.primary,
     required this.primaryDim,
+    required this.accent,
+    required this.success,
+    required this.danger,
     required this.userName,
     required this.onRefresh,
   });
@@ -34,6 +37,9 @@ class HomeTab extends StatelessWidget {
   final Color onSurfaceMuted;
   final Color primary;
   final Color primaryDim;
+  final Color accent;
+  final Color success;
+  final Color danger;
   final String userName;
   final RefreshCallback onRefresh;
 
@@ -65,6 +71,7 @@ class HomeTab extends StatelessWidget {
             onSurface: onSurface,
             onSurfaceMuted: onSurfaceMuted,
             primary: primary,
+            success: success,
           ),
           const SizedBox(height: 16),
           HomeWritingCard(
@@ -72,6 +79,7 @@ class HomeTab extends StatelessWidget {
             surfaceContainerHigh: surfaceContainerHigh,
             onSurface: onSurface,
             onSurfaceMuted: onSurfaceMuted,
+            accent: accent,
           ),
           const SizedBox(height: 16),
           HomeMultiplayerCard(
@@ -88,6 +96,8 @@ class HomeTab extends StatelessWidget {
             onSurface: onSurface,
             onSurfaceMuted: onSurfaceMuted,
             primary: primary,
+            success: success,
+            danger: danger,
             surfaceContainerHigh: surfaceContainerHigh,
           ),
           const SizedBox(height: 22),
@@ -98,6 +108,8 @@ class HomeTab extends StatelessWidget {
             onSurface: onSurface,
             onSurfaceMuted: onSurfaceMuted,
             primary: primary,
+            success: success,
+            danger: danger,
           ),
         ],
       ),

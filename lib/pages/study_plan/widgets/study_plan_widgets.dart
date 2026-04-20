@@ -26,7 +26,7 @@ class StudyPlanSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: surfaceContainer,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: onSurfaceMuted.withValues(alpha: 0.12)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.06),
@@ -90,7 +90,7 @@ class StudyPlanSubsection extends StatelessWidget {
       decoration: BoxDecoration(
         color: surfaceContainerHigh.withValues(alpha: 0.68),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: onSurfaceMuted.withValues(alpha: 0.12)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,7 +200,7 @@ class StudyPlanChoiceChip extends StatelessWidget {
             border: Border.all(
               color: selected
                   ? primary.withValues(alpha: 0.55)
-                  : Colors.white.withValues(alpha: 0.06),
+                  : onSurfaceMuted.withValues(alpha: 0.12),
             ),
           ),
           child: Text(
@@ -261,7 +261,7 @@ class StudyPlanFocusCard extends StatelessWidget {
             border: Border.all(
               color: selected
                   ? primary.withValues(alpha: 0.42)
-                  : Colors.white.withValues(alpha: 0.06),
+                  : onSurfaceMuted.withValues(alpha: 0.12),
             ),
           ),
           child: Column(
@@ -273,7 +273,7 @@ class StudyPlanFocusCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: selected
                       ? primary.withValues(alpha: 0.18)
-                      : Colors.white.withValues(alpha: 0.04),
+                      : onSurfaceMuted.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(icon, color: selected ? primary : onSurfaceMuted),

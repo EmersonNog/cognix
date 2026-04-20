@@ -77,24 +77,28 @@ class _RecentPerformanceEmptyState extends StatelessWidget {
 }
 
 class _RecentPerformanceLoadingState extends StatelessWidget {
-  const _RecentPerformanceLoadingState();
+  const _RecentPerformanceLoadingState({required this.surfaceContainerHigh});
+
+  final Color surfaceContainerHigh;
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
-        _PerformancePlaceholderRow(),
-        SizedBox(height: 12),
-        _PerformancePlaceholderRow(),
-        SizedBox(height: 12),
-        _PerformancePlaceholderRow(),
+        _PerformancePlaceholderRow(surfaceContainerHigh: surfaceContainerHigh),
+        const SizedBox(height: 12),
+        _PerformancePlaceholderRow(surfaceContainerHigh: surfaceContainerHigh),
+        const SizedBox(height: 12),
+        _PerformancePlaceholderRow(surfaceContainerHigh: surfaceContainerHigh),
       ],
     );
   }
 }
 
 class _PerformancePlaceholderRow extends StatelessWidget {
-  const _PerformancePlaceholderRow();
+  const _PerformancePlaceholderRow({required this.surfaceContainerHigh});
+
+  final Color surfaceContainerHigh;
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +108,7 @@ class _PerformancePlaceholderRow extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: const Color(0xFF1A2541),
+            color: surfaceContainerHigh,
             borderRadius: BorderRadius.circular(12),
           ),
         ),
@@ -117,7 +121,7 @@ class _PerformancePlaceholderRow extends StatelessWidget {
                 width: double.infinity,
                 height: 12,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1A2541),
+                  color: surfaceContainerHigh,
                   borderRadius: BorderRadius.circular(99),
                 ),
               ),
@@ -126,7 +130,7 @@ class _PerformancePlaceholderRow extends StatelessWidget {
                 width: 96,
                 height: 10,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF16213B),
+                  color: surfaceContainerHigh.withValues(alpha: 0.75),
                   borderRadius: BorderRadius.circular(99),
                 ),
               ),
@@ -141,7 +145,7 @@ class _PerformancePlaceholderRow extends StatelessWidget {
               width: 44,
               height: 12,
               decoration: BoxDecoration(
-                color: const Color(0xFF1A2541),
+                color: surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(99),
               ),
             ),
@@ -150,7 +154,7 @@ class _PerformancePlaceholderRow extends StatelessWidget {
               width: 70,
               height: 10,
               decoration: BoxDecoration(
-                color: const Color(0xFF16213B),
+                color: surfaceContainerHigh.withValues(alpha: 0.75),
                 borderRadius: BorderRadius.circular(99),
               ),
             ),

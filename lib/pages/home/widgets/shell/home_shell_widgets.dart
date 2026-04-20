@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../theme/app_theme_controller.dart';
+
 class HomeLogoutButton extends StatelessWidget {
   const HomeLogoutButton({
     super.key,
@@ -41,6 +43,49 @@ class HomeLogoutButton extends StatelessWidget {
         padding: EdgeInsets.zero,
       ),
     );
+  }
+}
+
+class HomeThemeButton extends StatelessWidget {
+  const HomeThemeButton({
+    super.key,
+    required this.preference,
+    required this.onPressed,
+    required this.backgroundColor,
+    required this.iconColor,
+  });
+
+  final AppThemePreference preference;
+  final VoidCallback onPressed;
+  final Color backgroundColor;
+  final Color iconColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: IconButton(
+        onPressed: onPressed,
+        icon: Icon(_iconFor(preference)),
+        color: iconColor,
+        iconSize: 18,
+        padding: EdgeInsets.zero,
+        tooltip: 'Aparência',
+      ),
+    );
+  }
+
+  IconData _iconFor(AppThemePreference preference) {
+    return switch (preference) {
+      AppThemePreference.system => Icons.brightness_auto_rounded,
+      AppThemePreference.light => Icons.light_mode_rounded,
+      AppThemePreference.dark => Icons.dark_mode_rounded,
+    };
   }
 }
 

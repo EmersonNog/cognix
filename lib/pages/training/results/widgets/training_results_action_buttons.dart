@@ -21,7 +21,7 @@ class TrainingResultsPrimaryButton extends StatelessWidget {
         color: background,
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
-          BoxShadow(color: background.withOpacity(0.15), blurRadius: 18),
+          BoxShadow(color: background.withValues(alpha: 0.15), blurRadius: 18),
         ],
       ),
       child: Row(

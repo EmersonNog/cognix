@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../services/profile/profile_api.dart';
+import '../../theme/cognix_theme_colors.dart';
 import 'profile_details_screen.dart';
 import 'widgets/profile_discipline_grid.dart';
 import 'widgets/profile_header.dart';
@@ -154,13 +155,14 @@ class _ProfileErrorBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFF3A1E2D),
+        color: colors.danger.withValues(alpha: 0.14),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: colors.danger.withValues(alpha: 0.18)),
       ),
       child: Text(
         'Não foi possível atualizar o score agora. Exibindo o último estado local disponível.',

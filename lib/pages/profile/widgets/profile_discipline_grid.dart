@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../services/profile/profile_api.dart';
+import '../../../theme/cognix_theme_colors.dart';
 
 const List<String> _disciplineOrder = <String>[
   'linguagens',
@@ -111,26 +112,29 @@ class _DisciplineChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colors = context.cognixColors;
 
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: <Color>[
-            const Color(0xFF101A33),
+            colors.surfaceContainer,
             Color.alphaBlend(
-              definition.accent.withOpacity(0.10),
-              const Color(0xFF152243),
+              definition.accent.withValues(alpha: 0.10),
+              colors.surfaceContainerHigh,
             ),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(
+          color: colors.onSurfaceMuted.withValues(alpha: 0.12),
+        ),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: Colors.black.withOpacity(0.14),
+            color: definition.accent.withValues(alpha: 0.08),
             blurRadius: 14,
             offset: const Offset(0, 8),
           ),
@@ -194,7 +198,7 @@ class _DisciplineChip extends StatelessWidget {
                 width: 24,
                 height: 24,
                 decoration: BoxDecoration(
-                  color: definition.accent.withOpacity(0.16),
+                  color: definition.accent.withValues(alpha: 0.16),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(

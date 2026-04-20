@@ -8,18 +8,18 @@ class _HeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF07142A), Color(0xFF0A1931)],
+          colors: [colors.surfaceLow, colors.surfaceContainer],
         ),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(
-          color: _WritingHistoryScreenState._primary.withValues(alpha: 0.1),
-        ),
+        border: Border.all(color: colors.primary.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,7 +33,7 @@ class _HeroCard extends StatelessWidget {
             child: Text(
               'HISTÓRICO',
               style: GoogleFonts.plusJakartaSans(
-                color: _WritingHistoryScreenState._accent,
+                color: colors.accent,
                 fontSize: 9.5,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 0.8,
@@ -44,7 +44,7 @@ class _HeroCard extends StatelessWidget {
           Text(
             'Suas versões em um só lugar.',
             style: GoogleFonts.manrope(
-              color: _WritingHistoryScreenState._onSurface,
+              color: colors.onSurface,
               fontSize: 18.5,
               fontWeight: FontWeight.w900,
               height: 1.08,
@@ -76,21 +76,23 @@ class _HeroPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
-        color: _WritingHistoryScreenState._accent.withValues(alpha: 0.1),
+        color: colors.accent.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 13, color: _WritingHistoryScreenState._accent),
+          Icon(icon, size: 13, color: colors.accent),
           const SizedBox(width: 5),
           Text(
             label,
             style: GoogleFonts.inter(
-              color: _WritingHistoryScreenState._accent,
+              color: colors.accent,
               fontSize: 11,
               fontWeight: FontWeight.w700,
             ),
@@ -109,6 +111,8 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -119,7 +123,7 @@ class _SectionHeader extends StatelessWidget {
               Text(
                 title,
                 style: GoogleFonts.manrope(
-                  color: _WritingHistoryScreenState._onSurface,
+                  color: colors.onSurface,
                   fontSize: 19,
                   fontWeight: FontWeight.w900,
                 ),
@@ -128,7 +132,7 @@ class _SectionHeader extends StatelessWidget {
               Text(
                 subtitle,
                 style: GoogleFonts.inter(
-                  color: _WritingHistoryScreenState._onSurfaceMuted,
+                  color: colors.onSurfaceMuted,
                   fontSize: 12.5,
                   height: 1.35,
                 ),
@@ -149,6 +153,7 @@ class _HistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     final categoryAccent = _categoryAccent(item.theme.category);
 
     return Material(
@@ -159,13 +164,9 @@ class _HistoryCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: _WritingHistoryScreenState._surfaceContainer,
+            color: colors.surfaceContainer,
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(
-              color: _WritingHistoryScreenState._primary.withValues(
-                alpha: 0.12,
-              ),
-            ),
+            border: Border.all(color: colors.primary.withValues(alpha: 0.12)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,17 +181,15 @@ class _HistoryCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   _Badge(
                     label: 'V${item.currentVersion}',
-                    background: _WritingHistoryScreenState._primary.withValues(
-                      alpha: 0.12,
-                    ),
-                    foreground: _WritingHistoryScreenState._primary,
+                    background: colors.primary.withValues(alpha: 0.12),
+                    foreground: colors.primary,
                   ),
                   const Spacer(),
                   if (item.latestScore != null)
                     Text(
                       '${item.latestScore}',
                       style: GoogleFonts.manrope(
-                        color: _WritingHistoryScreenState._onSurface,
+                        color: colors.onSurface,
                         fontSize: 22,
                         fontWeight: FontWeight.w900,
                       ),
@@ -203,7 +202,7 @@ class _HistoryCard extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.manrope(
-                  color: _WritingHistoryScreenState._onSurface,
+                  color: colors.onSurface,
                   fontSize: 17,
                   fontWeight: FontWeight.w900,
                   height: 1.16,
@@ -217,7 +216,7 @@ class _HistoryCard extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.inter(
-                  color: _WritingHistoryScreenState._onSurfaceMuted,
+                  color: colors.onSurfaceMuted,
                   fontSize: 12.7,
                   height: 1.42,
                 ),
@@ -228,14 +227,14 @@ class _HistoryCard extends StatelessWidget {
                   Icon(
                     Icons.schedule_rounded,
                     size: 15,
-                    color: _WritingHistoryScreenState._onSurfaceMuted,
+                    color: colors.onSurfaceMuted,
                   ),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
                       formatShortDateTime(item.lastAnalyzedAt),
                       style: GoogleFonts.inter(
-                        color: _WritingHistoryScreenState._onSurfaceMuted,
+                        color: colors.onSurfaceMuted,
                         fontSize: 11.8,
                         fontWeight: FontWeight.w600,
                       ),
@@ -245,16 +244,16 @@ class _HistoryCard extends StatelessWidget {
                   Text(
                     'Abrir histórico',
                     style: GoogleFonts.plusJakartaSans(
-                      color: _WritingHistoryScreenState._accent,
+                      color: colors.accent,
                       fontSize: 11.5,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                   const SizedBox(width: 6),
-                  const Icon(
+                  Icon(
                     Icons.arrow_forward_rounded,
                     size: 16,
-                    color: _WritingHistoryScreenState._accent,
+                    color: colors.accent,
                   ),
                 ],
               ),

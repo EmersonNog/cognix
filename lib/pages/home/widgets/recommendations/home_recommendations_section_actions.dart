@@ -6,11 +6,14 @@ Future<void> _showAllRecommendationsSheet({
   required Color onSurface,
   required Color onSurfaceMuted,
   required Color primary,
+  required Color success,
+  required Color danger,
   required Color surfaceContainerHigh,
 }) async {
+  final colors = context.cognixColors;
   await showModalBottomSheet<void>(
     context: context,
-    backgroundColor: const Color(0xFF0B1328),
+    backgroundColor: colors.surfaceContainer,
     isScrollControlled: true,
     builder: (sheetContext) {
       return SafeArea(
@@ -52,7 +55,11 @@ Future<void> _showAllRecommendationsSheet({
                     final item = items[index];
                     return _RecommendedCard(
                       item: item,
-                      badgeColor: _badgeColorForTone(item.badgeTone),
+                      badgeColor: _badgeColorForTone(
+                        item.badgeTone,
+                        success: success,
+                        danger: danger,
+                      ),
                       icon: _iconForRecommendation(item.discipline),
                       primary: primary,
                       onSurface: onSurface,
@@ -67,6 +74,8 @@ Future<void> _showAllRecommendationsSheet({
                           onSurface: onSurface,
                           onSurfaceMuted: onSurfaceMuted,
                           primary: primary,
+                          success: success,
+                          danger: danger,
                         );
                       },
                     );
@@ -88,6 +97,8 @@ void _openRecommendation(
   required Color onSurface,
   required Color onSurfaceMuted,
   required Color primary,
+  required Color success,
+  required Color danger,
 }) {
   Navigator.of(context).push(
     MaterialPageRoute(
@@ -97,7 +108,11 @@ void _openRecommendation(
         area: subjectsAreaFromTitle(item.discipline),
         description: item.description,
         badgeLabel: item.badgeLabel,
-        badgeColor: _badgeColorForTone(item.badgeTone),
+        badgeColor: _badgeColorForTone(
+          item.badgeTone,
+          success: success,
+          danger: danger,
+        ),
         countLabel: item.countLabel,
         areaTotalQuestions: null,
         surfaceContainerHigh: surfaceContainerHigh,
@@ -109,11 +124,15 @@ void _openRecommendation(
   );
 }
 
-Color _badgeColorForTone(String tone) {
+Color _badgeColorForTone(
+  String tone, {
+  required Color success,
+  required Color danger,
+}) {
   if (tone == 'critical') {
-    return const Color(0xFFFF6B78);
+    return danger;
   }
-  return const Color(0xFF7ED6C5);
+  return success;
 }
 
 IconData _iconForRecommendation(String discipline) {

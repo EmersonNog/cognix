@@ -14,6 +14,7 @@ class _ChecklistSummaryState extends State<_ChecklistSummary> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     final items = widget.items;
     final completed = items.where((item) => item.completed).length;
     final progress = items.isEmpty ? 0.0 : completed / items.length;
@@ -21,7 +22,7 @@ class _ChecklistSummaryState extends State<_ChecklistSummary> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: WritingResultScreen._surfaceContainer,
+        color: colors.surfaceContainer,
         borderRadius: BorderRadius.circular(22),
       ),
       child: Column(
@@ -51,7 +52,7 @@ class _ChecklistSummaryState extends State<_ChecklistSummary> {
                           Text(
                             '$completed/${items.length} critérios atendidos',
                             style: GoogleFonts.manrope(
-                              color: WritingResultScreen._onSurface,
+                              color: colors.onSurface,
                               fontSize: 16,
                               fontWeight: FontWeight.w900,
                             ),
@@ -62,7 +63,7 @@ class _ChecklistSummaryState extends State<_ChecklistSummary> {
                                 ? 'Toque para recolher os critérios'
                                 : 'Toque para ver os critérios',
                             style: GoogleFonts.inter(
-                              color: WritingResultScreen._onSurfaceMuted,
+                              color: colors.onSurfaceMuted,
                               fontSize: 11.5,
                               height: 1.3,
                             ),
@@ -77,7 +78,7 @@ class _ChecklistSummaryState extends State<_ChecklistSummary> {
                       curve: Curves.easeInOut,
                       child: Icon(
                         Icons.keyboard_arrow_down_rounded,
-                        color: WritingResultScreen._onSurfaceMuted,
+                        color: colors.onSurfaceMuted,
                         size: 22,
                       ),
                     ),
@@ -93,9 +94,7 @@ class _ChecklistSummaryState extends State<_ChecklistSummary> {
               value: progress,
               minHeight: 6,
               backgroundColor: Colors.white.withValues(alpha: 0.06),
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                Color(0xFF65E6A5),
-              ),
+              valueColor: AlwaysStoppedAnimation<Color>(colors.success),
             ),
           ),
           ClipRect(
@@ -135,10 +134,9 @@ class _ChecklistRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     final completed = item.completed;
-    final color = completed
-        ? const Color(0xFF65E6A5)
-        : WritingResultScreen._onSurfaceMuted;
+    final color = completed ? colors.success : colors.onSurfaceMuted;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -163,7 +161,7 @@ class _ChecklistRow extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.inter(
-                color: completed ? color : WritingResultScreen._onSurface,
+                color: completed ? color : colors.onSurface,
                 fontSize: 12.2,
                 fontWeight: FontWeight.w700,
                 height: 1.2,

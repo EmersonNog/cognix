@@ -3,6 +3,7 @@ part of '../avatar_store_dialog.dart';
 class _AvatarStoreFooter extends StatelessWidget {
   const _AvatarStoreFooter({
     required this.onSurface,
+    required this.palette,
     required this.isSubmitting,
     required this.canSubmit,
     required this.primaryActionColor,
@@ -13,6 +14,7 @@ class _AvatarStoreFooter extends StatelessWidget {
   });
 
   final Color onSurface;
+  final _AvatarStorePalette palette;
   final bool isSubmitting;
   final bool canSubmit;
   final Color primaryActionColor;
@@ -26,10 +28,8 @@ class _AvatarStoreFooter extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
       decoration: BoxDecoration(
-        color: const Color(0xFF141E39),
-        border: Border(
-          top: BorderSide(color: Colors.white.withValues(alpha: 0.06)),
-        ),
+        color: palette.surfaceContainerHigh,
+        border: Border(top: BorderSide(color: palette.border)),
       ),
       child: Row(
         children: <Widget>[
@@ -38,8 +38,8 @@ class _AvatarStoreFooter extends StatelessWidget {
               onPressed: isSubmitting ? null : onClose,
               style: OutlinedButton.styleFrom(
                 foregroundColor: onSurface,
-                backgroundColor: const Color(0xFF18223D),
-                side: BorderSide(color: Colors.white.withValues(alpha: 0.14)),
+                backgroundColor: palette.surfaceContainer,
+                side: BorderSide(color: palette.border),
                 minimumSize: const Size.fromHeight(50),
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
@@ -86,7 +86,11 @@ class _AvatarStoreFooter extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Icon(primaryActionIcon, size: 18, color: Colors.white),
+                  Icon(
+                    primaryActionIcon,
+                    size: 18,
+                    color: palette.primaryForeground,
+                  ),
                   const SizedBox(width: 8),
                   Flexible(
                     child: Text(
@@ -95,7 +99,7 @@ class _AvatarStoreFooter extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.manrope(
-                        color: Colors.white,
+                        color: palette.primaryForeground,
                         fontSize: 14,
                         fontWeight: FontWeight.w800,
                       ),

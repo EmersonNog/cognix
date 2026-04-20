@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../../../services/summaries/summaries_api.dart';
 import '../../../utils/api_datetime.dart';
 
@@ -59,7 +60,7 @@ class TrainingSummaryStatsCard extends StatelessWidget {
               _SummaryStatBadge(
                 label: 'Acertos',
                 value: correct,
-                accent: primary.withOpacity(0.8),
+                accent: primary.withValues(alpha: 0.8),
                 onSurface: onSurface,
                 onSurfaceMuted: onSurfaceMuted,
                 isLocked: isLocked,
@@ -67,7 +68,7 @@ class TrainingSummaryStatsCard extends StatelessWidget {
               _SummaryStatBadge(
                 label: 'Tentativas',
                 value: total,
-                accent: primary.withOpacity(0.65),
+                accent: primary.withValues(alpha: 0.65),
                 onSurface: onSurface,
                 onSurfaceMuted: onSurfaceMuted,
                 isLocked: isLocked,
@@ -134,9 +135,9 @@ class _SummaryStatBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: accent.withOpacity(0.12),
+        color: accent.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: accent.withOpacity(0.35)),
+        border: Border.all(color: accent.withValues(alpha: 0.35)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

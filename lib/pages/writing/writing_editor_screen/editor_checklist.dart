@@ -15,6 +15,8 @@ class _QuickOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Row(
       children: [
         Expanded(
@@ -38,7 +40,7 @@ class _QuickOverview extends StatelessWidget {
             icon: Icons.task_alt_rounded,
             label: 'Checklist',
             value: '$completedCount/$totalChecklist',
-            accent: _editorSuccess,
+            accent: colors.success,
           ),
         ),
       ],
@@ -51,32 +53,35 @@ class _OverviewCard extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.value,
-    this.accent = _editorPrimary,
+    this.accent,
   });
 
   final IconData icon;
   final String label;
   final String value;
-  final Color accent;
+  final Color? accent;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+    final resolvedAccent = accent ?? colors.primary;
+
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: _editorSurfaceContainerLow,
+        color: colors.surfaceLow,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: accent.withValues(alpha: 0.14)),
+        border: Border.all(color: resolvedAccent.withValues(alpha: 0.14)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: accent, size: 18),
+          Icon(icon, color: resolvedAccent, size: 18),
           const SizedBox(height: 10),
           Text(
             value,
             style: GoogleFonts.manrope(
-              color: _editorOnSurface,
+              color: colors.onSurface,
               fontSize: 17,
               fontWeight: FontWeight.w900,
             ),
@@ -85,7 +90,7 @@ class _OverviewCard extends StatelessWidget {
           Text(
             label,
             style: GoogleFonts.inter(
-              color: _editorOnSurfaceMuted,
+              color: colors.onSurfaceMuted,
               fontSize: 11.5,
               fontWeight: FontWeight.w700,
             ),
@@ -103,10 +108,12 @@ class _ChecklistCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: _editorSurfaceContainer,
+        color: colors.surfaceContainer,
         borderRadius: BorderRadius.circular(22),
       ),
       child: Column(
@@ -118,12 +125,12 @@ class _ChecklistCard extends StatelessWidget {
                 width: 34,
                 height: 34,
                 decoration: BoxDecoration(
-                  color: _editorSuccess.withValues(alpha: 0.12),
+                  color: colors.success.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.checklist_rounded,
-                  color: _editorSuccess,
+                  color: colors.success,
                   size: 18,
                 ),
               ),
@@ -132,7 +139,7 @@ class _ChecklistCard extends StatelessWidget {
                 child: Text(
                   'Checklist de revisão',
                   style: GoogleFonts.manrope(
-                    color: _editorOnSurface,
+                    color: colors.onSurface,
                     fontSize: 16,
                     fontWeight: FontWeight.w900,
                   ),
@@ -155,7 +162,8 @@ class _ChecklistTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = item.completed ? _editorSuccess : _editorOnSurfaceMuted;
+    final colors = context.cognixColors;
+    final color = item.completed ? colors.success : colors.onSurfaceMuted;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -177,7 +185,7 @@ class _ChecklistTile extends StatelessWidget {
                 Text(
                   item.label,
                   style: GoogleFonts.inter(
-                    color: _editorOnSurface,
+                    color: colors.onSurface,
                     fontSize: 13,
                     fontWeight: FontWeight.w800,
                   ),
@@ -186,7 +194,7 @@ class _ChecklistTile extends StatelessWidget {
                 Text(
                   item.helper,
                   style: GoogleFonts.inter(
-                    color: _editorOnSurfaceMuted,
+                    color: colors.onSurfaceMuted,
                     fontSize: 11.8,
                     height: 1.3,
                   ),

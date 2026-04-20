@@ -28,10 +28,7 @@ class TrainingSessionRestoringState extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             'Restaurando simulado...',
-            style: GoogleFonts.inter(
-              color: onSurfaceMuted,
-              fontSize: 13,
-            ),
+            style: GoogleFonts.inter(color: onSurfaceMuted, fontSize: 13),
           ),
         ],
       ),
@@ -56,10 +53,7 @@ class TrainingSessionMessageState extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Text(
           message,
-          style: GoogleFonts.inter(
-            color: onSurfaceMuted,
-            fontSize: 13,
-          ),
+          style: GoogleFonts.inter(color: onSurfaceMuted, fontSize: 13),
           textAlign: TextAlign.center,
         ),
       ),

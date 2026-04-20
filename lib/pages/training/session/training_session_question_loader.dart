@@ -48,7 +48,9 @@ Future<TrainingQuestionsBatch> loadMoreTrainingQuestions({
     offset: offset,
   );
 
-  final newItems = page.items.where((item) => !loadedIds.contains(item.id)).toList();
+  final newItems = page.items
+      .where((item) => !loadedIds.contains(item.id))
+      .toList();
   return TrainingQuestionsBatch(
     items: _shuffleQuestionItems(newItems),
     total: page.total ?? offset + page.items.length,

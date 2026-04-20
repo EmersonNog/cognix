@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../theme/cognix_theme_colors.dart';
+
 class ProfileMenuItem extends StatelessWidget {
   const ProfileMenuItem({
     super.key,
@@ -27,6 +29,7 @@ class ProfileMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -35,12 +38,12 @@ class ProfileMenuItem extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
           decoration: BoxDecoration(
-            color: const Color(0xFF121D38),
+            color: surfaceContainer,
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.white.withOpacity(0.04)),
+            border: Border.all(color: onSurfaceMuted.withValues(alpha: 0.12)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: colors.primary.withValues(alpha: 0.08),
                 blurRadius: 20,
                 offset: const Offset(0, 12),
               ),
@@ -54,8 +57,8 @@ class ProfileMenuItem extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      primary.withOpacity(0.26),
-                      primary.withOpacity(0.08),
+                      primary.withValues(alpha: 0.26),
+                      primary.withValues(alpha: 0.08),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -97,7 +100,7 @@ class ProfileMenuItem extends StatelessWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: primary.withOpacity(0.12),
+                    color: primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
@@ -115,7 +118,7 @@ class ProfileMenuItem extends StatelessWidget {
                 width: 34,
                 height: 34,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.03),
+                  color: colors.surfaceContainerHigh,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(

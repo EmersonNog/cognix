@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../services/questions/questions_api.dart';
 import '../../services/study_plan/study_plan_api.dart';
 import '../../services/study_plan/study_plan_refresh_notifier.dart';
+import '../../theme/cognix_theme_colors.dart';
 import '../../widgets/cognix/cognix_messages.dart';
 import 'widgets/study_plan_widgets.dart';
 
@@ -13,6 +14,9 @@ part 'screen/study_plan_screen_actions.dart';
 part 'screen/study_plan_screen_body.dart';
 part 'screen/study_plan_screen_models.dart';
 part 'screen/study_plan_screen_shell.dart';
+part 'screen/study_plan_screen_shell/background.dart';
+part 'screen/study_plan_screen_shell/footer.dart';
+part 'screen/study_plan_screen_shell/hero_card.dart';
 
 class StudyPlanScreen extends StatefulWidget {
   const StudyPlanScreen({super.key});
@@ -24,7 +28,7 @@ class StudyPlanScreen extends StatefulWidget {
 class _StudyPlanScreenState extends State<StudyPlanScreen> {
   static const _periodOptions = <String, String>{
     'flexivel': 'Flexível',
-    'manha': 'Manha',
+    'manha': 'Manhã',
     'tarde': 'Tarde',
     'noite': 'Noite',
   };
@@ -66,7 +70,7 @@ class _StudyPlanScreenState extends State<StudyPlanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const palette = _StudyPlanPalette();
+    final palette = _StudyPlanPalette.fromContext(context);
 
     return Scaffold(
       backgroundColor: palette.surface,

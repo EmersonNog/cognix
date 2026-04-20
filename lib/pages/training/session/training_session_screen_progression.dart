@@ -56,7 +56,10 @@ Future<void> _handleNextQuestionForState(
       discipline: state.widget.discipline,
       subcategory: state.widget.subcategory,
     );
-    final correctLetter = _resolvedCorrectLetter(result.correctLetter, question);
+    final correctLetter = _resolvedCorrectLetter(
+      result.correctLetter,
+      question,
+    );
     final isCorrect =
         result.isCorrect ??
         (correctLetter != null ? letter.toUpperCase() == correctLetter : null);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../services/writing/writing_api.dart';
+import '../../theme/cognix_theme_colors.dart';
 import 'writing_route_args.dart';
 
 part 'writing_result_screen/checklist_summary.dart';
@@ -14,23 +15,17 @@ class WritingResultScreen extends StatelessWidget {
 
   final WritingResultArgs args;
 
-  static const _surface = Color(0xFF060E20);
-  static const _surfaceContainer = Color(0xFF0F1930);
-  static const _surfaceContainerHigh = Color(0xFF141F38);
-  static const _onSurface = Color(0xFFDEE5FF);
-  static const _onSurfaceMuted = Color(0xFF9AA6C5);
-  static const _primary = Color(0xFFA3A6FF);
-  static const _accent = Color(0xFFFFC56E);
-
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+    final colorScheme = Theme.of(context).colorScheme;
     final feedback = args.feedback;
 
     return Scaffold(
-      backgroundColor: _surface,
+      backgroundColor: colors.surface,
       appBar: AppBar(
-        backgroundColor: _surface,
-        foregroundColor: _onSurface,
+        backgroundColor: colors.surface,
+        foregroundColor: colors.onSurface,
         elevation: 0,
         title: Text(
           'Diagnóstico',
@@ -44,7 +39,7 @@ class WritingResultScreen extends StatelessWidget {
           const SizedBox(height: 16),
           _ChecklistSummary(items: feedback.checklist),
           const SizedBox(height: 16),
-          _SectionTitle(
+          const _SectionTitle(
             title: 'Competências ENEM',
             subtitle:
                 'Estimativa pedagógica para orientar sua próxima reescrita.',
@@ -55,7 +50,7 @@ class WritingResultScreen extends StatelessWidget {
             const SizedBox(height: 10),
           ],
           const SizedBox(height: 8),
-          _SectionTitle(
+          const _SectionTitle(
             title: 'Reescrita guiada',
             subtitle:
                 'Use essas sugestões para melhorar trechos específicos do texto.',
@@ -81,8 +76,8 @@ class WritingResultScreen extends StatelessWidget {
               icon: const Icon(Icons.edit_rounded),
               label: const Text('Reescrever agora'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: _primary,
-                foregroundColor: const Color(0xFF060E20),
+                backgroundColor: colors.primary,
+                foregroundColor: colorScheme.onPrimary,
                 textStyle: GoogleFonts.plusJakartaSans(
                   fontSize: 14,
                   fontWeight: FontWeight.w900,

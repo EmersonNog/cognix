@@ -5,7 +5,12 @@ class _LoadingState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: CircularProgressIndicator());
+    final colors = context.cognixColors;
+    return Center(
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(colors.accent),
+      ),
+    );
   }
 }
 
@@ -16,6 +21,8 @@ class _ErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -26,7 +33,7 @@ class _ErrorState extends StatelessWidget {
               'Não consegui abrir os detalhes dessa redação.',
               textAlign: TextAlign.center,
               style: GoogleFonts.manrope(
-                color: _WritingHistoryDetailScreenState._onSurface,
+                color: colors.onSurface,
                 fontSize: 18,
                 fontWeight: FontWeight.w900,
               ),
@@ -36,7 +43,7 @@ class _ErrorState extends StatelessWidget {
               'Tente novamente em instantes.',
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
-                color: _WritingHistoryDetailScreenState._onSurfaceMuted,
+                color: colors.onSurfaceMuted,
                 fontSize: 13,
               ),
             ),

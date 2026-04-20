@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../services/summaries/summaries_api.dart';
+import '../../theme/cognix_theme_colors.dart';
 import 'widgets/training_summary_map_card.dart';
 import 'widgets/training_summary_map_panel.dart';
 import 'widgets/training_summary_stats_card.dart';
@@ -44,8 +45,10 @@ class _TrainingSummaryScreenState extends State<TrainingSummaryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF060E20),
+      backgroundColor: colors.surface,
       appBar: AppBar(
         backgroundColor: widget.surfaceContainerHigh,
         elevation: 0,

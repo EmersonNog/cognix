@@ -68,7 +68,7 @@ class AccountSecurityPasswordPanel extends StatelessWidget {
                 color: AccountSecurityPalette.secondary.withValues(alpha: 0.14),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.info_outline_rounded,
                 color: AccountSecurityPalette.secondary,
               ),
@@ -177,8 +177,11 @@ class AccountSecurityPasswordPanel extends StatelessWidget {
           const SizedBox(height: 18),
           PrimaryButton(
             text: 'Atualizar senha',
-            gradient: const LinearGradient(
-              colors: [Color(0xFF9A8CFF), Color(0xFF5F6BFF)],
+            gradient: LinearGradient(
+              colors: [
+                AccountSecurityPalette.primary,
+                AccountSecurityPalette.primaryDim,
+              ],
             ),
             onPressed: onSubmit,
             isLoading: isUpdatingPassword,

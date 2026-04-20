@@ -32,7 +32,7 @@ class TrainingSummaryLockedOverlay extends StatelessWidget {
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
               child: Container(
-                color: const Color(0xFF060E20).withOpacity(0.45),
+                color: const Color(0xFF060E20).withValues(alpha: 0.45),
               ),
             ),
           ),
@@ -48,12 +48,12 @@ class TrainingSummaryLockedOverlay extends StatelessWidget {
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   padding: const EdgeInsets.all(22),
                   decoration: BoxDecoration(
-                    color: surfaceContainerHigh.withOpacity(0.88),
+                    color: surfaceContainerHigh.withValues(alpha: 0.88),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: primary.withOpacity(0.22)),
+                    border: Border.all(color: primary.withValues(alpha: 0.22)),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF050B17).withOpacity(0.38),
+                        color: const Color(0xFF050B17).withValues(alpha: 0.38),
                         blurRadius: 28,
                         offset: const Offset(0, 14),
                       ),
@@ -66,7 +66,7 @@ class TrainingSummaryLockedOverlay extends StatelessWidget {
                         width: 56,
                         height: 56,
                         decoration: BoxDecoration(
-                          color: primary.withOpacity(0.14),
+                          color: primary.withValues(alpha: 0.14),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(

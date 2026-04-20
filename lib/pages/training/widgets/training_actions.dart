@@ -21,7 +21,7 @@ class TrainingPrimaryButton extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-          colors: [primary.withOpacity(0.75), primary],
+          colors: [primary.withValues(alpha: 0.75), primary],
         ),
       ),
       child: Row(
@@ -36,7 +36,11 @@ class TrainingPrimaryButton extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 6),
-          const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 16),
+          const Icon(
+            Icons.arrow_forward_rounded,
+            color: Colors.white,
+            size: 16,
+          ),
         ],
       ),
     );
@@ -61,7 +65,7 @@ class TrainingGhostButton extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 13),
       decoration: BoxDecoration(
-        color: surfaceContainerHigh.withOpacity(0.35),
+        color: surfaceContainerHigh.withValues(alpha: 0.35),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Center(

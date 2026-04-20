@@ -12,6 +12,7 @@ class HomeMasterStreakCard extends StatelessWidget {
     required this.onSurface,
     required this.onSurfaceMuted,
     required this.primary,
+    required this.success,
   });
 
   final Future<ProfileScoreData> profileFuture;
@@ -20,6 +21,7 @@ class HomeMasterStreakCard extends StatelessWidget {
   final Color onSurface;
   final Color onSurfaceMuted;
   final Color primary;
+  final Color success;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,8 @@ class HomeMasterStreakCard extends StatelessWidget {
           isLoading:
               snapshot.connectionState == ConnectionState.waiting &&
               !snapshot.hasData,
+          primary: primary,
+          success: success,
         );
 
         return HomeStreakCardContent(

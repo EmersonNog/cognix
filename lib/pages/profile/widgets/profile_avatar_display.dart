@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:random_avatar/random_avatar.dart';
 
+import '../../../theme/cognix_theme_colors.dart';
+
 class ProfileAvatarDisplay extends StatelessWidget {
   const ProfileAvatarDisplay({
     super.key,
@@ -33,6 +35,8 @@ class ProfileAvatarDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+    final actionSize = size * 0.24;
     return GestureDetector(
       onTap: onTap,
       child: Stack(
@@ -49,27 +53,30 @@ class ProfileAvatarDisplay extends StatelessWidget {
           ),
           if (onTap != null)
             Positioned(
-              right: -2,
-              bottom: -2,
+              right: size * 0.03,
+              bottom: size * 0.03,
               child: Container(
-                width: size * 0.28,
-                height: size * 0.28,
+                width: actionSize,
+                height: actionSize,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xFF131E39),
-                  border: Border.all(color: primary, width: 1.8),
+                  color: colors.surfaceContainerHigh,
+                  border: Border.all(
+                    color: colors.surfaceContainer,
+                    width: 2.2,
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.22),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
+                      color: Colors.black.withValues(alpha: 0.12),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
                     ),
                   ],
                 ),
                 child: Icon(
                   Icons.edit_rounded,
-                  size: size * 0.14,
-                  color: Colors.white.withValues(alpha: 0.9),
+                  size: size * 0.12,
+                  color: primary,
                 ),
               ),
             ),

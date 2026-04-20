@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reactive_mind_map/reactive_mind_map.dart';
+
 import '../../../services/summaries/summaries_api.dart';
 import 'training_summary_locked_overlay.dart';
 import 'training_summary_map_node_card.dart';
@@ -52,9 +53,9 @@ class TrainingSummaryMapPanel extends StatelessWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: surfaceContainer.withOpacity(0.38),
+          color: surfaceContainer.withValues(alpha: 0.38),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: primary.withOpacity(0.14)),
+          border: Border.all(color: primary.withValues(alpha: 0.14)),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
@@ -63,7 +64,7 @@ class TrainingSummaryMapPanel extends StatelessWidget {
             children: [
               MindMapWidget(
                 data: _buildMindMapData(displaySummary, subcategoryTitle),
-                style: _buildMapStyle(config),
+                style: _buildMapStyle(config, context),
                 viewerOptions: InteractiveViewerOptions(
                   boundaryMargin: EdgeInsets.all(config.boundaryMargin),
                   minScale: config.minScale,
@@ -95,12 +96,14 @@ class TrainingSummaryMapPanel extends StatelessWidget {
     );
   }
 
-  MindMapStyle _buildMapStyle(_MapPanelConfig config) {
+  MindMapStyle _buildMapStyle(_MapPanelConfig config, BuildContext context) {
+    final pageBackground = Theme.of(context).scaffoldBackgroundColor;
+
     return MindMapStyle(
       layout: isCompact ? MindMapLayout.horizontal : MindMapLayout.right,
       nodeShape: NodeShape.roundedRectangle,
-      backgroundColor: const Color(0xFF060E20),
-      connectionColor: primary.withOpacity(0.32),
+      backgroundColor: pageBackground,
+      connectionColor: primary.withValues(alpha: 0.32),
       connectionWidth: isCompact ? 1.1 : 1.4,
       nodeMargin: config.nodeMargin,
       levelSpacing: config.levelSpacing,
@@ -120,7 +123,7 @@ class TrainingSummaryMapPanel extends StatelessWidget {
         fontSize: config.nodeFontSize,
         fontWeight: FontWeight.w700,
       ),
-      selectionBorderColor: primary.withOpacity(0.6),
+      selectionBorderColor: primary.withValues(alpha: 0.6),
       selectionBorderWidth: 2,
       enableNodeShadow: false,
       nodeBuilder: (node, isSelected, onTap, onLongPress, onDoubleTap) {
@@ -157,21 +160,13 @@ class _MapPanelConfig {
   final bool isLocked;
 
   double get outerPadding => isCompact ? 10.0 : 12.0;
-
   double get nodeFontSize => isCompact ? 11.5 : 13.5;
-
   double get levelSpacing => isCompact ? 110.0 : 160.0;
-
   double get nodeMargin => isCompact ? 20.0 : 26.0;
-
   double get nodeHorizontalPadding => isCompact ? 9.0 : 14.0;
-
   double get nodeVerticalPadding => isCompact ? 9.0 : 10.0;
-
   double get maxNodeWidth => isCompact ? constraints.maxWidth * 0.36 : 240.0;
-
   double get boundaryMargin => isCompact ? 80.0 : 120.0;
-
   double get minScale => isCompact ? 0.6 : 0.45;
 
   double get canvasPadding {
@@ -242,7 +237,7 @@ SummaryData _buildLockedMockSummary(
         ],
       ),
       const SummaryNode(
-        title: 'Padroes de questão',
+        title: 'Padrões de questão',
         items: [
           'Leitura do enunciado',
           'Fórmulas recorrentes',

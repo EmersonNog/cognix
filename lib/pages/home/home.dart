@@ -1,12 +1,16 @@
 import 'package:cognix/widgets/cognix_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import '../../navigation/app_route_observer.dart';
 import '../../services/recommendations/home_recommendations_api.dart';
 import '../../services/profile/profile_api.dart';
 import '../../services/profile/profile_refresh_notifier.dart';
 import '../../services/study_plan/study_plan_api.dart';
 import '../../services/study_plan/study_plan_refresh_notifier.dart';
+import '../../theme/app_theme_controller.dart';
+import '../../theme/app_theme_scope.dart';
+import '../../theme/cognix_theme_colors.dart';
 import 'home_tab.dart';
 import 'widgets/shell/home_shell_widgets.dart';
 import '../performance/performance_screen.dart';
@@ -136,6 +140,9 @@ class _HomeState extends State<Home> with RouteAware {
         onSurfaceMuted: palette.onSurfaceMuted,
         primary: palette.primary,
         primaryDim: palette.primaryDim,
+        accent: palette.accent,
+        success: palette.success,
+        danger: palette.danger,
         userName: _userName,
         onRefresh: _refreshSharedHubData,
       ),
@@ -209,7 +216,8 @@ class _HomeState extends State<Home> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    const palette = _HomePalette();
+    final palette = _HomePalette.fromContext(context);
+    final themeController = AppThemeScope.of(context);
 
     return Scaffold(
       backgroundColor: palette.surface,
@@ -219,11 +227,23 @@ class _HomeState extends State<Home> with RouteAware {
         topBarColor: palette.surfaceContainerHigh,
         titleColor: palette.onSurface,
         leadingColor: palette.primary,
-        trailing: HomeLogoutButton(
-          isLoading: _isLoading,
-          onPressed: _handleLogout,
-          backgroundColor: palette.surfaceContainer,
-          iconColor: palette.onSurfaceMuted,
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            HomeThemeButton(
+              preference: themeController.preference,
+              onPressed: () => _showThemeSheet(context, themeController),
+              backgroundColor: palette.surfaceContainer,
+              iconColor: palette.onSurfaceMuted,
+            ),
+            const SizedBox(width: 8),
+            HomeLogoutButton(
+              isLoading: _isLoading,
+              onPressed: _handleLogout,
+              backgroundColor: palette.surfaceContainer,
+              iconColor: palette.onSurfaceMuted,
+            ),
+          ],
         ),
         backgroundLayers: _buildBackgroundLayers(palette),
         child: IndexedStack(
@@ -241,17 +261,115 @@ class _HomeState extends State<Home> with RouteAware {
       ),
     );
   }
+
+  Future<void> _showThemeSheet(
+    BuildContext context,
+    AppThemeController themeController,
+  ) async {
+    final theme = Theme.of(context);
+    final colors = context.cognixColors;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Aparência',
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    color: colors.onSurface,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Escolha como o Cognix deve aparecer para você.',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colors.onSurfaceMuted,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                for (final preference in AppThemePreference.values)
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(switch (preference) {
+                      AppThemePreference.system =>
+                        Icons.brightness_auto_rounded,
+                      AppThemePreference.light => Icons.light_mode_rounded,
+                      AppThemePreference.dark => Icons.dark_mode_rounded,
+                    }, color: colors.primary),
+                    title: Text(
+                      preference.label,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: colors.onSurface,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    trailing: themeController.preference == preference
+                        ? Icon(Icons.check_rounded, color: colors.success)
+                        : null,
+                    onTap: () async {
+                      await themeController.setPreference(preference);
+                      if (!sheetContext.mounted) return;
+                      Navigator.of(sheetContext).pop();
+                    },
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
 class _HomePalette {
-  const _HomePalette();
+  const _HomePalette({
+    required this.surface,
+    required this.surfaceContainer,
+    required this.surfaceContainerHigh,
+    required this.onSurface,
+    required this.onSurfaceMuted,
+    required this.primaryDim,
+    required this.primary,
+    required this.secondaryDim,
+    required this.accent,
+    required this.success,
+    required this.danger,
+  });
 
-  final Color surface = const Color(0xFF060E20);
-  final Color surfaceContainer = const Color(0xFF0F1930);
-  final Color surfaceContainerHigh = const Color(0xFF141F38);
-  final Color onSurface = const Color(0xFFDEE5FF);
-  final Color onSurfaceMuted = const Color(0xFF9AA6C5);
-  final Color primaryDim = const Color(0xFF6063EE);
-  final Color primary = const Color(0xFFA3A6FF);
-  final Color secondaryDim = const Color(0xFF8455EF);
+  factory _HomePalette.fromContext(BuildContext context) {
+    final colors = context.cognixColors;
+    return _HomePalette(
+      surface: colors.surface,
+      surfaceContainer: colors.surfaceContainer,
+      surfaceContainerHigh: colors.surfaceContainerHigh,
+      onSurface: colors.onSurface,
+      onSurfaceMuted: colors.onSurfaceMuted,
+      primaryDim: colors.primaryDim,
+      primary: colors.primary,
+      secondaryDim: colors.secondaryDim,
+      accent: colors.accent,
+      success: colors.success,
+      danger: colors.danger,
+    );
+  }
+
+  final Color surface;
+  final Color surfaceContainer;
+  final Color surfaceContainerHigh;
+  final Color onSurface;
+  final Color onSurfaceMuted;
+  final Color primaryDim;
+  final Color primary;
+  final Color secondaryDim;
+  final Color accent;
+  final Color success;
+  final Color danger;
 }

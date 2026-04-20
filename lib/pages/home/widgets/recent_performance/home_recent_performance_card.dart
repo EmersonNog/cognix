@@ -14,6 +14,8 @@ class HomeRecentPerformanceCard extends StatefulWidget {
     required this.onSurface,
     required this.onSurfaceMuted,
     required this.primary,
+    required this.success,
+    required this.danger,
   });
 
   final Future<ProfileScoreData> profileFuture;
@@ -22,6 +24,8 @@ class HomeRecentPerformanceCard extends StatefulWidget {
   final Color onSurface;
   final Color onSurfaceMuted;
   final Color primary;
+  final Color success;
+  final Color danger;
 
   @override
   State<HomeRecentPerformanceCard> createState() =>
@@ -105,7 +109,9 @@ class _HomeRecentPerformanceCardState extends State<HomeRecentPerformanceCard>
                 items.isEmpty) {
               return _RecentPerformanceContainer(
                 surfaceContainer: widget.surfaceContainer,
-                child: const _RecentPerformanceLoadingState(),
+                child: _RecentPerformanceLoadingState(
+                  surfaceContainerHigh: widget.surfaceContainerHigh,
+                ),
               );
             }
 
@@ -132,6 +138,8 @@ class _HomeRecentPerformanceCardState extends State<HomeRecentPerformanceCard>
                         items[index].accuracyPercent,
                         attentionThreshold: profile.attentionAccuracyThreshold,
                         primary: widget.primary,
+                        success: widget.success,
+                        danger: widget.danger,
                       ),
                       onSurface: widget.onSurface,
                       onSurfaceMuted: widget.onSurfaceMuted,

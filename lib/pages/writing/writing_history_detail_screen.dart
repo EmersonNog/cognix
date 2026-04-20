@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../services/writing/writing_api.dart';
+import '../../theme/cognix_theme_colors.dart';
 import '../../widgets/cognix/cognix_page_layout.dart';
 import 'writing_route_args.dart';
 
@@ -21,14 +22,6 @@ class WritingHistoryDetailScreen extends StatefulWidget {
 
 class _WritingHistoryDetailScreenState
     extends State<WritingHistoryDetailScreen> {
-  static const _surface = Color(0xFF060E20);
-  static const _surfaceContainer = Color(0xFF0F1930);
-  static const _surfaceContainerHigh = Color(0xFF141F38);
-  static const _onSurface = Color(0xFFDEE5FF);
-  static const _onSurfaceMuted = Color(0xFF9AA6C5);
-  static const _primary = Color(0xFFA3A6FF);
-  static const _accent = Color(0xFFFFC56E);
-  static const _success = Color(0xFF7ED6C5);
   static const _pageSize = 5;
 
   late Future<void> _future;
@@ -125,23 +118,25 @@ class _WritingHistoryDetailScreenState
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Scaffold(
-      backgroundColor: _surface,
+      backgroundColor: colors.surface,
       body: CognixPageLayout(
         title: 'Detalhes da redação',
-        backgroundColor: _surface,
-        topBarColor: _surfaceContainerHigh,
-        titleColor: _onSurface,
+        backgroundColor: colors.surface,
+        topBarColor: colors.surfaceContainerHigh,
+        titleColor: colors.onSurface,
         leadingIcon: Icons.layers_rounded,
-        leadingColor: _accent,
+        leadingColor: colors.accent,
         trailing: IconButton(
           onPressed: () => Navigator.of(context).pop(),
           icon: const Icon(Icons.close_rounded),
-          color: _onSurfaceMuted,
+          color: colors.onSurfaceMuted,
         ),
-        backgroundLayers: const [
-          _Glow(top: -90, right: -55, color: _accent),
-          _Glow(top: 250, left: -80, color: _primary),
+        backgroundLayers: [
+          _Glow(top: -90, right: -55, color: colors.accent),
+          _Glow(top: 250, left: -80, color: colors.primary),
         ],
         child: FutureBuilder<void>(
           future: _future,
@@ -156,7 +151,7 @@ class _WritingHistoryDetailScreenState
 
             final detail = _detail!;
             return RefreshIndicator(
-              color: _accent,
+              color: colors.accent,
               onRefresh: _refresh,
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),

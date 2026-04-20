@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../theme/cognix_theme_colors.dart';
+
 class PerformanceSpotlightCard extends StatelessWidget {
   const PerformanceSpotlightCard({
     required this.title,
@@ -23,12 +25,15 @@ class PerformanceSpotlightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: const Color(0xFF101A33),
+        color: colors.surfaceContainer,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: Colors.white.withOpacity(0.04)),
+        border: Border.all(
+          color: colors.onSurfaceMuted.withValues(alpha: 0.12),
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -37,7 +42,7 @@ class PerformanceSpotlightCard extends StatelessWidget {
             width: 42,
             height: 42,
             decoration: BoxDecoration(
-              color: accent.withOpacity(0.14),
+              color: accent.withValues(alpha: 0.14),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(icon, color: accent, size: 20),

@@ -36,7 +36,7 @@ class TrainingSummaryMapCard extends StatelessWidget {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: primary.withOpacity(0.15),
+              color: primary.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(Icons.account_tree_rounded, color: primary, size: 20),

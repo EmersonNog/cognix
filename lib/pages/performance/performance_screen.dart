@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../../services/profile/profile_api.dart';
+import '../../theme/cognix_theme_colors.dart';
 import 'utils/performance_utils.dart';
 import 'widgets/performance_sections.dart';
 import 'widgets/performance_widgets.dart';
@@ -35,12 +37,16 @@ class PerformanceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     if (profile != null) {
       return _PerformanceScreenFrame(
         profile: profile!,
         onSurface: onSurface,
         onSurfaceMuted: onSurfaceMuted,
         primary: primary,
+        surface: colors.surface,
+        surfaceContainerHigh: colors.surfaceContainerHigh,
         embedded: _embedded,
         onRefresh: onRefresh,
       );
@@ -54,7 +60,7 @@ class PerformanceScreen extends StatelessWidget {
           return _embedded
               ? Center(child: CircularProgressIndicator(color: primary))
               : Scaffold(
-                  backgroundColor: const Color(0xFF05051A),
+                  backgroundColor: colors.surface,
                   body: Center(
                     child: CircularProgressIndicator(color: primary),
                   ),
@@ -75,6 +81,8 @@ class PerformanceScreen extends StatelessWidget {
           onSurface: onSurface,
           onSurfaceMuted: onSurfaceMuted,
           primary: primary,
+          surface: colors.surface,
+          surfaceContainerHigh: colors.surfaceContainerHigh,
           embedded: _embedded,
           onRefresh: onRefresh,
         );
@@ -89,6 +97,8 @@ class _PerformanceScreenFrame extends StatelessWidget {
     required this.onSurface,
     required this.onSurfaceMuted,
     required this.primary,
+    required this.surface,
+    required this.surfaceContainerHigh,
     required this.embedded,
     required this.onRefresh,
   });
@@ -97,6 +107,8 @@ class _PerformanceScreenFrame extends StatelessWidget {
   final Color onSurface;
   final Color onSurfaceMuted;
   final Color primary;
+  final Color surface;
+  final Color surfaceContainerHigh;
   final bool embedded;
   final RefreshCallback? onRefresh;
 
@@ -107,6 +119,7 @@ class _PerformanceScreenFrame extends StatelessWidget {
       onSurface: onSurface,
       onSurfaceMuted: onSurfaceMuted,
       primary: primary,
+      surfaceContainerHigh: surfaceContainerHigh,
       embedded: embedded,
       onRefresh: onRefresh,
     );
@@ -116,7 +129,7 @@ class _PerformanceScreenFrame extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFF05051A),
+      backgroundColor: surface,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         foregroundColor: onSurface,
@@ -134,6 +147,7 @@ class _PerformanceScreenContent extends StatelessWidget {
     required this.onSurface,
     required this.onSurfaceMuted,
     required this.primary,
+    required this.surfaceContainerHigh,
     required this.embedded,
     required this.onRefresh,
   });
@@ -142,6 +156,7 @@ class _PerformanceScreenContent extends StatelessWidget {
   final Color onSurface;
   final Color onSurfaceMuted;
   final Color primary;
+  final Color surfaceContainerHigh;
   final bool embedded;
   final RefreshCallback? onRefresh;
 
@@ -186,6 +201,7 @@ class _PerformanceScreenContent extends StatelessWidget {
           primary: primary,
           onSurface: onSurface,
           onSurfaceMuted: onSurfaceMuted,
+          surfaceContainerHigh: surfaceContainerHigh,
         ),
       ],
     );
@@ -197,7 +213,7 @@ class _PerformanceScreenContent extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: onRefresh!,
       color: primary,
-      backgroundColor: const Color(0xFF141F38),
+      backgroundColor: surfaceContainerHigh,
       child: listView,
     );
   }
@@ -218,6 +234,8 @@ class _PerformanceErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     final child = ListView(
       padding: EdgeInsets.fromLTRB(
         20,
@@ -230,11 +248,13 @@ class _PerformanceErrorState extends StatelessWidget {
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
             color: Color.alphaBlend(
-              primary.withOpacity(0.04),
-              const Color(0xFF141F38),
+              primary.withValues(alpha: 0.04),
+              colors.surfaceContainerHigh,
             ),
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.white.withOpacity(0.05)),
+            border: Border.all(
+              color: colors.onSurfaceMuted.withValues(alpha: 0.12),
+            ),
           ),
           child: Text(
             'Não foi possível carregar o painel de desempenho agora.',
@@ -248,7 +268,7 @@ class _PerformanceErrorState extends StatelessWidget {
       return RefreshIndicator(
         onRefresh: onRefresh!,
         color: primary,
-        backgroundColor: const Color(0xFF141F38),
+        backgroundColor: colors.surfaceContainerHigh,
         child: child,
       );
     }
@@ -258,11 +278,8 @@ class _PerformanceErrorState extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFF05051A),
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(0, 255, 0, 0),
-        elevation: 0,
-      ),
+      backgroundColor: colors.surface,
+      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
       body: child,
     );
   }

@@ -73,6 +73,6 @@ Color _categoryAccent(String category) {
     case 'seguranca':
       return const Color(0xFFFFA36E);
     default:
-      return _WritingThemeScreenState._primary;
+      return const Color(0xFFA3A6FF);
   }
 }

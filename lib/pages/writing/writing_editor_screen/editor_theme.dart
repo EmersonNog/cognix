@@ -7,19 +7,21 @@ class _ThemeHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF2B2341), Color(0xFF101B32)],
+          colors: [colors.primaryDim, colors.surfaceLow],
         ),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: _editorAccent.withValues(alpha: 0.2)),
+        border: Border.all(color: colors.accent.withValues(alpha: 0.2)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.18),
+            color: Colors.black.withValues(alpha: 0.12),
             blurRadius: 24,
             offset: const Offset(0, 14),
           ),
@@ -33,7 +35,7 @@ class _ThemeHero extends StatelessWidget {
               _HeroPill(
                 icon: Icons.label_rounded,
                 label: theme.category.toUpperCase(),
-                accent: _editorAccent,
+                accent: colors.accent,
               ),
               const SizedBox(width: 8),
               _HeroPill(
@@ -47,7 +49,7 @@ class _ThemeHero extends StatelessWidget {
           Text(
             theme.title,
             style: GoogleFonts.manrope(
-              color: _editorOnSurface,
+              color: colors.onSurface,
               fontSize: 24,
               fontWeight: FontWeight.w900,
               height: 1.08,
@@ -57,7 +59,7 @@ class _ThemeHero extends StatelessWidget {
           Text(
             theme.description,
             style: GoogleFonts.inter(
-              color: _editorOnSurfaceMuted,
+              color: colors.onSurfaceMuted,
               fontSize: 13,
               height: 1.45,
             ),
@@ -120,13 +122,15 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           eyebrow.toUpperCase(),
           style: GoogleFonts.plusJakartaSans(
-            color: _editorAccent,
+            color: colors.accent,
             fontSize: 10,
             fontWeight: FontWeight.w900,
             letterSpacing: 0.8,
@@ -136,7 +140,7 @@ class _SectionHeader extends StatelessWidget {
         Text(
           title,
           style: GoogleFonts.manrope(
-            color: _editorOnSurface,
+            color: colors.onSurface,
             fontSize: 22,
             fontWeight: FontWeight.w900,
           ),
@@ -145,7 +149,7 @@ class _SectionHeader extends StatelessWidget {
         Text(
           subtitle,
           style: GoogleFonts.inter(
-            color: _editorOnSurfaceMuted,
+            color: colors.onSurfaceMuted,
             fontSize: 12.8,
             height: 1.38,
           ),
@@ -162,12 +166,14 @@ class _GuideCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: _editorSurfaceContainer,
+        color: colors.surfaceContainer,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: _editorPrimary.withValues(alpha: 0.1)),
+        border: Border.all(color: colors.primary.withValues(alpha: 0.1)),
       ),
       child: child,
     );

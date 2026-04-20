@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../theme/cognix_theme_colors.dart';
+
 enum CognixMessageType { info, success, error }
 
 void showCognixMessage(
@@ -8,10 +10,11 @@ void showCognixMessage(
   String text, {
   CognixMessageType type = CognixMessageType.info,
 }) {
+  final colors = context.cognixColors;
   final color = switch (type) {
-    CognixMessageType.success => const Color(0xFF7ED6C5),
-    CognixMessageType.error => const Color(0xFFEF6A6A),
-    CognixMessageType.info => const Color(0xFFA3A6FF),
+    CognixMessageType.success => colors.success,
+    CognixMessageType.error => colors.danger,
+    CognixMessageType.info => colors.primary,
   };
 
   ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -22,11 +25,7 @@ void showCognixMessage(
       behavior: SnackBarBehavior.floating,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       duration: const Duration(seconds: 3),
-      content: CognixMessageBox(
-        text: text,
-        accent: color,
-        type: type,
-      ),
+      content: CognixMessageBox(text: text, accent: color, type: type),
     ),
   );
 }
@@ -53,8 +52,11 @@ class CognixMessageBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final shadowColor = accent.withOpacity(0.28);
-    final borderColor = accent.withOpacity(0.35);
+    final colors = context.cognixColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final shadowColor = accent.withValues(alpha: isDark ? 0.28 : 0.14);
+    final borderColor = accent.withValues(alpha: isDark ? 0.35 : 0.28);
+    final iconBackground = accent.withValues(alpha: isDark ? 0.12 : 0.1);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -62,10 +64,7 @@ class CognixMessageBox extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            const Color(0xFF172544),
-            const Color(0xFF121C33),
-          ],
+          colors: [colors.surfaceContainerHigh, colors.surfaceContainer],
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: borderColor, width: 1),
@@ -83,7 +82,7 @@ class CognixMessageBox extends StatelessWidget {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: accent.withOpacity(0.12),
+              color: iconBackground,
               shape: BoxShape.circle,
             ),
             child: Icon(_iconForType(), color: accent, size: 18),
@@ -93,7 +92,7 @@ class CognixMessageBox extends StatelessWidget {
             child: Text(
               text,
               style: GoogleFonts.inter(
-                color: const Color(0xFFDEE5FF),
+                color: colors.onSurface,
                 fontSize: 13.8,
                 height: 1.35,
               ),

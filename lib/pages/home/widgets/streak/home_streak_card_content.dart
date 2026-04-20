@@ -243,7 +243,9 @@ class _StreakCalendarDayCell extends StatelessWidget {
     final numberBackground = isTodayActive
         ? accent
         : Colors.white.withValues(alpha: isPastActive ? 0.07 : 0.03);
-    final numberColor = isTodayActive ? const Color(0xFF081120) : onSurface;
+    final numberColor = isTodayActive
+        ? Theme.of(context).colorScheme.onPrimary
+        : onSurface;
     final labelColor = day.isToday || isPastActive ? onSurface : onSurfaceMuted;
 
     return Container(

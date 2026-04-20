@@ -13,6 +13,7 @@ class _LoadMoreButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     final count = remainingCount > _WritingHistoryScreenState._pageSize
         ? _WritingHistoryScreenState._pageSize
         : remainingCount;
@@ -26,27 +27,28 @@ class _LoadMoreButton extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           decoration: BoxDecoration(
-            color: _WritingHistoryScreenState._surfaceContainerHigh,
+            color: colors.surfaceContainerHigh,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: _WritingHistoryScreenState._accent.withValues(alpha: 0.18),
-            ),
+            border: Border.all(color: colors.accent.withValues(alpha: 0.18)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (isLoading) ...[
-                const SizedBox(
+                SizedBox(
                   width: 16,
                   height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(colors.accent),
+                  ),
                 ),
                 const SizedBox(width: 10),
               ],
               Text(
                 isLoading ? 'Carregando...' : 'Carregar mais $count $label',
                 style: GoogleFonts.inter(
-                  color: _WritingHistoryScreenState._accent,
+                  color: colors.accent,
                   fontSize: 13.5,
                   fontWeight: FontWeight.w800,
                 ),
@@ -64,25 +66,30 @@ class _LoadingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: _WritingHistoryScreenState._surfaceContainer,
+        color: colors.surfaceContainer,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
         children: [
-          const SizedBox(
+          SizedBox(
             width: 22,
             height: 22,
-            child: CircularProgressIndicator(strokeWidth: 2),
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(colors.accent),
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
             child: Text(
               'Carregando histórico de redações...',
               style: GoogleFonts.inter(
-                color: _WritingHistoryScreenState._onSurfaceMuted,
+                color: colors.onSurfaceMuted,
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
               ),
@@ -107,10 +114,12 @@ class _InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: _WritingHistoryScreenState._surfaceContainer,
+        color: colors.surfaceContainer,
         borderRadius: BorderRadius.circular(22),
       ),
       child: Row(
@@ -119,10 +128,10 @@ class _InfoCard extends StatelessWidget {
             width: 46,
             height: 46,
             decoration: BoxDecoration(
-              color: _WritingHistoryScreenState._accent.withValues(alpha: 0.12),
+              color: colors.accent.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon, color: _WritingHistoryScreenState._accent),
+            child: Icon(icon, color: colors.accent),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -132,7 +141,7 @@ class _InfoCard extends StatelessWidget {
                 Text(
                   title,
                   style: GoogleFonts.manrope(
-                    color: _WritingHistoryScreenState._onSurface,
+                    color: colors.onSurface,
                     fontSize: 15.5,
                     fontWeight: FontWeight.w900,
                   ),
@@ -141,7 +150,7 @@ class _InfoCard extends StatelessWidget {
                 Text(
                   subtitle,
                   style: GoogleFonts.inter(
-                    color: _WritingHistoryScreenState._onSurfaceMuted,
+                    color: colors.onSurfaceMuted,
                     fontSize: 12.5,
                     height: 1.35,
                   ),

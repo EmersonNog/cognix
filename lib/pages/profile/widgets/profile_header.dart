@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../../../services/profile/profile_api.dart';
+import '../../../theme/cognix_theme_colors.dart';
 import '../avatar_store_dialog.dart';
 import 'profile_header_summary_card.dart';
 import 'profile_header_utils.dart';
@@ -66,11 +67,12 @@ class ProfileHeader extends StatefulWidget {
 
 class _ProfileHeaderState extends State<ProfileHeader> {
   void _openAvatarSelector() {
+    final colors = context.cognixColors;
     showGeneralDialog<Object?>(
       context: context,
       barrierDismissible: true,
       barrierLabel: 'Avatar store',
-      barrierColor: Colors.black.withValues(alpha: 0.18),
+      barrierColor: colors.surfaceLow.withValues(alpha: 0.24),
       transitionDuration: const Duration(milliseconds: 500),
       pageBuilder: (context, animation, secondaryAnimation) {
         return BackdropFilter(

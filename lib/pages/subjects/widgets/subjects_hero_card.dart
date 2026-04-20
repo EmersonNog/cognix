@@ -26,7 +26,10 @@ class SubjectsHeroCard extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [surfaceContainerHigh, surfaceContainer.withOpacity(0.85)],
+          colors: [
+            surfaceContainerHigh,
+            surfaceContainer.withValues(alpha: 0.85),
+          ],
         ),
       ),
       child: Column(

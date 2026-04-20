@@ -54,12 +54,12 @@ class TrainingSummaryMapNodeCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isSelected
-                  ? primary.withOpacity(0.5)
-                  : primary.withOpacity(0.08),
+                  ? primary.withValues(alpha: 0.5)
+                  : primary.withValues(alpha: 0.08),
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF0C1426).withOpacity(0.35),
+                color: const Color(0xFF0C1426).withValues(alpha: 0.35),
                 blurRadius: 14,
                 offset: const Offset(0, 8),
               ),

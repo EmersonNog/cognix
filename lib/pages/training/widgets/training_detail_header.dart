@@ -40,7 +40,7 @@ class TrainingDetailHeader extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
-            color: primary.withOpacity(0.18),
+            color: primary.withValues(alpha: 0.18),
             borderRadius: BorderRadius.circular(999),
           ),
           child: Text(

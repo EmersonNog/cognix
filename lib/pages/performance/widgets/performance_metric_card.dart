@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../theme/cognix_theme_colors.dart';
+
 class PerformanceMetricCard extends StatelessWidget {
   const PerformanceMetricCard({
     required this.label,
@@ -25,14 +27,17 @@ class PerformanceMetricCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: _minCardHeight),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: const Color(0xFF101A33),
+          color: colors.surfaceContainer,
           borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.04)),
+          border: Border.all(
+            color: colors.onSurfaceMuted.withValues(alpha: 0.12),
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

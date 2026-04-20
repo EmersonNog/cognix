@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../theme/cognix_theme_colors.dart';
+
 class ProfileStatsBox extends StatelessWidget {
   const ProfileStatsBox({
     super.key,
@@ -23,16 +25,17 @@ class ProfileStatsBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: const Color(0xFF081B3A),
+          color: surfaceContainer,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withOpacity(0.035)),
+          border: Border.all(color: onSurfaceMuted.withValues(alpha: 0.12)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.22),
+              color: colors.primary.withValues(alpha: 0.08),
               blurRadius: 20,
               offset: const Offset(0, 12),
             ),
@@ -45,7 +48,7 @@ class ProfileStatsBox extends StatelessWidget {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: primary.withOpacity(0.14),
+                color: primary.withValues(alpha: 0.14),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: primary, size: 18),

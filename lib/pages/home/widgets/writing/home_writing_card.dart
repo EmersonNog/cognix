@@ -8,14 +8,14 @@ class HomeWritingCard extends StatelessWidget {
     required this.surfaceContainerHigh,
     required this.onSurface,
     required this.onSurfaceMuted,
+    required this.accent,
   });
 
   final Color surfaceContainer;
   final Color surfaceContainerHigh;
   final Color onSurface;
   final Color onSurfaceMuted;
-
-  static const _accent = Color(0xFFFFC56E);
+  final Color accent;
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +29,11 @@ class HomeWritingCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: surfaceContainer,
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: _accent.withValues(alpha: 0.18)),
+            border: Border.all(color: accent.withValues(alpha: 0.18)),
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [_accent.withValues(alpha: 0.12), surfaceContainer],
+              colors: [accent.withValues(alpha: 0.12), surfaceContainer],
             ),
           ),
           child: Row(
@@ -42,10 +42,10 @@ class HomeWritingCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: _accent.withValues(alpha: 0.15),
+                  color: accent.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(17),
                 ),
-                child: const Icon(Icons.edit_note_rounded, color: _accent),
+                child: Icon(Icons.edit_note_rounded, color: accent),
               ),
               const SizedBox(width: 13),
               Expanded(
@@ -73,13 +73,13 @@ class HomeWritingCard extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: _accent.withValues(alpha: 0.14),
+                            color: accent.withValues(alpha: 0.14),
                             borderRadius: BorderRadius.circular(999),
                           ),
                           child: Text(
                             'IA',
                             style: GoogleFonts.plusJakartaSans(
-                              color: _accent,
+                              color: accent,
                               fontSize: 10,
                               fontWeight: FontWeight.w900,
                               letterSpacing: 0.8,
@@ -108,9 +108,9 @@ class HomeWritingCard extends StatelessWidget {
                   color: surfaceContainerHigh,
                   borderRadius: BorderRadius.circular(13),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.arrow_forward_rounded,
-                  color: _accent,
+                  color: accent,
                   size: 18,
                 ),
               ),

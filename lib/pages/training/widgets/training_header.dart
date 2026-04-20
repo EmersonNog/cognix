@@ -122,7 +122,7 @@ class _GhostChip extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
-            color: surfaceContainerHigh.withOpacity(0.4),
+            color: surfaceContainerHigh.withValues(alpha: 0.4),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(

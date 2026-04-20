@@ -8,13 +8,15 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.cognixColors;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
           style: GoogleFonts.manrope(
-            color: WritingResultScreen._onSurface,
+            color: colors.onSurface,
             fontSize: 19,
             fontWeight: FontWeight.w900,
           ),
@@ -23,7 +25,7 @@ class _SectionTitle extends StatelessWidget {
         Text(
           subtitle,
           style: GoogleFonts.inter(
-            color: WritingResultScreen._onSurfaceMuted,
+            color: colors.onSurfaceMuted,
             fontSize: 12.8,
             height: 1.38,
           ),
