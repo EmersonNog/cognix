@@ -7,6 +7,7 @@ import 'widgets/multiplayer/home_multiplayer_card.dart';
 import 'widgets/recommendations/home_recommendations_section.dart';
 import 'widgets/recent_performance/home_recent_performance_card.dart';
 import 'widgets/streak/home_master_streak_card.dart';
+import 'widgets/writing/home_writing_card.dart';
 
 class HomeTab extends StatelessWidget {
   const HomeTab({
@@ -64,6 +65,13 @@ class HomeTab extends StatelessWidget {
             onSurface: onSurface,
             onSurfaceMuted: onSurfaceMuted,
             primary: primary,
+          ),
+          const SizedBox(height: 16),
+          HomeWritingCard(
+            surfaceContainer: surfaceContainer,
+            surfaceContainerHigh: surfaceContainerHigh,
+            onSurface: onSurface,
+            onSurfaceMuted: onSurfaceMuted,
           ),
           const SizedBox(height: 16),
           HomeMultiplayerCard(

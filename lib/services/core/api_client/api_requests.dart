@@ -75,6 +75,7 @@ Future<Map<String, dynamic>> postJson(
   Uri uri, {
   required Map<String, dynamic> body,
   required String errorMessage,
+  Duration timeout = apiTimeout,
 }) async {
   final token = await requireAuthToken();
   http.Response response;
@@ -88,7 +89,7 @@ Future<Map<String, dynamic>> postJson(
           },
           body: jsonEncode(body),
         )
-        .timeout(apiTimeout);
+        .timeout(timeout);
   } catch (error) {
     if (_looksLikeConnectionError(error)) {
       throw Exception(_connectionHintMessage(errorMessage));
@@ -124,4 +125,3 @@ Future<void> deleteJson(Uri uri, {required String errorMessage}) async {
     throw Exception('$errorMessage (${response.statusCode}).');
   }
 }
-

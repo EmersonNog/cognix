@@ -2,7 +2,12 @@ import 'pages/multiplayer/lobby/multiplayer_create_room_screen.dart';
 import 'pages/multiplayer/join_pin/multiplayer_join_room_screen.dart';
 import 'pages/account_security/account_security_screen.dart';
 import 'pages/multiplayer/match/multiplayer_match_screen.dart';
+import 'pages/writing/writing_editor_screen.dart';
+import 'pages/writing/writing_result_screen.dart';
+import 'pages/writing/writing_route_args.dart';
+import 'pages/writing/writing_theme_screen.dart';
 import 'services/multiplayer/models.dart';
+import 'services/writing/writing_api.dart';
 import 'pages/study_plan/study_plan_screen.dart';
 import 'pages/support/support_screen.dart';
 import 'pages/auth/forgot_password.dart';
@@ -27,6 +32,21 @@ class Routes {
           return MultiplayerMatchScreen(
             room: argument is MultiplayerRoom ? argument : null,
           );
+        },
+        'writing': (context) => const WritingThemeScreen(),
+        'writing-editor': (context) {
+          final argument = ModalRoute.of(context)?.settings.arguments;
+          if (argument is WritingEditorArgs) {
+            return WritingEditorScreen(args: argument);
+          }
+          return const WritingThemeScreen();
+        },
+        'writing-result': (context) {
+          final argument = ModalRoute.of(context)?.settings.arguments;
+          if (argument is WritingResultArgs) {
+            return WritingResultScreen(args: argument);
+          }
+          return const WritingThemeScreen();
         },
         'plan': (context) => const PlanScreen(),
         'study-plan': (context) => const StudyPlanScreen(),
