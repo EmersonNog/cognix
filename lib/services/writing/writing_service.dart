@@ -3,6 +3,32 @@ import 'models.dart';
 class WritingService {
   const WritingService();
 
+  List<String> missingRequiredSections(WritingDraft draft) {
+    return [
+      if (draft.thesis.trim().isEmpty) 'Tese',
+      if (draft.repertoire.trim().isEmpty) 'Repertorio',
+      if (draft.argumentOne.trim().isEmpty) 'Argumento 1',
+      if (draft.argumentTwo.trim().isEmpty) 'Argumento 2',
+      if (draft.intervention.trim().isEmpty) 'Proposta de intervencao',
+    ];
+  }
+
+  String composeFinalText(WritingDraft draft) {
+    final thesis = _cleanParagraph(draft.thesis);
+    final repertoire = _cleanParagraph(draft.repertoire);
+    final argumentOne = _cleanParagraph(draft.argumentOne);
+    final argumentTwo = _cleanParagraph(draft.argumentTwo);
+    final intervention = _cleanParagraph(draft.intervention);
+
+    return [
+      thesis,
+      repertoire,
+      argumentOne,
+      argumentTwo,
+      intervention,
+    ].where((item) => item.isNotEmpty).join('\n\n');
+  }
+
   List<WritingChecklistItem> buildChecklist(WritingDraft draft) {
     final normalizedText = _normalize(draft.finalText);
     final intervention = _normalize(draft.intervention);
@@ -51,5 +77,9 @@ class WritingService {
 
   String _normalize(String value) {
     return value.toLowerCase().trim();
+  }
+
+  String _cleanParagraph(String value) {
+    return value.trim().replaceAll(RegExp(r'\s+'), ' ');
   }
 }

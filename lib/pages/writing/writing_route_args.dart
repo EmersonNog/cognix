@@ -13,3 +13,9 @@ class WritingResultArgs {
   final WritingDraft draft;
   final WritingFeedback feedback;
 }
+
+class WritingHistoryDetailArgs {
+  const WritingHistoryDetailArgs({required this.submissionId});
+
+  final int submissionId;
+}
