@@ -3,7 +3,6 @@ import '../../services/recommendations/home_recommendations_api.dart';
 import '../../services/profile/profile_api.dart';
 import '../../services/study_plan/study_plan_api.dart';
 import 'widgets/daily_rhythm/home_daily_rhythm_card.dart';
-import 'widgets/multiplayer/home_multiplayer_card.dart';
 import 'widgets/recommendations/home_recommendations_section.dart';
 import 'widgets/recent_performance/home_recent_performance_card.dart';
 import 'widgets/streak/home_master_streak_card.dart';
@@ -74,23 +73,6 @@ class HomeTab extends StatelessWidget {
             success: success,
           ),
           const SizedBox(height: 16),
-          HomeWritingCard(
-            surfaceContainer: surfaceContainer,
-            surfaceContainerHigh: surfaceContainerHigh,
-            onSurface: onSurface,
-            onSurfaceMuted: onSurfaceMuted,
-            accent: accent,
-          ),
-          const SizedBox(height: 16),
-          HomeMultiplayerCard(
-            surfaceContainer: surfaceContainer,
-            surfaceContainerHigh: surfaceContainerHigh,
-            onSurface: onSurface,
-            onSurfaceMuted: onSurfaceMuted,
-            primary: primary,
-            primaryDim: primaryDim,
-          ),
-          const SizedBox(height: 22),
           HomeRecommendationsSection(
             recommendationsFuture: recommendationsFuture,
             onSurface: onSurface,

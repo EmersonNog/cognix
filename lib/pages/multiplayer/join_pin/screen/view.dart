@@ -22,7 +22,6 @@ Widget _buildJoinRoomScreen(
             subtitle: room == null
                 ? 'Digite o PIN enviado pelo criador da sala.'
                 : 'Aguarde o criador iniciar a partida.',
-            leadingIcon: Icons.login_rounded,
             palette: palette,
             onBack: () {
               _handleJoinRoomBack(state);

@@ -33,13 +33,32 @@ class TrainingModeSelectorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLightTheme = Theme.of(context).brightness == Brightness.light;
+    final neutralOverlay = onSurfaceMuted.withValues(alpha: 0.10);
     final borderColor = selected
         ? accent.withValues(alpha: 0.36)
         : surfaceContainerHigh;
+    final backgroundIconColor = isLightTheme
+        ? neutralOverlay
+        : accent.withValues(alpha: 0.08);
+    final actionBackground = isLightTheme
+        ? surfaceContainerHigh.withValues(alpha: 0.92)
+        : surfaceContainerHigh.withValues(alpha: 0.78);
+    final actionIconColor = selected
+        ? accent
+        : isLightTheme
+        ? accent.withValues(alpha: 0.72)
+        : onSurfaceMuted;
     final cardGradient = LinearGradient(
       colors: [
-        Color.alphaBlend(accent.withValues(alpha: selected ? 0.14 : 0.08), surfaceContainer),
-        Color.alphaBlend(accent.withValues(alpha: selected ? 0.06 : 0.03), surfaceContainerHigh),
+        Color.alphaBlend(
+          accent.withValues(alpha: selected ? 0.14 : (isLightTheme ? 0.07 : 0.08)),
+          surfaceContainer,
+        ),
+        Color.alphaBlend(
+          accent.withValues(alpha: selected ? 0.06 : (isLightTheme ? 0.03 : 0.03)),
+          surfaceContainerHigh,
+        ),
       ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
@@ -74,25 +93,27 @@ class TrainingModeSelectorCard extends StatelessWidget {
                 child: Icon(
                   icon,
                   size: 112,
-                  color: accent.withValues(alpha: 0.08),
+                  color: backgroundIconColor,
                 ),
               ),
               Positioned(
                 top: -30,
                 right: -10,
-                child: Container(
-                  width: 120,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: [
-                        accent.withValues(alpha: 0.18),
-                        Colors.transparent,
-                      ],
-                    ),
-                  ),
-                ),
+                child: isLightTheme
+                    ? const SizedBox.shrink()
+                    : Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: RadialGradient(
+                            colors: [
+                              accent.withValues(alpha: 0.18),
+                              Colors.transparent,
+                            ],
+                          ),
+                        ),
+                      ),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,14 +194,19 @@ class TrainingModeSelectorCard extends StatelessWidget {
                         width: 38,
                         height: 38,
                         decoration: BoxDecoration(
-                          color: surfaceContainerHigh.withValues(alpha: 0.78),
+                          color: actionBackground,
                           borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: accent.withValues(
+                              alpha: isLightTheme ? 0.10 : 0.08,
+                            ),
+                          ),
                         ),
                         child: Icon(
                           selected
                               ? Icons.check_circle_rounded
                               : Icons.arrow_forward_rounded,
-                          color: selected ? accent : onSurfaceMuted,
+                          color: actionIconColor,
                           size: 19,
                         ),
                       ),

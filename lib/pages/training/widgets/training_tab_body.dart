@@ -14,6 +14,7 @@ class TrainingTabBody extends StatelessWidget {
     required this.onRefresh,
     required this.onOpenAreas,
     required this.onOpenMultiplayer,
+    required this.onOpenWriting,
     required this.onOpenFlashcards,
   });
 
@@ -25,6 +26,7 @@ class TrainingTabBody extends StatelessWidget {
   final RefreshCallback onRefresh;
   final VoidCallback onOpenAreas;
   final VoidCallback onOpenMultiplayer;
+  final VoidCallback onOpenWriting;
   final VoidCallback onOpenFlashcards;
 
   @override
@@ -63,12 +65,13 @@ class TrainingTabBody extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           TrainingModeSelectorCard(
-            title: 'Banco de questões',
+            title: 'Questões',
             subtitle:
-                'Explore questões para estudar com mais foco e consistência.',
+                'Explore questoes para estudar com mais foco e consistencia.',
             icon: Icons.dashboard_customize_rounded,
             accent: const Color(0xFF7C9BFF),
-            highlights: const ['+2700 questões', 'ENEM', 'Disciplinas'],
+            highlights: const ['+2700 questoes', 'ENEM', 'Disciplinas'],
+            trailingLabel: "Acervo",
             selected: false,
             surfaceContainer: surfaceContainer,
             surfaceContainerHigh: surfaceContainerHigh,
@@ -82,8 +85,9 @@ class TrainingTabBody extends StatelessWidget {
             subtitle:
                 'Crie salas, entre por PIN e dispute partidas com outros jogadores.',
             icon: Icons.groups_rounded,
+            trailingLabel: "Ao vivo",
             accent: const Color(0xFFC28BFF),
-            highlights: const ['Ao vivo', 'Ranking', 'Competição'],
+            highlights: const ['Arena', 'Ranking', 'Competição'],
             selected: false,
             surfaceContainer: surfaceContainer,
             surfaceContainerHigh: surfaceContainerHigh,
@@ -93,12 +97,28 @@ class TrainingTabBody extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           TrainingModeSelectorCard(
+            title: 'Redação',
+            subtitle:
+                'Tema, estrutura guiada, checklist e reescrita assistida.',
+            icon: Icons.edit_note_rounded,
+            accent: const Color(0xFFD8A54B),
+            highlights: const ['Tema', 'Checklist', 'IA'],
+            selected: false,
+            surfaceContainer: surfaceContainer,
+            surfaceContainerHigh: surfaceContainerHigh,
+            onSurface: onSurface,
+            onSurfaceMuted: onSurfaceMuted,
+            trailingLabel: 'IA',
+            onTap: onOpenWriting,
+          ),
+          const SizedBox(height: 12),
+          TrainingModeSelectorCard(
             title: 'Flashcards',
             subtitle:
-                'Revise rápido, fixe conceitos e retome os pontos mais frágeis.',
+                'Revise rapido, fixe conceitos e retome os pontos mais frageis.',
             icon: Icons.style_rounded,
             accent: const Color(0xFF4ED7A6),
-            highlights: const ['Revisão', 'Memória', 'Ágil'],
+            highlights: const ['Revisao', 'Memoria', 'Agil'],
             selected: false,
             surfaceContainer: surfaceContainer,
             surfaceContainerHigh: surfaceContainerHigh,

@@ -8,9 +8,9 @@ class MultiplayerScaffold extends StatelessWidget {
     super.key,
     required this.title,
     required this.subtitle,
-    required this.leadingIcon,
     required this.palette,
     required this.child,
+    this.leadingIcon,
     this.onBack,
     this.showBackButton = true,
     this.trailing,
@@ -18,7 +18,7 @@ class MultiplayerScaffold extends StatelessWidget {
 
   final String title;
   final String subtitle;
-  final IconData leadingIcon;
+  final IconData? leadingIcon;
   final MultiplayerPalette palette;
   final Widget child;
   final VoidCallback? onBack;
@@ -75,21 +75,23 @@ class MultiplayerScaffold extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    trailing ??
-                        Container(
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: palette.primary.withValues(alpha: 0.13),
-                            borderRadius: BorderRadius.circular(15),
+                    if (trailing != null || leadingIcon != null) ...[
+                      const SizedBox(width: 12),
+                      trailing ??
+                          Container(
+                            width: 44,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: palette.primary.withValues(alpha: 0.13),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Icon(
+                              leadingIcon,
+                              color: palette.primary,
+                              size: 22,
+                            ),
                           ),
-                          child: Icon(
-                            leadingIcon,
-                            color: palette.primary,
-                            size: 22,
-                          ),
-                        ),
+                    ],
                   ],
                 ),
               ),

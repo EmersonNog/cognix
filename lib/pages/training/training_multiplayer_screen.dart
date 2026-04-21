@@ -38,6 +38,15 @@ class TrainingMultiplayerScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 36),
         children: [
+          Text(
+            'Crie uma sala, convide amigos ou entre com um PIN para disputar em tempo real.',
+            style: GoogleFonts.inter(
+              color: onSurfaceMuted,
+              fontSize: 12.5,
+              height: 1.45,
+            ),
+          ),
+          const SizedBox(height: 18),
           TrainingMultiplayerPanel(
             surfaceContainer: surfaceContainer,
             surfaceContainerHigh: surfaceContainerHigh,

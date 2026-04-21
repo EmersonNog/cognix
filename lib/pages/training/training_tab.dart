@@ -58,6 +58,9 @@ class TrainingTab extends StatelessWidget {
           ),
         );
       },
+      onOpenWriting: () {
+        Navigator.of(context).pushNamed('writing');
+      },
       onOpenFlashcards: () {
         Navigator.of(context).push(
           MaterialPageRoute(

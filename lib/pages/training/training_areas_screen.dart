@@ -67,7 +67,7 @@ class _TrainingAreasScreenState extends State<TrainingAreasScreen> {
         elevation: 0,
         leading: BackButton(color: widget.onSurface),
         title: Text(
-          'Questoes por area',
+          'QUESTÕES POR ÁREA',
           style: GoogleFonts.manrope(
             color: widget.onSurface,
             fontWeight: FontWeight.w700,
@@ -80,22 +80,78 @@ class _TrainingAreasScreenState extends State<TrainingAreasScreen> {
         backgroundColor: widget.surfaceContainer,
         child: ListView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 36),
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 36),
           children: [
             Text(
-              'Escolha uma area de conhecimento para comecar seu treino.',
+              'Escolha uma area para comecar seu treino e explorar os temas disponiveis.',
               style: GoogleFonts.inter(
                 color: widget.onSurfaceMuted,
-                fontSize: 13,
+                fontSize: 12.5,
+                height: 1.45,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 18),
             FutureBuilder<Map<SubjectsArea, int>>(
               future: _areaTotalsFuture,
               builder: (context, snapshot) {
                 final totals = snapshot.data ?? const <SubjectsArea, int>{};
+                final totalQuestions = totals.values.fold<int>(
+                  0,
+                  (sum, value) => sum + value,
+                );
+
                 return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Areas disponiveis',
+                                style: GoogleFonts.manrope(
+                                  color: widget.onSurface,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                'Selecione uma trilha para praticar agora',
+                                style: GoogleFonts.inter(
+                                  color: widget.onSurfaceMuted,
+                                  fontSize: 11.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 7,
+                          ),
+                          decoration: BoxDecoration(
+                            color: widget.surfaceContainer,
+                            borderRadius: BorderRadius.circular(999),
+                            border: Border.all(
+                              color: widget.surfaceContainerHigh,
+                            ),
+                          ),
+                          child: Text(
+                            '$totalQuestions questões',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: widget.onSurfaceMuted,
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
                     for (final area in trainingAreas) ...[
                       TrainingAreaCard(
                         item: area,
@@ -106,7 +162,7 @@ class _TrainingAreasScreenState extends State<TrainingAreasScreen> {
                         onSurfaceMuted: widget.onSurfaceMuted,
                         onTap: () => _openArea(area),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 14),
                     ],
                   ],
                 );
