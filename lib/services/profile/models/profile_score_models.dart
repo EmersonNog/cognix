@@ -55,6 +55,32 @@ class ProfileRecentCompletedSession {
   final DateTime? completedAt;
 }
 
+class ProfilePerformanceInsight {
+  const ProfilePerformanceInsight({
+    required this.title,
+    required this.summary,
+    required this.priority,
+    required this.riskLevel,
+    required this.nextAction,
+    required this.confidence,
+    required this.generatedAt,
+    required this.ttlMinutes,
+    required this.usesTtl,
+    required this.cacheHit,
+  });
+
+  final String title;
+  final String summary;
+  final String priority;
+  final String riskLevel;
+  final String nextAction;
+  final double confidence;
+  final DateTime? generatedAt;
+  final int ttlMinutes;
+  final bool usesTtl;
+  final bool cacheHit;
+}
+
 class ProfileScoreData {
   const ProfileScoreData({
     required this.score,
@@ -89,6 +115,7 @@ class ProfileScoreData {
     required this.weakestSubcategory,
     required this.attentionSubcategoriesCount,
     required this.attentionAccuracyThreshold,
+    required this.aiInsight,
   });
 
   const ProfileScoreData.empty()
@@ -123,7 +150,8 @@ class ProfileScoreData {
       strongestSubcategory = null,
       weakestSubcategory = null,
       attentionSubcategoriesCount = 0,
-      attentionAccuracyThreshold = 60.0;
+      attentionAccuracyThreshold = 60.0,
+      aiInsight = null;
 
   final int score;
   final double exactScore;
@@ -157,4 +185,5 @@ class ProfileScoreData {
   final ProfileSubcategoryInsight? weakestSubcategory;
   final int attentionSubcategoriesCount;
   final double attentionAccuracyThreshold;
+  final ProfilePerformanceInsight? aiInsight;
 }

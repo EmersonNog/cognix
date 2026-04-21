@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../services/profile/profile_api.dart';
 import '../../theme/cognix_theme_colors.dart';
+import '../../utils/api_datetime.dart';
 import 'utils/performance_utils.dart';
 import 'widgets/performance_sections.dart';
 import 'widgets/performance_widgets.dart';
@@ -163,6 +164,7 @@ class _PerformanceScreenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final view = PerformanceViewData.fromProfile(profile);
+    final insight = profile.aiInsight;
 
     final listView = ListView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -189,15 +191,24 @@ class _PerformanceScreenContent extends StatelessWidget {
           onSurfaceMuted: onSurfaceMuted,
         ),
         PerformanceInsightCard(
-          title: 'Leitura do cenário',
-          description: buildPerformanceNarrative(
-            leaderDiscipline: view.leader?.discipline,
-            activeDisciplineCount: view.activeDisciplineCount,
-            activeDaysLast30: profile.activeDaysLast30,
-            consistencyWindowDays: profile.consistencyWindowDays,
-            accuracyPercent: profile.accuracyPercent,
-            completedSessions: profile.completedSessions,
-          ),
+          title: insight?.title ?? 'Leitura do cenário',
+          description:
+              insight?.summary ??
+              buildPerformanceNarrative(
+                leaderDiscipline: view.leader?.discipline,
+                activeDisciplineCount: view.activeDisciplineCount,
+                activeDaysLast30: profile.activeDaysLast30,
+                consistencyWindowDays: profile.consistencyWindowDays,
+                accuracyPercent: profile.accuracyPercent,
+                completedSessions: profile.completedSessions,
+              ),
+          priority: insight?.priority,
+          riskLevel: insight?.riskLevel,
+          nextAction: insight?.nextAction,
+          confidence: insight?.confidence,
+          generatedAtLabel: insight?.generatedAt == null
+              ? null
+              : 'Atualizado em ${formatShortDateTime(insight!.generatedAt)}',
           primary: primary,
           onSurface: onSurface,
           onSurfaceMuted: onSurfaceMuted,

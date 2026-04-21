@@ -26,6 +26,9 @@ class PerformanceViewData {
     required this.accuracyPercent,
     required this.consistencyWindowDays,
     required this.activeDaysLast30,
+    required this.hasDisciplineDistributionBase,
+    required this.hasSubcategoryComparisonBase,
+    required this.hasAttentionBase,
   });
 
   final List<ProfileDisciplineStat> disciplines;
@@ -48,6 +51,9 @@ class PerformanceViewData {
   final double accuracyPercent;
   final int consistencyWindowDays;
   final int activeDaysLast30;
+  final bool hasDisciplineDistributionBase;
+  final bool hasSubcategoryComparisonBase;
+  final bool hasAttentionBase;
 
   factory PerformanceViewData.fromProfile(ProfileScoreData profile) {
     final disciplines = [...profile.questionsByDiscipline]
@@ -72,6 +78,18 @@ class PerformanceViewData {
     final secondsPerSimulation = profile.completedSessions == 0
         ? 0
         : (profile.totalStudySeconds / profile.completedSessions).round();
+    final hasDisciplineDistributionBase =
+        profile.questionsAnswered >= 8 && activeDisciplineCount >= 2;
+    final hasSubcategoryComparisonBase =
+        profile.questionsAnswered >= 12 &&
+        profile.strongestSubcategory != null &&
+        profile.weakestSubcategory != null &&
+        profile.strongestSubcategory!.totalAttempts >= 5 &&
+        profile.weakestSubcategory!.totalAttempts >= 5;
+    final hasAttentionBase =
+        profile.questionsAnswered >= 12 &&
+        profile.weakestSubcategory != null &&
+        profile.weakestSubcategory!.totalAttempts >= 5;
 
     return PerformanceViewData(
       disciplines: disciplines,
@@ -94,6 +112,9 @@ class PerformanceViewData {
       accuracyPercent: profile.accuracyPercent,
       consistencyWindowDays: profile.consistencyWindowDays,
       activeDaysLast30: profile.activeDaysLast30,
+      hasDisciplineDistributionBase: hasDisciplineDistributionBase,
+      hasSubcategoryComparisonBase: hasSubcategoryComparisonBase,
+      hasAttentionBase: hasAttentionBase,
     );
   }
 }

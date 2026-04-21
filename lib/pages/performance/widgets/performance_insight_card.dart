@@ -2,11 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../theme/cognix_theme_colors.dart';
+import 'performance_insight_card/performance_insight_action_card.dart';
+import 'performance_insight_card/performance_insight_header.dart';
+import 'performance_insight_card/performance_insight_helpers.dart';
+import 'performance_insight_card/performance_insight_metrics.dart';
 
 class PerformanceInsightCard extends StatelessWidget {
   const PerformanceInsightCard({
     required this.title,
     required this.description,
+    this.priority,
+    this.riskLevel,
+    this.nextAction,
+    this.confidence,
+    this.generatedAtLabel,
     required this.primary,
     required this.onSurface,
     required this.onSurfaceMuted,
@@ -16,6 +25,11 @@ class PerformanceInsightCard extends StatelessWidget {
 
   final String title;
   final String description;
+  final String? priority;
+  final String? riskLevel;
+  final String? nextAction;
+  final double? confidence;
+  final String? generatedAtLabel;
   final Color primary;
   final Color onSurface;
   final Color onSurfaceMuted;
@@ -24,6 +38,7 @@ class PerformanceInsightCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.cognixColors;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -48,44 +63,12 @@ class PerformanceInsightCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  color: primary.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Icon(Icons.insights_rounded, color: primary, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: GoogleFonts.manrope(
-                        color: onSurface,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      'Resumo editorial do seu momento atual',
-                      style: GoogleFonts.inter(
-                        color: onSurfaceMuted.withValues(alpha: 0.9),
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          PerformanceInsightHeader(
+            title: title,
+            metadataText: buildInsightMetadataText(generatedAtLabel),
+            primary: primary,
+            onSurface: onSurface,
+            onSurfaceMuted: onSurfaceMuted,
           ),
           const SizedBox(height: 16),
           Container(
@@ -107,6 +90,36 @@ class PerformanceInsightCard extends StatelessWidget {
               ),
             ),
           ),
+          if (priority != null || riskLevel != null || confidence != null) ...[
+            const SizedBox(height: 12),
+            PerformanceInsightMetrics(
+              priority: priority,
+              riskLevel: riskLevel,
+              onSurface: onSurface,
+            ),
+          ],
+          if (nextAction != null) ...[
+            const SizedBox(height: 12),
+            PerformanceInsightActionCard(
+              nextAction: nextAction!,
+              primary: primary,
+              onSurface: onSurface,
+            ),
+          ],
+          if (confidence != null) ...[
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Text(
+                'Confiança da leitura: ${(confidence! * 100).round()}%',
+                style: GoogleFonts.inter(
+                  color: onSurfaceMuted.withValues(alpha: 0.92),
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
