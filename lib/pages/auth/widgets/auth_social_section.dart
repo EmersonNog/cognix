@@ -15,13 +15,15 @@ class AuthSocialSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authTheme = AuthTheme.of(context);
+
     return Column(
       children: [
         Center(
           child: Text(
             title,
             style: GoogleFonts.plusJakartaSans(
-              color: AuthTheme.onSurfaceMuted.withOpacity(0.7),
+              color: authTheme.onSurfaceMuted.withValues(alpha: 0.70),
               fontSize: 11,
               letterSpacing: 2,
               fontWeight: FontWeight.w600,
@@ -35,8 +37,8 @@ class AuthSocialSection extends StatelessWidget {
               child: CognixSocialButton(
                 icon: 'G',
                 label: 'Google',
-                background: AuthTheme.surfaceHighest,
-                textColor: AuthTheme.onSurface,
+                background: authTheme.surfaceHighest,
+                textColor: authTheme.onSurface,
                 onPressed: onGooglePressed,
               ),
             ),

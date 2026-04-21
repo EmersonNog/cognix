@@ -26,9 +26,14 @@ class GradientBlob extends StatelessWidget {
 }
 
 class GlassBadge extends StatelessWidget {
-  const GlassBadge({super.key, required this.child});
+  const GlassBadge({
+    super.key,
+    required this.child,
+    this.backgroundColor = const Color(0x99192540),
+  });
 
   final Widget child;
+  final Color backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +41,7 @@ class GlassBadge extends StatelessWidget {
       width: 44,
       height: 44,
       decoration: BoxDecoration(
-        color: const Color(0x99192540),
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Center(child: child),

@@ -17,6 +17,8 @@ class AuthInlinePrompt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authTheme = AuthTheme.of(context);
+
     return Center(
       child: Wrap(
         alignment: WrapAlignment.center,
@@ -25,14 +27,14 @@ class AuthInlinePrompt extends StatelessWidget {
           Text(
             prefix,
             style: GoogleFonts.inter(
-              color: AuthTheme.onSurfaceMuted,
+              color: authTheme.onSurfaceMuted,
               fontSize: 12.5,
             ),
           ),
           TextButton(
             onPressed: onTap,
             style: TextButton.styleFrom(
-              foregroundColor: AuthTheme.primary,
+              foregroundColor: authTheme.primary,
               padding: const EdgeInsets.symmetric(horizontal: 6),
               minimumSize: const Size(0, 0),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,

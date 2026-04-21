@@ -2,19 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 import '../../services/local/onboarding_storage.dart';
+import '../../theme/cognix_theme_colors.dart';
+import '../../theme/theme_mode_picker.dart';
 import 'onboarding_layout.dart';
 import 'widgets/onboarding_illustration.dart';
 import 'widgets/onboarding_page_body.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
-
-  static const _background = Color(0xFF060E20);
-  static const _accent = Color(0xFF8FA2FF);
-  static const _muted = Color(0xFFB7C0E3);
-  static const _caption = Color(0xFF8E9AC7);
-  static const _surface = Color(0xFF0E1733);
-  static const _outline = Color(0xFF223055);
 
   Future<void> _finish(BuildContext context) async {
     await OnboardingStorage.markSeen();
@@ -24,17 +19,20 @@ class OnboardingScreen extends StatelessWidget {
     Navigator.of(context).pushReplacementNamed('login');
   }
 
-  PageDecoration _pageDecoration(OnboardingLayout layout) {
+  PageDecoration _pageDecoration(
+    OnboardingLayout layout,
+    CognixThemeColors colors,
+  ) {
     return PageDecoration(
-      pageColor: _background,
+      pageColor: colors.surface,
       titleTextStyle: TextStyle(
-        color: Colors.white,
+        color: colors.onSurface,
         fontSize: layout.titleFontSize,
         fontWeight: FontWeight.w700,
         height: 1.2,
       ),
       bodyTextStyle: TextStyle(
-        color: _muted,
+        color: colors.onSurfaceMuted,
         fontSize: layout.pageBodyFontSize,
         height: 1.5,
       ),
@@ -53,7 +51,12 @@ class OnboardingScreen extends StatelessWidget {
     );
   }
 
-  PageViewModel _buildPage(OnboardingLayout layout, _OnboardingPageSpec spec) {
+  PageViewModel _buildPage(
+    BuildContext context,
+    OnboardingLayout layout,
+    _OnboardingPageSpec spec,
+  ) {
+    final colors = context.cognixColors;
     return PageViewModel(
       title: spec.title,
       bodyWidget: OnboardingPageBody(
@@ -61,52 +64,76 @@ class OnboardingScreen extends StatelessWidget {
         text: spec.body,
         highlights: spec.highlights,
         accent: spec.accent,
-        muted: _muted,
-        caption: _caption,
-        surface: _surface,
-        outline: _outline,
+        muted: colors.onSurfaceMuted,
+        caption: colors.onSurfaceMuted.withValues(alpha: 0.88),
+        surface: colors.surfaceContainer,
+        outline: colors.onSurfaceMuted.withValues(alpha: 0.18),
       ),
       image: OnboardingIllustration(
         layout: layout,
         asset: spec.asset,
         glow: spec.accent,
       ),
-      decoration: _pageDecoration(layout),
+      decoration: _pageDecoration(layout, colors),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final layout = OnboardingLayout.fromSize(MediaQuery.sizeOf(context));
+    final colors = context.cognixColors;
     final pages = _onboardingPages
-        .map((spec) => _buildPage(layout, spec))
+        .map((spec) => _buildPage(context, layout, spec))
         .toList();
 
-    return IntroductionScreen(
-      globalBackgroundColor: _background,
-      pages: pages,
-      showSkipButton: true,
-      skip: const Text('Pular', style: TextStyle(color: _muted)),
-      next: const Icon(Icons.arrow_forward_rounded, color: _accent),
-      done: const Text(
-        'Comecar',
-        style: TextStyle(color: _accent, fontWeight: FontWeight.w600),
-      ),
-      controlsPadding: EdgeInsets.fromLTRB(
-        16,
-        layout.controlsTopPadding,
-        16,
-        layout.controlsBottomPadding,
-      ),
-      onDone: () => _finish(context),
-      onSkip: () => _finish(context),
-      dotsDecorator: DotsDecorator(
-        color: const Color(0xFF273053),
-        activeColor: _accent,
-        size: const Size(8, 8),
-        activeSize: const Size(18, 8),
-        activeShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+    return Scaffold(
+      backgroundColor: colors.surface,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            IntroductionScreen(
+              globalBackgroundColor: colors.surface,
+              pages: pages,
+              showSkipButton: true,
+              skip: Text(
+                'Pular',
+                style: TextStyle(color: colors.onSurfaceMuted),
+              ),
+              next: Icon(Icons.arrow_forward_rounded, color: colors.primary),
+              done: Text(
+                'Começar',
+                style: TextStyle(
+                  color: colors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              controlsPadding: EdgeInsets.fromLTRB(
+                16,
+                layout.controlsTopPadding,
+                16,
+                layout.controlsBottomPadding,
+              ),
+              onDone: () => _finish(context),
+              onSkip: () => _finish(context),
+              dotsDecorator: DotsDecorator(
+                color: colors.onSurfaceMuted.withValues(alpha: 0.22),
+                activeColor: colors.primary,
+                size: const Size(8, 8),
+                activeSize: const Size(18, 8),
+                activeShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 12,
+              right: 16,
+              child: ThemeModeQuickButton(
+                backgroundColor: colors.surfaceContainer,
+                iconColor: colors.onSurfaceMuted,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -168,7 +195,7 @@ const List<_OnboardingPageSpec> _onboardingPages = [
     accent: Color(0xFF44D1C2),
   ),
   _OnboardingPageSpec(
-    title: 'Metricas reais',
+    title: 'Métricas reais',
     body: 'Veja seu desempenho de forma objetiva e tome melhores decisões.',
     highlights: [
       'Pontos de atenção',

@@ -5,24 +5,27 @@ class FieldLabel extends StatelessWidget {
   const FieldLabel({
     super.key,
     required this.text,
-    this.color = const Color(0xFF9AA6C5),
+    this.color,
     this.fontSize = 11.5,
     this.letterSpacing = 1.4,
     this.fontWeight = FontWeight.w600,
   });
 
   final String text;
-  final Color color;
+  final Color? color;
   final double fontSize;
   final double letterSpacing;
   final FontWeight fontWeight;
 
   @override
   Widget build(BuildContext context) {
+    final resolvedColor =
+        color ?? Theme.of(context).colorScheme.onSurfaceVariant;
+
     return Text(
       text,
       style: GoogleFonts.plusJakartaSans(
-        color: color,
+        color: resolvedColor,
         fontSize: fontSize,
         letterSpacing: letterSpacing,
         fontWeight: fontWeight,
@@ -55,6 +58,16 @@ class InputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final iconColor = theme.colorScheme.onSurfaceVariant;
+    final textColor = theme.colorScheme.onSurface;
+    final hintColor = theme.colorScheme.onSurfaceVariant.withValues(
+      alpha: 0.82,
+    );
+    final borderColor = theme.colorScheme.onSurfaceVariant.withValues(
+      alpha: 0.14,
+    );
+
     return Focus(
       focusNode: focusNode,
       child: Builder(
@@ -64,34 +77,47 @@ class InputField extends StatelessWidget {
             duration: const Duration(milliseconds: 180),
             decoration: BoxDecoration(
               color: background,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(18),
               boxShadow: isFocused
-                  ? [BoxShadow(color: primary.withOpacity(0.25), blurRadius: 8)]
+                  ? [
+                      BoxShadow(
+                        color: primary.withValues(alpha: 0.16),
+                        blurRadius: 14,
+                        offset: const Offset(0, 6),
+                      ),
+                    ]
                   : [],
-              border: isFocused
-                  ? Border.all(color: primary.withOpacity(0.4), width: 1)
-                  : null,
+              border: Border.all(
+                color: isFocused
+                    ? primary.withValues(alpha: 0.42)
+                    : borderColor,
+              ),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
             child: Row(
               children: [
-                Icon(icon, color: const Color(0xFF9AA6C5), size: 18),
-                const SizedBox(width: 10),
+                Icon(icon, color: iconColor, size: 18),
+                const SizedBox(width: 12),
                 Expanded(
                   child: TextField(
                     controller: controller,
                     obscureText: obscure,
-                    style: GoogleFonts.inter(
-                      color: const Color(0xFFDEE5FF),
-                      fontSize: 14.5,
-                    ),
+                    style: GoogleFonts.inter(color: textColor, fontSize: 14.5),
                     decoration: InputDecoration(
+                      isDense: true,
+                      filled: false,
                       hintText: hintText,
                       hintStyle: GoogleFonts.inter(
-                        color: const Color(0xFF66708A),
+                        color: hintColor,
                         fontSize: 14,
                       ),
                       border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      focusedErrorBorder: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                   ),
                 ),

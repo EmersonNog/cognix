@@ -101,7 +101,7 @@ class CognixSocialButton extends StatelessWidget {
                 height: 18,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: textColor.withOpacity(0.12),
+                  color: textColor.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
                 child: Text(

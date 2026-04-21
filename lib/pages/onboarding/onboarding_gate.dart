@@ -61,8 +61,8 @@ class _BootPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Color(0xFF060E20),
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SizedBox.expand(),
     );
   }

@@ -21,6 +21,8 @@ class AuthIntro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authTheme = AuthTheme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -30,14 +32,14 @@ class AuthIntro extends StatelessWidget {
             children: [
               Icon(
                 Icons.auto_awesome_rounded,
-                color: AuthTheme.primary,
+                color: authTheme.primary,
                 size: 16,
               ),
               const SizedBox(width: 6),
               Text(
                 'Cognix',
                 style: GoogleFonts.plusJakartaSans(
-                  color: AuthTheme.onSurfaceMuted,
+                  color: authTheme.onSurfaceMuted,
                   fontSize: 12.5,
                   letterSpacing: 1.2,
                   fontWeight: FontWeight.w600,
@@ -50,16 +52,17 @@ class AuthIntro extends StatelessWidget {
             alignment: Alignment.center,
             child: useGlassBadge
                 ? GlassBadge(
-                    child: Icon(icon, color: AuthTheme.primary, size: 20),
+                    backgroundColor: authTheme.glassBadgeBackground,
+                    child: Icon(icon, color: authTheme.primary, size: 20),
                   )
-                : Icon(icon, color: AuthTheme.primary, size: 20),
+                : Icon(icon, color: authTheme.primary, size: 20),
           ),
         const SizedBox(height: 20),
         Text(
           title,
           textAlign: TextAlign.center,
           style: GoogleFonts.manrope(
-            color: AuthTheme.onSurface,
+            color: authTheme.onSurface,
             fontSize: 26,
             fontWeight: FontWeight.w700,
             height: 1.2,
@@ -70,7 +73,7 @@ class AuthIntro extends StatelessWidget {
           subtitle,
           textAlign: TextAlign.center,
           style: GoogleFonts.inter(
-            color: AuthTheme.onSurfaceMuted,
+            color: authTheme.onSurfaceMuted,
             fontSize: 14.2,
             height: 1.5,
           ),

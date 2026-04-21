@@ -1,12 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
 import '../../utils/firebase_auth_errors.dart';
 import '../../utils/google_sign_in_errors.dart';
 import '../../widgets/cognix_widgets.dart';
+import 'auth_theme.dart';
 import 'helpers/auth_backend_bootstrap.dart';
 import 'helpers/auth_google_sign_in.dart';
-import 'auth_theme.dart';
+import 'helpers/email_validator.dart';
 import 'widgets/auth_inline_prompt.dart';
 import 'widgets/auth_intro.dart';
 import 'widgets/auth_shell.dart';
@@ -42,7 +44,7 @@ class _SignInState extends State<SignIn> {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
-    if (email.isEmpty || !email.contains('@')) {
+    if (!isValidEmail(email)) {
       _showMessage('Informe um e-mail válido.');
       return;
     }
@@ -103,6 +105,8 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
+    final authTheme = AuthTheme.of(context);
+
     return AuthShell(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -121,8 +125,8 @@ class _SignInState extends State<SignIn> {
             focusNode: _emailFocus,
             hintText: 'seu@email.com',
             icon: Icons.mail_outline_rounded,
-            background: AuthTheme.surfaceLow,
-            primary: AuthTheme.primary,
+            background: authTheme.surfaceLow,
+            primary: authTheme.primary,
           ),
           const SizedBox(height: 18),
           const FieldLabel(text: 'SENHA DE ACESSO', letterSpacing: 1.5),
@@ -132,8 +136,8 @@ class _SignInState extends State<SignIn> {
             focusNode: _passwordFocus,
             hintText: '********',
             icon: Icons.lock_outline_rounded,
-            background: AuthTheme.surfaceLow,
-            primary: AuthTheme.primary,
+            background: authTheme.surfaceLow,
+            primary: authTheme.primary,
             obscure: _obscurePassword,
             suffix: IconButton(
               onPressed: () {
@@ -143,7 +147,7 @@ class _SignInState extends State<SignIn> {
                 _obscurePassword
                     ? Icons.visibility_off_rounded
                     : Icons.visibility_rounded,
-                color: AuthTheme.onSurfaceMuted,
+                color: authTheme.onSurfaceMuted,
                 size: 20,
               ),
             ),
@@ -154,7 +158,7 @@ class _SignInState extends State<SignIn> {
             child: TextButton(
               onPressed: () => Navigator.of(context).pushNamed('forgot'),
               style: TextButton.styleFrom(
-                foregroundColor: AuthTheme.primary,
+                foregroundColor: authTheme.primary,
                 padding: EdgeInsets.zero,
                 minimumSize: const Size(0, 0),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -165,7 +169,7 @@ class _SignInState extends State<SignIn> {
           const SizedBox(height: 24),
           PrimaryButton(
             text: 'Entrar',
-            gradient: AuthTheme.primaryGradient,
+            gradient: authTheme.primaryGradient,
             onPressed: _isLoading ? null : _handleSignIn,
             isLoading: _isLoading,
           ),

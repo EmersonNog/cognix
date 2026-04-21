@@ -68,8 +68,7 @@ class OnboardingPageBody extends StatelessWidget {
                   final gridWidth = constraints.maxWidth > 420
                       ? 420.0
                       : constraints.maxWidth;
-                  final itemWidth =
-                      (gridWidth - layout.highlightsSpacing) / 2;
+                  final itemWidth = (gridWidth - layout.highlightsSpacing) / 2;
 
                   return Align(
                     alignment: Alignment.center,
@@ -133,7 +132,7 @@ class _HighlightChip extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
         softWrap: false,
         style: TextStyle(
-          color: Colors.white.withValues(alpha: 0.9),
+          color: accent.withValues(alpha: 0.96),
           fontSize: 13,
           fontWeight: FontWeight.w600,
         ),

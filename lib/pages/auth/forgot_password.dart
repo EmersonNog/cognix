@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import '../../utils/firebase_auth_errors.dart';
 import '../../widgets/cognix_widgets.dart';
 import 'auth_theme.dart';
+import 'helpers/email_validator.dart';
 import 'widgets/auth_intro.dart';
 import 'widgets/auth_shell.dart';
 import 'widgets/fields_label.dart';
@@ -29,7 +31,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   Future<void> _handleReset() async {
     final email = _emailController.text.trim();
-    if (email.isEmpty || !email.contains('@')) {
+    if (!isValidEmail(email)) {
       _showMessage('Informe um e-mail válido.');
       return;
     }
@@ -72,6 +74,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   @override
   Widget build(BuildContext context) {
+    final authTheme = AuthTheme.of(context);
+
     return AuthShell(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -90,13 +94,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             focusNode: _emailFocus,
             hintText: 'seu@email.com',
             icon: Icons.mail_outline_rounded,
-            background: AuthTheme.surfaceLow,
-            primary: AuthTheme.primary,
+            background: authTheme.surfaceLow,
+            primary: authTheme.primary,
           ),
           const SizedBox(height: 22),
           PrimaryButton(
             text: 'Enviar Instruções',
-            gradient: AuthTheme.primaryGradient,
+            gradient: authTheme.primaryGradient,
             onPressed: _isLoading ? null : _handleReset,
             isLoading: _isLoading,
           ),
@@ -105,7 +109,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             child: TextButton(
               onPressed: () => Navigator.of(context).pop(),
               style: TextButton.styleFrom(
-                foregroundColor: AuthTheme.primary,
+                foregroundColor: authTheme.primary,
                 padding: EdgeInsets.zero,
                 minimumSize: const Size(0, 0),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,

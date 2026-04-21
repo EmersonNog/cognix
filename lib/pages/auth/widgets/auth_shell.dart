@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../../theme/theme_mode_picker.dart';
 import '../auth_theme.dart';
 import 'decorations.dart';
 
@@ -11,9 +13,10 @@ class AuthShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     final cardWidth = media.size.width.clamp(0, 420).toDouble();
+    final authTheme = AuthTheme.of(context);
 
     return Scaffold(
-      backgroundColor: AuthTheme.surface,
+      backgroundColor: authTheme.surface,
       body: SafeArea(
         child: Stack(
           children: [
@@ -22,8 +25,8 @@ class AuthShell extends StatelessWidget {
               right: -90,
               child: GradientBlob(
                 size: 260,
-                colorA: AuthTheme.secondaryDim.withOpacity(0.35),
-                colorB: AuthTheme.primaryDim.withOpacity(0.15),
+                colorA: authTheme.secondaryDim.withValues(alpha: 0.22),
+                colorB: authTheme.primaryDim.withValues(alpha: 0.10),
               ),
             ),
             Positioned(
@@ -31,8 +34,16 @@ class AuthShell extends StatelessWidget {
               left: -110,
               child: GradientBlob(
                 size: 320,
-                colorA: AuthTheme.primaryDim.withOpacity(0.22),
-                colorB: AuthTheme.secondaryDim.withOpacity(0.12),
+                colorA: authTheme.primaryDim.withValues(alpha: 0.18),
+                colorB: authTheme.secondaryDim.withValues(alpha: 0.10),
+              ),
+            ),
+            Positioned(
+              top: 12,
+              right: 16,
+              child: ThemeModeQuickButton(
+                backgroundColor: authTheme.surfaceHighest,
+                iconColor: authTheme.onSurfaceMuted,
               ),
             ),
             Center(
@@ -49,15 +60,18 @@ class AuthShell extends StatelessWidget {
                       vertical: 28,
                     ),
                     decoration: BoxDecoration(
-                      color: AuthTheme.surfaceContainer,
+                      color: authTheme.surfaceContainer,
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: AuthTheme.onSurface.withOpacity(0.06),
+                          color: authTheme.cardShadow,
                           blurRadius: 32,
                           offset: const Offset(0, 16),
                         ),
                       ],
+                      border: Border.all(
+                        color: authTheme.onSurfaceMuted.withValues(alpha: 0.10),
+                      ),
                     ),
                     child: child,
                   ),
