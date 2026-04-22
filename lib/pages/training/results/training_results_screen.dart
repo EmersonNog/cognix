@@ -5,8 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../services/questions/questions_api.dart';
 import '../../../theme/cognix_theme_colors.dart';
+import '../session/data/training_session_storage.dart';
 import '../session/training_session_screen.dart';
-import '../session/training_session_storage.dart';
 import 'utils/training_results_utils.dart';
 import 'widgets/training_results_action_buttons.dart';
 import 'widgets/training_results_metric_card.dart';

@@ -15,7 +15,7 @@ import 'home_tab.dart';
 import 'widgets/shell/home_shell_widgets.dart';
 import '../performance/performance_screen.dart';
 import '../profile/profile.dart';
-import '../training/training_tab.dart';
+import '../training/tab/training_tab.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});

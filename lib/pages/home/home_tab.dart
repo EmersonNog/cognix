@@ -6,7 +6,6 @@ import 'widgets/daily_rhythm/home_daily_rhythm_card.dart';
 import 'widgets/recommendations/home_recommendations_section.dart';
 import 'widgets/recent_performance/home_recent_performance_card.dart';
 import 'widgets/streak/home_master_streak_card.dart';
-import 'widgets/writing/home_writing_card.dart';
 
 class HomeTab extends StatelessWidget {
   const HomeTab({

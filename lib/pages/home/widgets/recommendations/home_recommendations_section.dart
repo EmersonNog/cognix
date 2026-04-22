@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../services/recommendations/home_recommendations_api.dart';
 import '../../../../theme/cognix_theme_colors.dart';
 import '../../../subjects/subjects_data.dart';
-import '../../../training/training_detail_screen.dart';
+import '../../../training/detail/training_detail_screen.dart';
 part 'home_recommendations_section_actions.dart';
 part 'home_recommendations_section_cards.dart';
 

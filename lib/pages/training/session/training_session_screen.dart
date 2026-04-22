@@ -8,18 +8,18 @@ import '../../../services/questions/questions_api.dart';
 import '../../../theme/cognix_theme_colors.dart';
 import '../../../widgets/cognix/cognix_messages.dart';
 import '../results/training_results_screen.dart';
-import 'training_session_body.dart';
-import 'training_session_feedback.dart';
-import 'training_session_models.dart';
-import 'training_session_question_loader.dart';
-import 'training_question_report_dialog.dart';
-import 'training_session_state_codec.dart';
-import 'training_session_storage.dart';
+import 'data/training_session_question_loader.dart';
+import 'data/training_session_state_codec.dart';
+import 'data/training_session_storage.dart';
+import 'dialogs/training_question_report_dialog.dart';
+import 'models/training_session_models.dart';
+import 'widgets/training_session_body.dart';
+import 'widgets/training_session_feedback.dart';
 
-part 'training_session_screen_loading.dart';
-part 'training_session_screen_persistence.dart';
-part 'training_session_screen_progression.dart';
-part 'training_session_screen_timer.dart';
+part 'state/training_session_screen_loading.dart';
+part 'state/training_session_screen_persistence.dart';
+part 'state/training_session_screen_progression.dart';
+part 'state/training_session_screen_timer.dart';
 
 class TrainingSessionScreen extends StatefulWidget {
   const TrainingSessionScreen({

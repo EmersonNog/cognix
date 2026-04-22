@@ -1,4 +1,4 @@
-import 'package:cognix/pages/training/session/training_session_state_codec.dart';
+import 'package:cognix/pages/training/session/data/training_session_state_codec.dart';
 import 'package:cognix/services/questions/models.dart';
 import 'package:cognix/services/questions/parsers.dart';
 import 'package:flutter_test/flutter_test.dart';

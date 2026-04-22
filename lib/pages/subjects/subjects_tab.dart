@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../services/questions/questions_api.dart';
 import '../../services/summaries/summaries_api.dart';
-import '../training/training_detail_screen.dart';
+import '../training/detail/training_detail_screen.dart';
 import 'subjects_data.dart';
 import 'widgets/subject_card.dart';
 import 'widgets/subject_category_header.dart';

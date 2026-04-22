@@ -9,10 +9,12 @@ import 'firebase_options.dart';
 import 'navigation/app_route_observer.dart';
 import 'pages/onboarding/onboarding_gate.dart';
 import 'routes.dart';
+import 'services/media/image_picker_recovery.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await ImagePickerRecovery.instance.retrieveLostData();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   );

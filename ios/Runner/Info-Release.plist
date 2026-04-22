@@ -45,6 +45,8 @@
 		<true/>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>O Cognix precisa acessar sua galeria para adicionar imagens.</string>
 		<key>GIDClientID</key>
 		<string>40435673368-3ll3e357fec0bmbp1fvjjibjuftojr1q.apps.googleusercontent.com</string>
 		<key>CFBundleURLTypes</key>
