@@ -19,19 +19,22 @@ class TrainingFlashcardSwipeFeedbackBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLightMode = Theme.of(context).brightness == Brightness.light;
     final circle = Container(
       key: focusKey,
       width: 54,
       height: 54,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: color.withValues(alpha: 0.12),
-        border: Border.all(color: color.withValues(alpha: 0.34)),
+        color: color.withValues(alpha: isLightMode ? 0.18 : 0.12),
+        border: Border.all(
+          color: color.withValues(alpha: isLightMode ? 0.42 : 0.34),
+        ),
         boxShadow: [
           BoxShadow(
-            color: color.withValues(alpha: 0.18),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
+            color: color.withValues(alpha: isLightMode ? 0.12 : 0.18),
+            blurRadius: isLightMode ? 14 : 18,
+            offset: Offset(0, isLightMode ? 6 : 8),
           ),
         ],
       ),
@@ -40,9 +43,11 @@ class TrainingFlashcardSwipeFeedbackBackground extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.14),
+        color: color.withValues(alpha: isLightMode ? 0.18 : 0.14),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: color.withValues(alpha: 0.28)),
+        border: Border.all(
+          color: color.withValues(alpha: isLightMode ? 0.34 : 0.28),
+        ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 18),
       alignment: alignment,

@@ -23,12 +23,15 @@ class ProfileDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.cognixColors;
+    final pageBackgroundColor = colors.surface;
     return Scaffold(
-      backgroundColor: colors.surface,
+      backgroundColor: pageBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: pageBackgroundColor,
+        surfaceTintColor: pageBackgroundColor,
         foregroundColor: onSurface,
         elevation: 0,
+        scrolledUnderElevation: 0,
         title: const Text('Painel pessoal'),
       ),
       body: SingleChildScrollView(

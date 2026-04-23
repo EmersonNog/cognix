@@ -129,12 +129,16 @@ class _PerformanceScreenFrame extends StatelessWidget {
       return content;
     }
 
+    final pageBackgroundColor = surface;
+
     return Scaffold(
-      backgroundColor: surface,
+      backgroundColor: pageBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: pageBackgroundColor,
+        surfaceTintColor: pageBackgroundColor,
         foregroundColor: onSurface,
         elevation: 0,
+        scrolledUnderElevation: 0,
         title: const Text('Painel de desempenho'),
       ),
       body: content,
@@ -290,7 +294,12 @@ class _PerformanceErrorState extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: colors.surface,
-      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
+      appBar: AppBar(
+        backgroundColor: colors.surface,
+        surfaceTintColor: colors.surface,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+      ),
       body: child,
     );
   }

@@ -46,12 +46,15 @@ class _TrainingSummaryScreenState extends State<TrainingSummaryScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = context.cognixColors;
+    final pageBackgroundColor = colors.surface;
 
     return Scaffold(
-      backgroundColor: colors.surface,
+      backgroundColor: pageBackgroundColor,
       appBar: AppBar(
-        backgroundColor: widget.surfaceContainerHigh,
+        backgroundColor: pageBackgroundColor,
+        surfaceTintColor: pageBackgroundColor,
         elevation: 0,
+        scrolledUnderElevation: 0,
         iconTheme: IconThemeData(color: widget.onSurface),
         title: Text(
           'Mapa mental - ${widget.title}',

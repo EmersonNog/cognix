@@ -24,8 +24,10 @@ class SubjectsAreaScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pageBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: pageBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Exercícios',
@@ -34,8 +36,10 @@ class SubjectsAreaScreen extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        backgroundColor: surfaceContainerHigh,
+        backgroundColor: pageBackgroundColor,
+        surfaceTintColor: pageBackgroundColor,
         elevation: 0,
+        scrolledUnderElevation: 0,
         leading: BackButton(color: onSurface),
       ),
       body: Padding(

@@ -9,8 +9,10 @@ Widget _buildAccountSecurityLayout(_AccountSecurityScreenState state) {
     backgroundColor: AccountSecurityPalette.surface,
     appBar: AppBar(
       backgroundColor: AccountSecurityPalette.surface,
+      surfaceTintColor: AccountSecurityPalette.surface,
       foregroundColor: AccountSecurityPalette.onSurface,
       elevation: 0,
+      scrolledUnderElevation: 0,
       title: const Text('Segurança da conta'),
     ),
     body: SingleChildScrollView(

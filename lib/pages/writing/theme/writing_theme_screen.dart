@@ -5,13 +5,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../services/writing/writing_api.dart';
 import '../../../theme/cognix_theme_colors.dart';
-import '../../../widgets/cognix/cognix_page_layout.dart';
 import '../models/writing_route_args.dart';
 
 part 'category_filter.dart';
 part 'entrance_section.dart';
 part 'featured_cards.dart';
-part 'glow.dart';
 part 'search_toolbar.dart';
 part 'state_cards.dart';
 part 'theme_list_widgets.dart';
@@ -137,112 +135,114 @@ class _WritingThemeScreenState extends State<WritingThemeScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = context.cognixColors;
+    final pageBackgroundColor = colors.surface;
 
     return Scaffold(
-      backgroundColor: colors.surface,
-      body: CognixPageLayout(
-        title: 'Redação Cognix',
-        backgroundColor: colors.surface,
-        topBarColor: colors.surfaceContainerHigh,
-        titleColor: colors.onSurface,
-        leadingIcon: Icons.edit_note_rounded,
-        leadingColor: colors.accent,
-        trailing: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.close_rounded),
-          color: colors.onSurfaceMuted,
+      backgroundColor: pageBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: pageBackgroundColor,
+        surfaceTintColor: pageBackgroundColor,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        leading: BackButton(color: colors.onSurface),
+        title: Text(
+          'Redação Cognix',
+          style: GoogleFonts.manrope(
+            color: colors.onSurface,
+            fontWeight: FontWeight.w700,
+          ),
         ),
-        backgroundLayers: [
-          _Glow(top: -80, right: -50, color: colors.accent),
-          _Glow(top: 220, left: -80, color: colors.primary),
-        ],
-        child: FutureBuilder<void>(
-          future: _themesFuture,
-          builder: (context, snapshot) {
-            final isLoading =
-                snapshot.connectionState == ConnectionState.waiting &&
-                _items.isEmpty;
+      ),
+      body: Stack(
+        children: [
+          FutureBuilder<void>(
+            future: _themesFuture,
+            builder: (context, snapshot) {
+              final isLoading =
+                  snapshot.connectionState == ConnectionState.waiting &&
+                  _items.isEmpty;
 
-            return ListView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
-              children: [
-                _EntranceSection(
-                  delay: 0,
-                  child: _SearchToolbar(
-                    searchController: _searchController,
-                    onSearchChanged: _updateSearch,
-                    categories: _categories,
-                    selectedCategory: _selectedCategory,
-                    onCategorySelected: _selectCategory,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                if (isLoading)
-                  const _LoadingCard()
-                else if (snapshot.hasError && _items.isEmpty)
-                  const _InfoCard(
-                    title: 'Não consegui carregar os temas agora',
-                    subtitle:
-                        'Confira sua conexão e tente novamente em instantes.',
-                    icon: Icons.cloud_off_rounded,
-                  )
-                else if (_items.isEmpty)
-                  const _InfoCard(
-                    title: 'Nenhum tema disponível',
-                    subtitle:
-                        'Ainda não há temas de redação cadastrados no momento.',
-                    icon: Icons.edit_note_rounded,
-                  )
-                else ...[
+              return ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 120),
+                children: [
                   _EntranceSection(
-                    delay: 140,
-                    child: _MonthlyThemeCard(
-                      theme: _monthlyTheme,
-                      onOpenTheme: _openTheme,
+                    delay: 0,
+                    child: _SearchToolbar(
+                      searchController: _searchController,
+                      onSearchChanged: _updateSearch,
+                      categories: _categories,
+                      selectedCategory: _selectedCategory,
+                      onCategorySelected: _selectCategory,
                     ),
                   ),
                   const SizedBox(height: 16),
-                  _EntranceSection(
-                    delay: 160,
-                    child: _HistoryShortcutCard(
-                      onTap: () =>
-                          Navigator.of(context).pushNamed('writing-history'),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _EntranceSection(
-                    delay: 180,
-                    child: _ResultHeader(
-                      visibleCount: _items.length,
-                      totalCount: _total,
-                      hasActiveSearch: _searchQuery.isNotEmpty,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  for (var index = 0; index < _items.length; index++) ...[
+                  if (isLoading)
+                    const _LoadingCard()
+                  else if (snapshot.hasError && _items.isEmpty)
+                    const _InfoCard(
+                      title: 'Não consegui carregar os temas agora',
+                      subtitle:
+                          'Confira sua conexão e tente novamente em instantes.',
+                      icon: Icons.cloud_off_rounded,
+                    )
+                  else if (_items.isEmpty)
+                    const _InfoCard(
+                      title: 'Nenhum tema disponível',
+                      subtitle:
+                          'Ainda não há temas de redação cadastrados no momento.',
+                      icon: Icons.edit_note_rounded,
+                    )
+                  else ...[
                     _EntranceSection(
-                      delay: 220 + (index * 22),
-                      child: _ThemeCard(
-                        theme: _items[index],
-                        onTap: () => _openTheme(_items[index]),
+                      delay: 140,
+                      child: _MonthlyThemeCard(
+                        theme: _monthlyTheme,
+                        onOpenTheme: _openTheme,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _EntranceSection(
+                      delay: 160,
+                      child: _HistoryShortcutCard(
+                        onTap: () =>
+                            Navigator.of(context).pushNamed('writing-history'),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _EntranceSection(
+                      delay: 180,
+                      child: _ResultHeader(
+                        visibleCount: _items.length,
+                        totalCount: _total,
+                        hasActiveSearch: _searchQuery.isNotEmpty,
                       ),
                     ),
                     const SizedBox(height: 12),
-                  ],
-                  if (_hasMore) ...[
-                    const SizedBox(height: 4),
-                    _LoadMoreButton(
-                      remainingCount: _total - _items.length,
-                      isLoading: _isLoadingMore,
-                      onTap: _loadMore,
-                    ),
+                    for (var index = 0; index < _items.length; index++) ...[
+                      _EntranceSection(
+                        delay: 220 + (index * 22),
+                        child: _ThemeCard(
+                          theme: _items[index],
+                          onTap: () => _openTheme(_items[index]),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+                    if (_hasMore) ...[
+                      const SizedBox(height: 4),
+                      _LoadMoreButton(
+                        remainingCount: _total - _items.length,
+                        isLoading: _isLoadingMore,
+                        onTap: _loadMore,
+                      ),
+                    ],
                   ],
                 ],
-              ],
-            );
-          },
-        ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

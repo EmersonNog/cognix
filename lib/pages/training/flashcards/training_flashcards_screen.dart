@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../services/flashcards/flashcards_api.dart';
 import '../../../services/local/flashcards_tutorial_storage.dart';
 import '../../../services/media/image_picker_recovery.dart';
+import '../../../widgets/cognix/cognix_messages.dart';
 import 'training_flashcard_deck_screen.dart';
 import 'training_flashcards_models.dart';
 import 'widgets/home/training_flashcards_create_action_card.dart';
@@ -120,9 +121,11 @@ class _TrainingFlashcardsScreenState extends State<TrainingFlashcardsScreen> {
     } catch (error) {
       if (!mounted) return;
       setState(() => _isLoading = false);
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(error.toString())));
+      showCognixMessage(
+        context,
+        error.toString(),
+        type: CognixMessageType.error,
+      );
     }
   }
 
@@ -180,9 +183,11 @@ class _TrainingFlashcardsScreenState extends State<TrainingFlashcardsScreen> {
       });
     } catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(error.toString())));
+      showCognixMessage(
+        context,
+        error.toString(),
+        type: CognixMessageType.error,
+      );
     }
   }
 
@@ -262,12 +267,15 @@ class _TrainingFlashcardsScreenState extends State<TrainingFlashcardsScreen> {
   @override
   Widget build(BuildContext context) {
     final deckEntries = _buildDeckEntries();
+    final pageBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: pageBackgroundColor,
       appBar: AppBar(
-        backgroundColor: widget.surfaceContainerHigh,
+        backgroundColor: pageBackgroundColor,
+        surfaceTintColor: pageBackgroundColor,
         elevation: 0,
+        scrolledUnderElevation: 0,
         leading: BackButton(color: widget.onSurface),
         title: Text(
           'Flashcards',
@@ -373,7 +381,6 @@ class _TrainingFlashcardsScreenState extends State<TrainingFlashcardsScreen> {
                         surfaceContainerHigh: widget.surfaceContainerHigh,
                       ),
                       confirmDismiss: (_) async {
-                        final messenger = ScaffoldMessenger.of(context);
                         final confirmed =
                             await showDialog<bool>(
                               context: context,
@@ -409,11 +416,11 @@ class _TrainingFlashcardsScreenState extends State<TrainingFlashcardsScreen> {
                           return true;
                         } catch (error) {
                           if (!mounted) return false;
-                          messenger
-                            ..hideCurrentSnackBar()
-                            ..showSnackBar(
-                              SnackBar(content: Text(error.toString())),
-                            );
+                          showCognixMessage(
+                            this.context,
+                            error.toString(),
+                            type: CognixMessageType.error,
+                          );
                           return false;
                         }
                       },
@@ -421,17 +428,13 @@ class _TrainingFlashcardsScreenState extends State<TrainingFlashcardsScreen> {
                         final deckSubject = entry.key;
                         final removedCount = entry.value.length;
                         _deleteDeck(deckSubject);
-                        ScaffoldMessenger.of(context)
-                          ..hideCurrentSnackBar()
-                          ..showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                removedCount == 1
-                                    ? '1 flashcard de $deckSubject removido.'
-                                    : '$removedCount flashcards de $deckSubject removidos.',
-                              ),
-                            ),
-                          );
+                        showCognixMessage(
+                          context,
+                          removedCount == 1
+                              ? '1 flashcard de $deckSubject removido.'
+                              : '$removedCount flashcards de $deckSubject removidos.',
+                          type: CognixMessageType.success,
+                        );
                       },
                       child: TrainingFlashcardsDeckTile(
                         subject: entry.key,

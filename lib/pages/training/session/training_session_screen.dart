@@ -108,6 +108,7 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
   @override
   Widget build(BuildContext context) {
     final colors = context.cognixColors;
+    final pageBackgroundColor = colors.surface;
 
     if (_restoredNoticeShown) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -131,10 +132,12 @@ class _TrainingSessionScreenState extends State<TrainingSessionScreen>
         navigator.pop();
       },
       child: Scaffold(
-        backgroundColor: colors.surface,
+        backgroundColor: pageBackgroundColor,
         appBar: AppBar(
-          backgroundColor: widget.surfaceContainerHigh,
+          backgroundColor: pageBackgroundColor,
+          surfaceTintColor: pageBackgroundColor,
           elevation: 0,
+          scrolledUnderElevation: 0,
           iconTheme: IconThemeData(color: widget.onSurface),
           leading: BackButton(
             color: widget.onSurface,

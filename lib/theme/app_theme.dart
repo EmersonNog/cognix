@@ -77,6 +77,8 @@ class AppTheme {
       appBarTheme: AppBarTheme(
         elevation: 0,
         backgroundColor: colors.surface,
+        surfaceTintColor: colors.surface,
+        scrolledUnderElevation: 0,
         foregroundColor: colors.onSurface,
         titleTextStyle: GoogleFonts.manrope(
           color: colors.onSurface,

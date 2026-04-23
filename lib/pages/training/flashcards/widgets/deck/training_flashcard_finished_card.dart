@@ -25,6 +25,7 @@ class TrainingFlashcardFinishedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLightMode = Theme.of(context).brightness == Brightness.light;
     final totalAnswers = correctCount + wrongCount;
     final accuracy = totalAnswers == 0
         ? 0
@@ -39,18 +40,26 @@ class TrainingFlashcardFinishedCard extends StatelessWidget {
         border: Border.all(color: surfaceContainerHigh.withValues(alpha: 0.86)),
         gradient: LinearGradient(
           colors: [
-            Color.alphaBlend(primary.withValues(alpha: 0.08), surfaceContainer),
+            Color.alphaBlend(
+              primary.withValues(alpha: isLightMode ? 0.05 : 0.08),
+              surfaceContainer,
+            ),
             surfaceContainer,
-            Color.alphaBlend(primary.withValues(alpha: 0.04), surfaceContainer),
+            Color.alphaBlend(
+              primary.withValues(alpha: isLightMode ? 0.02 : 0.04),
+              surfaceContainer,
+            ),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.14),
-            blurRadius: 22,
-            offset: const Offset(0, 14),
+            color: isLightMode
+                ? primary.withValues(alpha: 0.08)
+                : Colors.black.withValues(alpha: 0.14),
+            blurRadius: isLightMode ? 16 : 22,
+            offset: Offset(0, isLightMode ? 8 : 14),
           ),
         ],
       ),
@@ -62,11 +71,15 @@ class TrainingFlashcardFinishedCard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
             decoration: BoxDecoration(
               color: Color.alphaBlend(
-                primary.withValues(alpha: 0.10),
+                primary.withValues(alpha: isLightMode ? 0.06 : 0.10),
                 surfaceContainer,
               ),
               borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+              border: Border.all(
+                color: isLightMode
+                    ? primary.withValues(alpha: 0.08)
+                    : Colors.white.withValues(alpha: 0.05),
+              ),
             ),
             child: Column(
               children: [
@@ -140,6 +153,7 @@ class TrainingFlashcardFinishedCard extends StatelessWidget {
                   accent: const Color(0xFF44D38A),
                   onSurface: onSurface,
                   onSurfaceMuted: onSurfaceMuted,
+                  primary: primary,
                 ),
               ),
               const SizedBox(width: 12),
@@ -150,6 +164,7 @@ class TrainingFlashcardFinishedCard extends StatelessWidget {
                   accent: const Color(0xFFFF7B7B),
                   onSurface: onSurface,
                   onSurfaceMuted: onSurfaceMuted,
+                  primary: primary,
                 ),
               ),
               const SizedBox(width: 12),
@@ -160,6 +175,7 @@ class TrainingFlashcardFinishedCard extends StatelessWidget {
                   accent: primary,
                   onSurface: onSurface,
                   onSurfaceMuted: onSurfaceMuted,
+                  primary: primary,
                 ),
               ),
             ],
@@ -209,6 +225,7 @@ class _FinishedStatCard extends StatefulWidget {
     required this.accent,
     required this.onSurface,
     required this.onSurfaceMuted,
+    required this.primary,
   });
 
   final String label;
@@ -216,6 +233,7 @@ class _FinishedStatCard extends StatefulWidget {
   final Color accent;
   final Color onSurface;
   final Color onSurfaceMuted;
+  final Color primary;
 
   @override
   State<_FinishedStatCard> createState() => _FinishedStatCardState();
@@ -244,12 +262,22 @@ class _FinishedStatCardState extends State<_FinishedStatCard>
 
   @override
   Widget build(BuildContext context) {
+    final isLightMode = Theme.of(context).brightness == Brightness.light;
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 13),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.035),
+        color: isLightMode
+            ? Color.alphaBlend(
+                widget.primary.withValues(alpha: 0.05),
+                Colors.white,
+              )
+            : Colors.white.withValues(alpha: 0.035),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(
+          color: isLightMode
+              ? widget.accent.withValues(alpha: 0.12)
+              : Colors.white.withValues(alpha: 0.05),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -206,8 +206,10 @@ class _TrainingDetailScreenState extends State<TrainingDetailScreen>
 
   @override
   Widget build(BuildContext context) {
+    final pageBackgroundColor = context.cognixColors.surface;
+
     return Scaffold(
-      backgroundColor: context.cognixColors.surface,
+      backgroundColor: pageBackgroundColor,
       appBar: AppBar(
         title: Text(
           widget.title,
@@ -216,8 +218,10 @@ class _TrainingDetailScreenState extends State<TrainingDetailScreen>
             fontWeight: FontWeight.w700,
           ),
         ),
-        backgroundColor: widget.surfaceContainerHigh,
+        backgroundColor: pageBackgroundColor,
+        surfaceTintColor: pageBackgroundColor,
         elevation: 0,
+        scrolledUnderElevation: 0,
         leading: BackButton(color: widget.onSurface),
       ),
       body: SingleChildScrollView(

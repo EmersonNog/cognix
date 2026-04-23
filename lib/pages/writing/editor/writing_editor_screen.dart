@@ -197,8 +197,10 @@ class _WritingEditorScreenState extends State<WritingEditorScreen> {
       backgroundColor: colors.surface,
       appBar: AppBar(
         backgroundColor: colors.surface,
+        surfaceTintColor: colors.surface,
         foregroundColor: colors.onSurface,
         elevation: 0,
+        scrolledUnderElevation: 0,
         titleSpacing: 0,
         title: Text(
           'Treino de redação',

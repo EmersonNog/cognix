@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../services/profile/profile_api.dart';
 import '../../theme/cognix_theme_colors.dart';
+import '../../widgets/cognix/cognix_messages.dart';
 import '../performance/performance_screen.dart';
 import 'widgets/support_app_info_dialog.dart';
 
@@ -53,13 +54,10 @@ class SupportScreen extends StatelessWidget {
         return;
       }
       Navigator.of(context, rootNavigator: true).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text(
-            'Não foi possível abrir a análise agora. Tente novamente.',
-          ),
-          backgroundColor: palette.surfaceContainerHigh,
-        ),
+      showCognixMessage(
+        context,
+        'Não foi possível abrir a análise agora. Tente novamente.',
+        type: CognixMessageType.error,
       );
     }
   }
@@ -72,8 +70,10 @@ class SupportScreen extends StatelessWidget {
       backgroundColor: palette.surface,
       appBar: AppBar(
         backgroundColor: palette.surface,
+        surfaceTintColor: palette.surface,
         foregroundColor: palette.onSurface,
         elevation: 0,
+        scrolledUnderElevation: 0,
         title: const Text('Suporte e Ajuda'),
       ),
       body: SingleChildScrollView(

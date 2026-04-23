@@ -60,14 +60,18 @@ class _TrainingAreasScreenState extends State<TrainingAreasScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final pageBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: pageBackgroundColor,
       appBar: AppBar(
-        backgroundColor: widget.surfaceContainerHigh,
+        backgroundColor: pageBackgroundColor,
+        surfaceTintColor: pageBackgroundColor,
         elevation: 0,
+        scrolledUnderElevation: 0,
         leading: BackButton(color: widget.onSurface),
         title: Text(
-          'QUESTÕES POR ÁREA',
+          'Questões',
           style: GoogleFonts.manrope(
             color: widget.onSurface,
             fontWeight: FontWeight.w700,

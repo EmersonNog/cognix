@@ -6,6 +6,7 @@ import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import '../../../services/flashcards/flashcards_api.dart';
 import '../../../services/local/flashcards_tutorial_storage.dart';
+import '../../../widgets/cognix/cognix_messages.dart';
 import 'training_flashcards_models.dart';
 import 'widgets/deck/training_flashcard_deck_progress_header.dart';
 import 'widgets/deck/training_flashcard_finished_card.dart';
@@ -107,9 +108,11 @@ class _TrainingFlashcardDeckScreenState
       );
     } catch (error) {
       if (!mounted || silent) return;
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(error.toString())));
+      showCognixMessage(
+        context,
+        error.toString(),
+        type: CognixMessageType.error,
+      );
     }
   }
 
@@ -268,6 +271,14 @@ class _TrainingFlashcardDeckScreenState
 
   @override
   Widget build(BuildContext context) {
+    final isLightMode = Theme.of(context).brightness == Brightness.light;
+    final screenBackgroundColor = isLightMode
+        ? Color.alphaBlend(
+            widget.primary.withValues(alpha: 0.05),
+            Theme.of(context).scaffoldBackgroundColor,
+          )
+        : Theme.of(context).scaffoldBackgroundColor;
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -275,10 +286,12 @@ class _TrainingFlashcardDeckScreenState
         _closeDeck();
       },
       child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: screenBackgroundColor,
         appBar: AppBar(
-          backgroundColor: widget.surfaceContainerHigh,
+          backgroundColor: screenBackgroundColor,
+          surfaceTintColor: screenBackgroundColor,
           elevation: 0,
+          scrolledUnderElevation: 0,
           leading: IconButton(
             onPressed: _closeDeck,
             icon: Icon(Icons.arrow_back, color: widget.onSurface),

@@ -21,11 +21,15 @@ class TrainingMultiplayerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pageBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: pageBackgroundColor,
       appBar: AppBar(
-        backgroundColor: surfaceContainerHigh,
+        backgroundColor: pageBackgroundColor,
+        surfaceTintColor: pageBackgroundColor,
         elevation: 0,
+        scrolledUnderElevation: 0,
         leading: BackButton(color: onSurface),
         title: Text(
           'Multiplayer',

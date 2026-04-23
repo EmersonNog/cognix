@@ -25,8 +25,10 @@ class WritingResultScreen extends StatelessWidget {
       backgroundColor: colors.surface,
       appBar: AppBar(
         backgroundColor: colors.surface,
+        surfaceTintColor: colors.surface,
         foregroundColor: colors.onSurface,
         elevation: 0,
+        scrolledUnderElevation: 0,
         title: Text(
           'Diagnóstico',
           style: GoogleFonts.manrope(fontWeight: FontWeight.w900),
