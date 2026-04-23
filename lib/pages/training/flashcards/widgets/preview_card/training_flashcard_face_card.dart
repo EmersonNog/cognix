@@ -31,6 +31,7 @@ class TrainingFlashcardFaceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isLightMode = Theme.of(context).brightness == Brightness.light;
     final hasImage = imagePath.isNotEmpty;
+    final borderRadius = BorderRadius.circular(24);
     final flipHint = title == 'Frente'
         ? 'Clique para ver a resposta'
         : 'Clique para ver a pergunta';
@@ -38,39 +39,9 @@ class TrainingFlashcardFaceCard extends StatelessWidget {
     final cardBorderColor = isLightMode
         ? Colors.transparent
         : surfaceContainerHigh.withValues(alpha: 0.76);
-    final cardGradient = isLightMode
-        ? null
-        : LinearGradient(
-            colors: [
-              Color.alphaBlend(
-                primary.withValues(alpha: 0.08),
-                cardBackgroundColor,
-              ),
-              Color.alphaBlend(
-                primary.withValues(alpha: 0.03),
-                cardBackgroundColor,
-              ),
-              cardBackgroundColor,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          );
-    final cardShadowColor = isLightMode
-        ? Colors.black.withValues(alpha: 0.05)
-        : Colors.black.withValues(alpha: 0.10);
     final chipBackgroundColor = primary.withValues(
       alpha: isLightMode ? 0.13 : 0.12,
     );
-    final overlayGradient = isLightMode
-        ? null
-        : LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.white.withValues(alpha: 0.05),
-              Colors.transparent,
-            ],
-          );
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -78,36 +49,17 @@ class TrainingFlashcardFaceCard extends StatelessWidget {
             ? 500.0
             : constraints.maxHeight;
 
-        return Container(
-          height: cardHeight,
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            color: cardBackgroundColor,
-            borderRadius: BorderRadius.circular(24),
-            border: cardBorderColor == Colors.transparent
-                ? null
-                : Border.all(color: cardBorderColor),
-            gradient: cardGradient,
-            boxShadow: [
-              BoxShadow(
-                color: cardShadowColor,
-                blurRadius: isLightMode ? 24 : 18,
-                spreadRadius: 0,
-                offset: Offset(0, isLightMode ? 10 : 10),
-              ),
-              if (isLightMode)
-                BoxShadow(
-                  color: Colors.white.withValues(alpha: 0.8),
-                  blurRadius: 8,
-                  spreadRadius: -2,
-                  offset: const Offset(0, 1),
-                ),
-            ],
-          ),
-          child: DecoratedBox(
+        return ClipRRect(
+          borderRadius: borderRadius,
+          child: Container(
+            height: cardHeight,
+            padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              gradient: overlayGradient,
+              color: cardBackgroundColor,
+              borderRadius: borderRadius,
+              border: cardBorderColor == Colors.transparent
+                  ? null
+                  : Border.all(color: cardBorderColor),
             ),
             child: Stack(
               children: [
