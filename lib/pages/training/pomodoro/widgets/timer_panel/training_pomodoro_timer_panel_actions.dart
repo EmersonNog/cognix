@@ -25,7 +25,7 @@ class _TrainingPomodoroActionRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 316),
+        constraints: const BoxConstraints(maxWidth: 292),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -46,7 +46,7 @@ class _TrainingPomodoroActionRow extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   textStyle: GoogleFonts.manrope(
-                    fontSize: 15,
+                    fontSize: 20,
                     fontWeight: FontWeight.w800,
                   ),
                 ),

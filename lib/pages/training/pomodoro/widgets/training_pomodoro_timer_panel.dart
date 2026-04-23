@@ -76,7 +76,9 @@ class TrainingPomodoroTimerPanel extends StatelessWidget {
         : phaseAccent;
     final primaryActionForegroundColor = isRunning
         ? phaseAccent
-        : _foregroundColorFor(phaseAccent);
+        : (isFocusPhase || isLightMode
+              ? Colors.white
+              : const Color(0xFF091328));
     final resetBorderColor = surfaceContainerHigh;
     final resetIconColor = onSurfaceMuted;
 
@@ -125,9 +127,4 @@ class TrainingPomodoroTimerPanel extends StatelessWidget {
       ],
     );
   }
-}
-
-Color _foregroundColorFor(Color backgroundColor) {
-  final brightness = ThemeData.estimateBrightnessForColor(backgroundColor);
-  return brightness == Brightness.dark ? Colors.white : const Color(0xFF091328);
 }

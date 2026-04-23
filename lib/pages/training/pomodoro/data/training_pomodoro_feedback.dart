@@ -3,9 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:vibration/vibration.dart';
 
 const _trainingPomodoroFocusCompletionToneAsset =
-    'audio/pomodoro_focus_complete.wav';
+    'audio/pomodoro/pomodoro_focus_complete.wav';
 const _trainingPomodoroPauseCompletionToneAsset =
-    'audio/pomodoro_pause_complete.wav';
+    'audio/pomodoro/pomodoro_pause_complete.wav';
 const _trainingPomodoroCompletionVibrationDurationMs = 700;
 const _trainingPomodoroCompletionVibrationGapMs = 220;
 

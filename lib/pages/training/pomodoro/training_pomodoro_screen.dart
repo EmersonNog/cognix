@@ -9,11 +9,16 @@ import 'data/training_pomodoro_runtime.dart';
 import 'data/training_pomodoro_storage.dart';
 import 'models/training_pomodoro_models.dart';
 import 'training_pomodoro_overlay_controller.dart';
+import 'widgets/ambient_panel/training_pomodoro_ambient_track.dart';
+import 'widgets/training_pomodoro_ambient_panel.dart';
 import 'widgets/training_pomodoro_timer_panel.dart';
 
 part 'state/training_pomodoro_screen_interactions.dart';
+part 'state/training_pomodoro_screen_ambient.dart';
+part 'state/training_pomodoro_screen_lifecycle.dart';
 part 'state/training_pomodoro_screen_persistence.dart';
 part 'state/training_pomodoro_screen_timer.dart';
+part 'state/training_pomodoro_screen_view.dart';
 
 class TrainingPomodoroScreen extends StatefulWidget {
   const TrainingPomodoroScreen({
@@ -45,6 +50,10 @@ class _TrainingPomodoroScreenState extends State<TrainingPomodoroScreen>
   int? _phaseEndsAtEpochMs;
   bool _isHydrating = true;
   bool _isEditingDuration = false;
+  TrainingPomodoroAmbientTrack _selectedAmbientTrack =
+      TrainingPomodoroAmbientTrack.lofi;
+  bool _isAmbientPlaying = false;
+  double _ambientVolume = 0.50;
 
   Timer? _ticker;
 
@@ -56,110 +65,26 @@ class _TrainingPomodoroScreenState extends State<TrainingPomodoroScreen>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    trainingPomodoroOverlayController.attachForegroundSession();
-    unawaited(_hydrateSnapshot());
+    _initScreenForState(this);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _handleResume();
-      return;
-    }
-
-    if (state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.paused ||
-        state == AppLifecycleState.hidden) {
-      unawaited(_persistSnapshot());
-    }
+    _handleLifecycleChangeForState(this, state);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _stopTickerForState(this);
-    _minutesController.dispose();
-    _secondsController.dispose();
-    _minutesFocusNode.dispose();
-    _secondsFocusNode.dispose();
-    if (!_isHydrating) {
-      trainingPomodoroOverlayController.updateSnapshot(
-        _buildSnapshotForState(this),
-      );
-      unawaited(_persistSnapshot());
-    }
-    trainingPomodoroOverlayController.detachForegroundSession();
+    _disposeScreenForState(this);
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
-    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
-    final totalSeconds = _secondsForPhase(_phase);
-    final progress = totalSeconds == 0
-        ? 0.0
-        : (1 - (_remainingSeconds / totalSeconds)).clamp(0.0, 1.0).toDouble();
-    final safeRemainingSeconds = _remainingSeconds.clamp(0, 5999).toInt();
-    final timeDisplay =
-        '${(safeRemainingSeconds ~/ 60).toString().padLeft(2, '0')}:${(safeRemainingSeconds % 60).toString().padLeft(2, '0')}';
-
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      appBar: AppBar(
-        backgroundColor: backgroundColor,
-        surfaceTintColor: backgroundColor,
-        scrolledUnderElevation: 0,
-        title: Text(
-          'Pomodoro',
-          style: GoogleFonts.manrope(
-            color: widget.onSurface,
-            fontSize: 22,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ),
-      body: _isHydrating
-          ? Center(child: CircularProgressIndicator(color: widget.primary))
-          : ListView(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 120),
-              children: [
-                TrainingPomodoroTimerPanel(
-                  isFocusPhase: _phase == TrainingPomodoroPhase.focus,
-                  timeDisplay: timeDisplay,
-                  progress: progress,
-                  primary: widget.primary,
-                  surfaceContainer: widget.surfaceContainer,
-                  surfaceContainerHigh: widget.surfaceContainerHigh,
-                  onSurface: widget.onSurface,
-                  onSurfaceMuted: widget.onSurfaceMuted,
-                  isRunning: _isRunning,
-                  isEditingDuration: _isEditingDuration,
-                  minutesController: _minutesController,
-                  secondsController: _secondsController,
-                  minutesFocusNode: _minutesFocusNode,
-                  secondsFocusNode: _secondsFocusNode,
-                  onSelectFocus: _selectFocusPhase,
-                  onSelectPause: _selectPausePhase,
-                  onEditCenter: _beginInlineDurationEdit,
-                  onSubmitInlineEdit: _commitInlineDurationEdit,
-                  onPrimaryAction: _toggleRunning,
-                  onReset: _resetCurrentPhase,
-                ),
-              ],
-            ),
-    );
-  }
+  Widget build(BuildContext context) => _buildScreenForState(this, context);
 
   int _secondsForPhase(TrainingPomodoroPhase phase) {
     return _settings.secondsFor(phase);
   }
-
-  Future<void> _hydrateSnapshot() => _hydrateSnapshotForState(this);
-
-  Future<void> _persistSnapshot() => _persistSnapshotForState(this);
-
-  void _handleResume() => _handleResumeForState(this);
 
   void _toggleRunning() => _toggleRunningForState(this);
 
@@ -172,6 +97,14 @@ class _TrainingPomodoroScreenState extends State<TrainingPomodoroScreen>
   void _selectFocusPhase() => _selectFocusPhaseForState(this);
 
   void _selectPausePhase() => _selectPausePhaseForState(this);
+
+  void _selectAmbientTrack(TrainingPomodoroAmbientTrack track) =>
+      _selectAmbientTrackForState(this, track);
+
+  void _toggleAmbientPlayback() => _toggleAmbientPlaybackForState(this);
+
+  void _setAmbientVolume(double value) =>
+      _setAmbientVolumeForState(this, value);
 
   void _update(VoidCallback action) => setState(action);
 }
