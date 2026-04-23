@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'training_mode_selector_card.dart';
+import 'training_support_tool_card.dart';
 
 class TrainingTabBody extends StatelessWidget {
   const TrainingTabBody({
@@ -16,6 +17,7 @@ class TrainingTabBody extends StatelessWidget {
     required this.onOpenMultiplayer,
     required this.onOpenWriting,
     required this.onOpenFlashcards,
+    required this.onOpenPomodoro,
   });
 
   final Color surfaceContainer;
@@ -28,6 +30,7 @@ class TrainingTabBody extends StatelessWidget {
   final VoidCallback onOpenMultiplayer;
   final VoidCallback onOpenWriting;
   final VoidCallback onOpenFlashcards;
+  final VoidCallback onOpenPomodoro;
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +56,21 @@ class TrainingTabBody extends StatelessWidget {
             'Escolha o modo de treino que faz mais sentido para este momento.',
             style: GoogleFonts.inter(color: onSurfaceMuted, fontSize: 13),
           ),
-          const SizedBox(height: 22),
+          const SizedBox(height: 14),
+          TrainingSupportToolCard(
+            title: 'Pomodoro',
+            subtitle: 'Blocos de foco e pausa para acompanhar seus estudos.',
+            icon: Icons.timer_rounded,
+            accent: const Color(0xFFFF7A59),
+            surfaceContainer: surfaceContainer,
+            surfaceContainerHigh: surfaceContainerHigh,
+            onSurface: onSurface,
+            onSurfaceMuted: onSurfaceMuted,
+            onTap: onOpenPomodoro,
+          ),
+          const SizedBox(height: 24),
           Text(
-            'MODOS DISPONÍVEIS',
+            'MODOS DISPONIVEIS',
             style: GoogleFonts.plusJakartaSans(
               color: onSurfaceMuted,
               fontSize: 11,
@@ -65,13 +80,13 @@ class TrainingTabBody extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           TrainingModeSelectorCard(
-            title: 'Questões',
+            title: 'Questoes',
             subtitle:
-                'Explore questões para estudar com mais foco e consistência.',
+                'Explore questoes para estudar com mais foco e consistencia.',
             icon: Icons.dashboard_customize_rounded,
             accent: const Color(0xFF7C9BFF),
-            highlights: const ['+2700 questões', 'ENEM', 'Disciplinas'],
-            trailingLabel: "Acervo",
+            highlights: const ['+2700 questoes', 'ENEM', 'Disciplinas'],
+            trailingLabel: 'Acervo',
             selected: false,
             surfaceContainer: surfaceContainer,
             surfaceContainerHigh: surfaceContainerHigh,
@@ -85,9 +100,9 @@ class TrainingTabBody extends StatelessWidget {
             subtitle:
                 'Crie salas, entre por PIN e dispute partidas com outros jogadores.',
             icon: Icons.groups_rounded,
-            trailingLabel: "Ao vivo",
+            trailingLabel: 'Ao vivo',
             accent: const Color(0xFFC28BFF),
-            highlights: const ['Arena', 'Ranking', 'Competição'],
+            highlights: const ['Arena', 'Ranking', 'Competicao'],
             selected: false,
             surfaceContainer: surfaceContainer,
             surfaceContainerHigh: surfaceContainerHigh,
@@ -97,7 +112,7 @@ class TrainingTabBody extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           TrainingModeSelectorCard(
-            title: 'Redação',
+            title: 'Redacao',
             subtitle:
                 'Tema, estrutura guiada, checklist e reescrita assistida.',
             icon: Icons.edit_note_rounded,
@@ -115,10 +130,10 @@ class TrainingTabBody extends StatelessWidget {
           TrainingModeSelectorCard(
             title: 'Flashcards',
             subtitle:
-                'Revise rápido, fixe conceitos e retome os pontos mais frágeis.',
+                'Revise rapido, fixe conceitos e retome os pontos mais frageis.',
             icon: Icons.style_rounded,
             accent: const Color(0xFF4ED7A6),
-            highlights: const ['Revisão', 'Memória', 'Ágil'],
+            highlights: const ['Revisao', 'Memoria', 'Agil'],
             selected: false,
             surfaceContainer: surfaceContainer,
             surfaceContainerHigh: surfaceContainerHigh,

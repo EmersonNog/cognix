@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../areas/training_areas_screen.dart';
 import '../flashcards/training_flashcards_screen.dart';
 import '../multiplayer/training_multiplayer_screen.dart';
+import '../pomodoro/training_pomodoro_screen.dart';
 import 'widgets/training_tab_body.dart';
 
 class TrainingTab extends StatelessWidget {
@@ -65,6 +66,19 @@ class TrainingTab extends StatelessWidget {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => TrainingFlashcardsScreen(
+              surfaceContainer: surfaceContainer,
+              surfaceContainerHigh: surfaceContainerHigh,
+              onSurface: onSurface,
+              onSurfaceMuted: onSurfaceMuted,
+              primary: primary,
+            ),
+          ),
+        );
+      },
+      onOpenPomodoro: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => TrainingPomodoroScreen(
               surfaceContainer: surfaceContainer,
               surfaceContainerHigh: surfaceContainerHigh,
               onSurface: onSurface,
