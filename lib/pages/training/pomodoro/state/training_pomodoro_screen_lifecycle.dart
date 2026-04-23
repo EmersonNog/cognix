@@ -2,6 +2,7 @@ part of '../training_pomodoro_screen.dart';
 
 void _initScreenForState(_TrainingPomodoroScreenState state) {
   WidgetsBinding.instance.addObserver(state);
+  _syncAmbientStateForState(state);
   trainingPomodoroOverlayController.attachForegroundSession();
   unawaited(_hydrateSnapshotForState(state));
 }

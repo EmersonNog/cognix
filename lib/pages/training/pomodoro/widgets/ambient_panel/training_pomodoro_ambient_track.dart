@@ -40,6 +40,23 @@ extension TrainingPomodoroAmbientTrackPresentation
     }
   }
 
+  String get assetPath {
+    switch (this) {
+      case TrainingPomodoroAmbientTrack.lofi:
+        return 'audio/pomodoro/lofi.mp3';
+      case TrainingPomodoroAmbientTrack.rain:
+        return 'audio/pomodoro/rain.mp3';
+      case TrainingPomodoroAmbientTrack.jazz:
+        return 'audio/pomodoro/jazz.mp3';
+      case TrainingPomodoroAmbientTrack.forest:
+        return 'audio/pomodoro/forest.mp3';
+      case TrainingPomodoroAmbientTrack.cafe:
+        return 'audio/pomodoro/cafe.mp3';
+      case TrainingPomodoroAmbientTrack.piano:
+        return 'audio/pomodoro/piano.mp3';
+    }
+  }
+
   IconData get icon {
     switch (this) {
       case TrainingPomodoroAmbientTrack.lofi:

@@ -43,9 +43,12 @@ class _TrainingPomodoroGlobalIndicatorState
         final isPausePhase =
             trainingPomodoroOverlayController.phase ==
             TrainingPomodoroPhase.pause;
-        final cardColor = isPausePhase ? colors.secondary : colors.primary;
+        final cardColor = isPausePhase ? colors.accent : colors.primary;
         final foregroundColor = isPausePhase
-            ? theme.colorScheme.onSecondary
+            ? (ThemeData.estimateBrightnessForColor(cardColor) ==
+                      Brightness.dark
+                  ? Colors.white
+                  : const Color(0xFF091328))
             : theme.colorScheme.onPrimary;
         final labelColor = foregroundColor.withValues(alpha: 0.72);
         final defaultPosition = Offset(

@@ -65,7 +65,7 @@ class TrainingPomodoroAmbientPanel extends StatelessWidget {
               icon: Icon(
                 isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
               ),
-              label: Text(isPlaying ? 'PAUSAR AUDIO' : 'TOCAR AUDIO'),
+              label: Text(isPlaying ? 'PAUSAR ÁUDIO' : 'TOCAR ÁUDIO'),
               style: FilledButton.styleFrom(
                 backgroundColor: actionBackground,
                 foregroundColor: actionForeground,
