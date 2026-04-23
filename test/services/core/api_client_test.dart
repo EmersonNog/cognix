@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('resolveApiBaseUrl', () {
-    test('usa a URL de producao por padrao em release', () {
+    test('usa a URL de produção por padrao em release', () {
       final baseUrl = resolveApiBaseUrl(
         envBaseUrl: '',
         isReleaseMode: true,

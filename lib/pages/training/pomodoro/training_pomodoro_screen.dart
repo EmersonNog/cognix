@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../widgets/cognix/cognix_messages.dart';
+import 'data/training_pomodoro_feedback.dart';
+import 'data/training_pomodoro_runtime.dart';
 import 'data/training_pomodoro_storage.dart';
 import 'models/training_pomodoro_models.dart';
+import 'training_pomodoro_overlay_controller.dart';
 import 'widgets/training_pomodoro_timer_panel.dart';
 
 part 'state/training_pomodoro_screen_interactions.dart';
@@ -54,6 +57,7 @@ class _TrainingPomodoroScreenState extends State<TrainingPomodoroScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    trainingPomodoroOverlayController.attachForegroundSession();
     unawaited(_hydrateSnapshot());
   }
 
@@ -79,7 +83,13 @@ class _TrainingPomodoroScreenState extends State<TrainingPomodoroScreen>
     _secondsController.dispose();
     _minutesFocusNode.dispose();
     _secondsFocusNode.dispose();
-    unawaited(_persistSnapshot());
+    if (!_isHydrating) {
+      trainingPomodoroOverlayController.updateSnapshot(
+        _buildSnapshotForState(this),
+      );
+      unawaited(_persistSnapshot());
+    }
+    trainingPomodoroOverlayController.detachForegroundSession();
     super.dispose();
   }
 

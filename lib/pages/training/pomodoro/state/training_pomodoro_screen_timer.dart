@@ -12,10 +12,7 @@ int _remainingFromEndAtForState(
   _TrainingPomodoroScreenState _,
   int phaseEndsAtEpochMs,
 ) {
-  final remainingMs =
-      phaseEndsAtEpochMs - DateTime.now().millisecondsSinceEpoch;
-  final remainingSeconds = (remainingMs / 1000).ceil();
-  return remainingSeconds < 0 ? 0 : remainingSeconds;
+  return trainingPomodoroRemainingFromEndAt(phaseEndsAtEpochMs);
 }
 
 void _handleResumeForState(_TrainingPomodoroScreenState state) {
@@ -110,7 +107,7 @@ void _resetCurrentPhaseForState(_TrainingPomodoroScreenState state) {
 void _completeCurrentPhaseForState(_TrainingPomodoroScreenState state) {
   _stopTickerForState(state);
   final completedPhase = state._phase;
-  final transition = _transitionFromPhaseForState(
+  final transition = trainingPomodoroTransitionFromPhase(
     phase: completedPhase,
     completedFocusSessions: state._completedFocusSessions,
     countCompletedFocus: completedPhase == TrainingPomodoroPhase.focus,
@@ -139,22 +136,9 @@ void _completeCurrentPhaseForState(_TrainingPomodoroScreenState state) {
       'Sessão de foco concluída. Hora da ${nextPhase.label.toLowerCase()}.',
       type: CognixMessageType.success,
     );
+    unawaited(playTrainingPomodoroFocusCompletionFeedback());
   } else {
     showCognixMessage(state.context, 'Pausa concluída. Vamos voltar ao foco.');
+    unawaited(playTrainingPomodoroPauseCompletionFeedback());
   }
-}
-
-(TrainingPomodoroPhase, int) _transitionFromPhaseForState({
-  required TrainingPomodoroPhase phase,
-  required int completedFocusSessions,
-  required bool countCompletedFocus,
-}) {
-  if (phase == TrainingPomodoroPhase.focus) {
-    final nextCompletedFocusSessions = countCompletedFocus
-        ? completedFocusSessions + 1
-        : completedFocusSessions;
-    return (TrainingPomodoroPhase.pause, nextCompletedFocusSessions);
-  }
-
-  return (TrainingPomodoroPhase.focus, completedFocusSessions);
 }

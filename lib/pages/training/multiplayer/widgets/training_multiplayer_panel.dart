@@ -105,7 +105,7 @@ class TrainingMultiplayerPanel extends StatelessWidget {
               SizedBox(
                 width: 250,
                 child: Text(
-                  'Crie salas privadas, entre com PIN e participe de partidas rápidas com mais competicao e dinamica.',
+                  'Crie salas privadas, entre com PIN e participe de partidas rápidas com mais competição e dinâmica.',
                   style: GoogleFonts.inter(
                     color: onSurfaceMuted,
                     fontSize: 12.5,

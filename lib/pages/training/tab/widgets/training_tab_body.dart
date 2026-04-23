@@ -70,7 +70,7 @@ class TrainingTabBody extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'MODOS DISPONIVEIS',
+            'MODOS DISPONÍVEIS',
             style: GoogleFonts.plusJakartaSans(
               color: onSurfaceMuted,
               fontSize: 11,
@@ -80,12 +80,12 @@ class TrainingTabBody extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           TrainingModeSelectorCard(
-            title: 'Questoes',
+            title: 'Questões',
             subtitle:
-                'Explore questoes para estudar com mais foco e consistencia.',
+                'Explore questões para estudar com mais foco e consistência.',
             icon: Icons.dashboard_customize_rounded,
             accent: const Color(0xFF7C9BFF),
-            highlights: const ['+2700 questoes', 'ENEM', 'Disciplinas'],
+            highlights: const ['+2700 questões', 'ENEM', 'Disciplinas'],
             trailingLabel: 'Acervo',
             selected: false,
             surfaceContainer: surfaceContainer,
@@ -102,7 +102,7 @@ class TrainingTabBody extends StatelessWidget {
             icon: Icons.groups_rounded,
             trailingLabel: 'Ao vivo',
             accent: const Color(0xFFC28BFF),
-            highlights: const ['Arena', 'Ranking', 'Competicao'],
+            highlights: const ['Arena', 'Ranking', 'Competição'],
             selected: false,
             surfaceContainer: surfaceContainer,
             surfaceContainerHigh: surfaceContainerHigh,
@@ -112,7 +112,7 @@ class TrainingTabBody extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           TrainingModeSelectorCard(
-            title: 'Redacao',
+            title: 'Redaçao',
             subtitle:
                 'Tema, estrutura guiada, checklist e reescrita assistida.',
             icon: Icons.edit_note_rounded,
@@ -130,10 +130,10 @@ class TrainingTabBody extends StatelessWidget {
           TrainingModeSelectorCard(
             title: 'Flashcards',
             subtitle:
-                'Revise rapido, fixe conceitos e retome os pontos mais frageis.',
+                'Revise rápido, fixe conceitos e retome os pontos mais frágeis.',
             icon: Icons.style_rounded,
             accent: const Color(0xFF4ED7A6),
-            highlights: const ['Revisao', 'Memoria', 'Agil'],
+            highlights: const ['Revisão', 'Memória', 'Ágil'],
             selected: false,
             surfaceContainer: surfaceContainer,
             surfaceContainerHigh: surfaceContainerHigh,

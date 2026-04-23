@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../theme/cognix_theme_colors.dart';
+
 part 'timer_panel/training_pomodoro_timer_panel_actions.dart';
 part 'timer_panel/training_pomodoro_timer_panel_dial.dart';
+part 'timer_panel/training_pomodoro_timer_panel_dial_content.dart';
+part 'timer_panel/training_pomodoro_timer_panel_dial_painter.dart';
 part 'timer_panel/training_pomodoro_timer_panel_segmented_control.dart';
 
 class TrainingPomodoroTimerPanel extends StatelessWidget {
@@ -57,18 +61,24 @@ class TrainingPomodoroTimerPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colors = context.cognixColors;
     final isLightMode = theme.brightness == Brightness.light;
+    final pauseAccent = colors.accent;
+    final phaseAccent = isFocusPhase ? primary : pauseAccent;
     final shellColor = surfaceContainer;
-    final selectedSegmentColor = surfaceContainerHigh.withValues(alpha: 0.96);
+    final selectedSegmentColor = surfaceContainerHigh;
     final ringTrackColor = surfaceContainerHigh;
-    final ringGlowColor = primary.withValues(alpha: isLightMode ? 0.08 : 0.16);
     final primaryActionColor = isRunning
-        ? colorScheme.secondaryContainer
-        : primary;
+        ? Color.alphaBlend(
+            phaseAccent.withValues(alpha: isLightMode ? 0.12 : 0.18),
+            surfaceContainerHigh,
+          )
+        : phaseAccent;
     final primaryActionForegroundColor = isRunning
-        ? colorScheme.onSecondaryContainer
-        : Colors.white;
+        ? phaseAccent
+        : _foregroundColorFor(phaseAccent);
+    final resetBorderColor = surfaceContainerHigh;
+    final resetIconColor = onSurfaceMuted;
 
     return Column(
       children: [
@@ -76,7 +86,7 @@ class TrainingPomodoroTimerPanel extends StatelessWidget {
           shellColor: shellColor,
           borderColor: surfaceContainerHigh,
           selectedSegmentColor: selectedSegmentColor,
-          activeColor: primary,
+          activeColor: onSurface,
           inactiveColor: onSurfaceMuted,
           isFocusPhase: isFocusPhase,
           onSelectFocus: onSelectFocus,
@@ -88,9 +98,9 @@ class TrainingPomodoroTimerPanel extends StatelessWidget {
           isEditingDuration: isEditingDuration,
           timeDisplay: timeDisplay,
           progress: progress,
-          primary: primary,
+          primary: phaseAccent,
           ringTrackColor: ringTrackColor,
-          ringGlowColor: ringGlowColor,
+          surfaceContainer: surfaceContainer,
           surfaceContainerHigh: surfaceContainerHigh,
           onSurface: onSurface,
           onSurfaceMuted: onSurfaceMuted,
@@ -107,11 +117,17 @@ class TrainingPomodoroTimerPanel extends StatelessWidget {
           primaryActionColor: primaryActionColor,
           primaryActionForegroundColor: primaryActionForegroundColor,
           shellColor: shellColor,
-          onSurface: onSurface,
+          resetBorderColor: resetBorderColor,
+          resetIconColor: resetIconColor,
           onPrimaryAction: onPrimaryAction,
           onReset: onReset,
         ),
       ],
     );
   }
+}
+
+Color _foregroundColorFor(Color backgroundColor) {
+  final brightness = ThemeData.estimateBrightnessForColor(backgroundColor);
+  return brightness == Brightness.dark ? Colors.white : const Color(0xFF091328);
 }

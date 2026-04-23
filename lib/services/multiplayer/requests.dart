@@ -38,7 +38,7 @@ Future<MultiplayerAnswerResult> submitMultiplayerAnswer({
       'question_id': questionId,
       'selected_letter': selectedLetter,
     },
-    errorMessage: 'Nao consegui enviar sua resposta agora.',
+    errorMessage: 'Não consegui enviar sua resposta agora.',
   );
   return parseMultiplayerAnswerResult(payload);
 }

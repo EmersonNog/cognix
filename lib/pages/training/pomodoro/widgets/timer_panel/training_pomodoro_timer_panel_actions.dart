@@ -6,7 +6,8 @@ class _TrainingPomodoroActionRow extends StatelessWidget {
     required this.primaryActionColor,
     required this.primaryActionForegroundColor,
     required this.shellColor,
-    required this.onSurface,
+    required this.resetBorderColor,
+    required this.resetIconColor,
     required this.onPrimaryAction,
     required this.onReset,
   });
@@ -15,23 +16,20 @@ class _TrainingPomodoroActionRow extends StatelessWidget {
   final Color primaryActionColor;
   final Color primaryActionForegroundColor;
   final Color shellColor;
-  final Color onSurface;
+  final Color resetBorderColor;
+  final Color resetIconColor;
   final VoidCallback onPrimaryAction;
   final VoidCallback onReset;
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final primaryButtonWidth = (constraints.maxWidth - 68)
-            .clamp(188.0, 248.0)
-            .toDouble();
-
-        return Row(
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 316),
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              width: primaryButtonWidth,
+            Expanded(
               child: FilledButton.icon(
                 onPressed: onPrimaryAction,
                 icon: Icon(
@@ -42,6 +40,8 @@ class _TrainingPomodoroActionRow extends StatelessWidget {
                   backgroundColor: primaryActionColor,
                   foregroundColor: primaryActionForegroundColor,
                   minimumSize: const Size.fromHeight(56),
+                  elevation: 0,
+                  shadowColor: Colors.transparent,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -56,12 +56,13 @@ class _TrainingPomodoroActionRow extends StatelessWidget {
             _TrainingPomodoroIconButton(
               icon: Icons.restart_alt_rounded,
               backgroundColor: shellColor,
-              onSurface: onSurface,
+              borderColor: resetBorderColor,
+              iconColor: resetIconColor,
               onTap: onReset,
             ),
           ],
-        );
-      },
+        ),
+      ),
     );
   }
 }
@@ -70,27 +71,35 @@ class _TrainingPomodoroIconButton extends StatelessWidget {
   const _TrainingPomodoroIconButton({
     required this.icon,
     required this.backgroundColor,
-    required this.onSurface,
+    required this.borderColor,
+    required this.iconColor,
     required this.onTap,
   });
 
   final IconData icon;
   final Color backgroundColor;
-  final Color onSurface;
+  final Color borderColor;
+  final Color iconColor;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return Material(
       color: backgroundColor,
-      borderRadius: BorderRadius.circular(20),
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: borderColor),
+      ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        customBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
         child: SizedBox(
           width: 56,
           height: 56,
-          child: Icon(icon, color: onSurface, size: 22),
+          child: Icon(icon, color: iconColor, size: 22),
         ),
       ),
     );

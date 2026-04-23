@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../navigation/app_route_observer.dart';
 import '../../theme/cognix_theme_colors.dart';
 
 enum CognixMessageType { info, success, error }
@@ -10,6 +11,37 @@ void showCognixMessage(
   String text, {
   CognixMessageType type = CognixMessageType.info,
 }) {
+  final messenger = ScaffoldMessenger.of(context);
+  _showCognixMessageWithMessenger(
+    messenger: messenger,
+    context: context,
+    text: text,
+    type: type,
+  );
+}
+
+void showGlobalCognixMessage(
+  String text, {
+  CognixMessageType type = CognixMessageType.info,
+}) {
+  final messenger = appScaffoldMessengerKey.currentState;
+  final context = messenger?.context ?? appNavigatorKey.currentContext;
+  if (messenger == null || context == null) return;
+
+  _showCognixMessageWithMessenger(
+    messenger: messenger,
+    context: context,
+    text: text,
+    type: type,
+  );
+}
+
+void _showCognixMessageWithMessenger({
+  required ScaffoldMessengerState messenger,
+  required BuildContext context,
+  required String text,
+  required CognixMessageType type,
+}) {
   final colors = context.cognixColors;
   final color = switch (type) {
     CognixMessageType.success => colors.success,
@@ -17,8 +49,8 @@ void showCognixMessage(
     CognixMessageType.info => colors.primary,
   };
 
-  ScaffoldMessenger.of(context).hideCurrentSnackBar();
-  ScaffoldMessenger.of(context).showSnackBar(
+  messenger.hideCurrentSnackBar();
+  messenger.showSnackBar(
     SnackBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -54,7 +86,6 @@ class CognixMessageBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.cognixColors;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final shadowColor = accent.withValues(alpha: isDark ? 0.28 : 0.14);
     final borderColor = accent.withValues(alpha: isDark ? 0.35 : 0.28);
     final iconBackground = accent.withValues(alpha: isDark ? 0.12 : 0.1);
 
@@ -68,13 +99,6 @@ class CognixMessageBox extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: borderColor, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: shadowColor,
-            blurRadius: 24,
-            offset: const Offset(0, 12),
-          ),
-        ],
       ),
       child: Row(
         children: [

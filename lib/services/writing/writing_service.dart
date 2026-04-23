@@ -6,10 +6,10 @@ class WritingService {
   List<String> missingRequiredSections(WritingDraft draft) {
     return [
       if (draft.thesis.trim().isEmpty) 'Tese',
-      if (draft.repertoire.trim().isEmpty) 'Repertorio',
+      if (draft.repertoire.trim().isEmpty) 'Repertório',
       if (draft.argumentOne.trim().isEmpty) 'Argumento 1',
       if (draft.argumentTwo.trim().isEmpty) 'Argumento 2',
-      if (draft.intervention.trim().isEmpty) 'Proposta de intervencao',
+      if (draft.intervention.trim().isEmpty) 'Proposta de intervenção',
     ];
   }
 

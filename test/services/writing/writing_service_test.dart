@@ -7,7 +7,7 @@ void main() {
       id: 'theme-1',
       title: 'Tema',
       category: 'Sociedade',
-      description: 'Descricao',
+      description: 'Descrição',
       keywords: [],
     );
 
@@ -17,11 +17,11 @@ void main() {
         theme: theme,
         thesis: 'A tese central precisa ser defendida com clareza.',
         repertoire:
-            'Segundo a Constituicao Federal, a educacao e direito social.',
+            'Segundo a Constituição Federal, a educação e direito social.',
         argumentOne:
-            'O primeiro argumento mostra a ausencia de politicas publicas.',
+            'O primeiro argumento mostra a ausência de politicas públicas.',
         argumentTwo:
-            'O segundo argumento evidencia desigualdades historicas persistentes.',
+            'O segundo argumento evidencia desigualdades históricas persistentes.',
         intervention:
             'Portanto, o Estado deve criar campanhas por meio das escolas.',
         finalText: '',
@@ -53,9 +53,9 @@ void main() {
       );
 
       expect(service.missingRequiredSections(draft), [
-        'Repertorio',
+        'Repertório',
         'Argumento 2',
-        'Proposta de intervencao',
+        'Proposta de intervenção',
       ]);
     });
   });

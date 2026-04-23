@@ -33,7 +33,7 @@ class TrainingFlashcardImageView extends StatelessWidget {
         ),
         alignment: Alignment.center,
         child: Text(
-          'Imagem indisponivel',
+          'Imagem indisponível',
           style: GoogleFonts.inter(
             color: onSurfaceMuted,
             fontWeight: FontWeight.w600,

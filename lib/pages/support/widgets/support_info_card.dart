@@ -24,7 +24,7 @@ class SupportInfoCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Mais informacoes do app',
+                  'Mais informações do app',
                   style: GoogleFonts.manrope(
                     color: supportOnSurface,
                     fontSize: 15,
@@ -33,7 +33,7 @@ class SupportInfoCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Veja detalhes da versao atual do Cognix direto nesta area.',
+                  'Veja detalhes da versão atual do Cognix direto nesta área.',
                   style: GoogleFonts.inter(
                     color: supportOnSurfaceMuted,
                     fontSize: 12.5,
