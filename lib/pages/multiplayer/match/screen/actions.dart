@@ -44,7 +44,7 @@ Future<bool> _confirmMatchLeave(_MultiplayerMatchScreenState state) async {
   final isHost = state._isCurrentUserHost;
   return showMultiplayerLeaveConfirmation(
     state.context,
-    palette: const MultiplayerPalette(),
+    palette: MultiplayerPalette.fromContext(state.context),
     title: isHost ? 'Encerrar partida?' : 'Sair da partida?',
     message: isHost
         ? 'Ao sair agora, todos os jogadores serão desconectados desta partida imediatamente.'

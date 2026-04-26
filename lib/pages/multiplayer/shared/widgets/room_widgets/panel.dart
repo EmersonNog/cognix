@@ -25,7 +25,7 @@ class MultiplayerPanel extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
+            color: palette.shadowColor,
             blurRadius: 24,
             offset: const Offset(0, 14),
           ),

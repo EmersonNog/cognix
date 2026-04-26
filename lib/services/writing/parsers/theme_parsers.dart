@@ -7,7 +7,7 @@ WritingTheme parseWritingTheme(Map<String, dynamic> payload) {
     category: payload['category']?.toString() ?? '',
     description: payload['description']?.toString() ?? '',
     keywords: _parseStringList(payload['keywords']),
-    difficulty: payload['difficulty']?.toString() ?? 'mÃ©dio',
+    difficulty: payload['difficulty']?.toString() ?? 'médio',
     exam: payload['exam']?.toString() ?? 'ENEM',
   );
 }

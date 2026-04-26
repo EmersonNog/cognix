@@ -4,7 +4,7 @@ Widget _buildCreateRoomScreen(
   _MultiplayerCreateRoomScreenState state,
   BuildContext context,
 ) {
-  const palette = MultiplayerPalette();
+  final palette = MultiplayerPalette.fromContext(context);
 
   return PopScope(
     canPop: false,
@@ -139,6 +139,7 @@ List<Widget> _buildCreateRoomContent(
           : null,
       style: FilledButton.styleFrom(
         backgroundColor: palette.primary,
+        foregroundColor: palette.onPrimary,
         disabledBackgroundColor: palette.surfaceContainerHigh,
         disabledForegroundColor: palette.onSurfaceMuted,
         padding: const EdgeInsets.symmetric(vertical: 14),

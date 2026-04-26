@@ -4,7 +4,7 @@ Widget _buildJoinRoomScreen(
   _MultiplayerJoinRoomScreenState state,
   BuildContext context,
 ) {
-  const palette = MultiplayerPalette();
+  final palette = MultiplayerPalette.fromContext(context);
   final room = state._room;
 
   return PopScope(

@@ -66,7 +66,7 @@ Future<void> _leaveJoinRoom(_MultiplayerJoinRoomScreenState state) async {
     return;
   }
 
-  const palette = MultiplayerPalette();
+  final palette = MultiplayerPalette.fromContext(state.context);
   final shouldLeave = await showMultiplayerLeaveConfirmation(
     state.context,
     palette: palette,

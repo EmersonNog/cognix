@@ -1,7 +1,7 @@
 name: cognix
 description: "App de estudos do Cognix com simulados, desempenho e acompanhamento de progresso."
 publish_to: "none"
-version: 1.0.0+4
+version: 1.0.0+5
 
 environment:
   sdk: ^3.9.2
@@ -10,7 +10,6 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_native_splash: ^2.4.7
-  introduction_screen: ^4.0.0
   tutorial_coach_mark: ^1.3.3
   web_socket_channel: ^3.0.3
   shared_preferences: ^2.5.5

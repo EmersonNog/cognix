@@ -30,7 +30,7 @@ Future<bool> showMultiplayerLeaveConfirmation(
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.28),
+                color: palette.shadowColor,
                 blurRadius: 28,
                 offset: const Offset(0, 18),
               ),

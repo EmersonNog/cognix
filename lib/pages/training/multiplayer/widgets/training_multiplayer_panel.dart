@@ -117,10 +117,10 @@ class TrainingMultiplayerPanel extends StatelessWidget {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: const [
-                  _FeatureChip(label: 'Salas privadas'),
-                  _FeatureChip(label: 'PIN de acesso'),
-                  _FeatureChip(label: 'Partidas rápidas'),
+                children: [
+                  _FeatureChip(label: 'Salas privadas', primary: primary),
+                  _FeatureChip(label: 'PIN de acesso', primary: primary),
+                  _FeatureChip(label: 'Partidas rápidas', primary: primary),
                 ],
               ),
               const SizedBox(height: 18),
@@ -191,22 +191,24 @@ class TrainingMultiplayerPanel extends StatelessWidget {
 }
 
 class _FeatureChip extends StatelessWidget {
-  const _FeatureChip({required this.label});
+  const _FeatureChip({required this.label, required this.primary});
 
   final String label;
+  final Color primary;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
+        color: primary.withValues(alpha: 0.09),
         borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: primary.withValues(alpha: 0.12)),
       ),
       child: Text(
         label,
         style: GoogleFonts.plusJakartaSans(
-          color: Colors.white,
+          color: primary,
           fontSize: 10.5,
           fontWeight: FontWeight.w700,
         ),

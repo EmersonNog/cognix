@@ -73,13 +73,38 @@ class _MyAppState extends State<MyApp> {
             navigatorObservers: [appRouteObserver],
             builder: (context, child) {
               if (child == null) return const SizedBox.shrink();
-              return Stack(
-                children: [child, const TrainingPomodoroGlobalIndicator()],
-              );
+              return _CognixSafeAppFrame(child: child);
             },
           ),
         );
       },
+    );
+  }
+}
+
+class _CognixSafeAppFrame extends StatelessWidget {
+  const _CognixSafeAppFrame({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: Theme.of(context).colorScheme.surface,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          SafeArea(
+            left: false,
+            top: false,
+            right: false,
+            bottom: true,
+            maintainBottomViewPadding: true,
+            child: child,
+          ),
+          const TrainingPomodoroGlobalIndicator(),
+        ],
+      ),
     );
   }
 }

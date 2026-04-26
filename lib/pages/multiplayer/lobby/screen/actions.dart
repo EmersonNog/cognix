@@ -109,7 +109,7 @@ Future<void> _handleCreateRoomBack(
     return;
   }
 
-  const palette = MultiplayerPalette();
+  final palette = MultiplayerPalette.fromContext(state.context);
   final shouldLeave = await showMultiplayerLeaveConfirmation(
     state.context,
     palette: palette,

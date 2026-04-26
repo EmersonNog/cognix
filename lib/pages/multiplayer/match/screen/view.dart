@@ -4,7 +4,7 @@ Widget _buildMultiplayerMatchScreen(
   _MultiplayerMatchScreenState state,
   BuildContext context,
 ) {
-  const palette = MultiplayerPalette();
+  final palette = MultiplayerPalette.fromContext(context);
   final currentRoom = state._room;
   final currentQuestion = state._currentQuestion;
   final usesSyncedQuestions = currentRoom?.hasMatchQuestions == true;
@@ -45,7 +45,11 @@ Widget _buildMultiplayerMatchScreen(
                 ),
                 const SizedBox(height: 16),
                 if (isFinished && currentRoom != null)
-                  MatchFinishedPanel(palette: palette, room: currentRoom)
+                  MatchFinishedPanel(
+                    palette: palette,
+                    room: currentRoom,
+                    currentFirebaseUid: FirebaseAuth.instance.currentUser?.uid,
+                  )
                 else if (state._isLoadingQuestions)
                   MatchLoadingPanel(palette: palette)
                 else if (state._questionsErrorMessage != null ||
@@ -91,7 +95,7 @@ Widget _buildMultiplayerMatchScreen(
                         ),
                   style: FilledButton.styleFrom(
                     backgroundColor: palette.primary,
-                    foregroundColor: palette.surface,
+                    foregroundColor: palette.onPrimary,
                     disabledBackgroundColor: palette.surfaceContainerHigh,
                     disabledForegroundColor: palette.onSurfaceMuted,
                     padding: const EdgeInsets.symmetric(vertical: 14),

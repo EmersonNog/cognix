@@ -5,10 +5,12 @@ class MatchFinishedPanel extends StatelessWidget {
     super.key,
     required this.palette,
     required this.room,
+    required this.currentFirebaseUid,
   });
 
   final MultiplayerPalette palette;
   final MultiplayerRoom room;
+  final String? currentFirebaseUid;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +24,11 @@ class MatchFinishedPanel extends StatelessWidget {
             return a.name.toLowerCase().compareTo(b.name.toLowerCase());
           }));
     final winner = ranking.isEmpty ? null : ranking.first;
+    final winnerTitle = winner == null
+        ? 'Partida encerrada'
+        : _isCurrentParticipant(winner, currentFirebaseUid)
+        ? 'Você venceu!'
+        : 'Vitória de ${winner.name}!';
 
     return MultiplayerPanel(
       palette: palette,
@@ -50,9 +57,7 @@ class MatchFinishedPanel extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      winner == null
-                          ? 'Partida encerrada'
-                          : 'Vitória de ${winner.name}',
+                      winnerTitle,
                       style: GoogleFonts.manrope(
                         color: palette.onSurface,
                         fontSize: 18,
@@ -88,6 +93,7 @@ class MatchFinishedPanel extends StatelessWidget {
               palette: palette,
               participant: ranking[i],
               position: i + 1,
+              currentFirebaseUid: currentFirebaseUid,
             ),
             if (i < ranking.length - 1) const SizedBox(height: 8),
           ],
@@ -97,20 +103,47 @@ class MatchFinishedPanel extends StatelessWidget {
   }
 }
 
+String _participantDisplayName(
+  MultiplayerParticipant participant,
+  String? currentFirebaseUid,
+) {
+  if (_isCurrentParticipant(participant, currentFirebaseUid)) {
+    return 'Você';
+  }
+
+  return participant.name;
+}
+
+bool _isCurrentParticipant(
+  MultiplayerParticipant participant,
+  String? currentFirebaseUid,
+) {
+  final normalizedUid = currentFirebaseUid?.trim();
+  return normalizedUid != null &&
+      normalizedUid.isNotEmpty &&
+      participant.firebaseUid == normalizedUid;
+}
+
 class _RankingTile extends StatelessWidget {
   const _RankingTile({
     required this.palette,
     required this.participant,
     required this.position,
+    required this.currentFirebaseUid,
   });
 
   final MultiplayerPalette palette;
   final MultiplayerParticipant participant;
   final int position;
+  final String? currentFirebaseUid;
 
   @override
   Widget build(BuildContext context) {
     final isTopThree = position <= 3;
+    final participantLabel = _participantDisplayName(
+      participant,
+      currentFirebaseUid,
+    );
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
@@ -155,7 +188,7 @@ class _RankingTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  participant.name,
+                  participantLabel,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.manrope(
