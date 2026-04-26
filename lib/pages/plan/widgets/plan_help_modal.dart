@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 class PlanHelpModal extends StatelessWidget {
   const PlanHelpModal({
+    super.key,
     required this.primary,
     required this.primaryDim,
     required this.onSurface,
@@ -33,7 +34,7 @@ class PlanHelpModal extends StatelessWidget {
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.4),
+                  color: Colors.black.withValues(alpha: 0.4),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -54,8 +55,8 @@ class PlanHelpModal extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          primary.withOpacity(0.2),
-                          primary.withOpacity(0.05),
+                          primary.withValues(alpha: 0.2),
+                          primary.withValues(alpha: 0.05),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(20),
@@ -94,7 +95,7 @@ class PlanHelpModal extends StatelessWidget {
                     'Você pode mudar de plano a qualquer momento.',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
-                      color: primary.withOpacity(0.7),
+                      color: primary.withValues(alpha: 0.7),
                       fontSize: 13,
                       height: 1.5,
                       fontStyle: FontStyle.italic,
@@ -113,7 +114,7 @@ class PlanHelpModal extends StatelessWidget {
                       borderRadius: BorderRadius.circular(14),
                       boxShadow: [
                         BoxShadow(
-                          color: primary.withOpacity(0.4),
+                          color: primary.withValues(alpha: 0.4),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),

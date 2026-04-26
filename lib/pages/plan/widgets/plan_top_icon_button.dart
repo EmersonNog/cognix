@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class PlanTopIconButton extends StatelessWidget {
   const PlanTopIconButton({
+    super.key,
     required this.icon,
     required this.onTap,
     required this.background,

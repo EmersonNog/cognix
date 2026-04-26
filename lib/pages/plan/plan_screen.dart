@@ -52,7 +52,7 @@ class _PlanScreenState extends State<PlanScreen> {
                   onTap: () {
                     showDialog(
                       context: context,
-                      barrierColor: Colors.black.withOpacity(0.3),
+                      barrierColor: Colors.black.withValues(alpha: 0.3),
                       builder: (BuildContext context) {
                         return PlanHelpModal(
                           primary: primary,

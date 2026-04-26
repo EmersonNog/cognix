@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class PlanBenefitItem extends StatelessWidget {
   const PlanBenefitItem({
+    super.key,
     required this.icon,
     required this.title,
     required this.subtitle,

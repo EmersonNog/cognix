@@ -4,6 +4,7 @@ import 'plan_button.dart';
 
 class PlanCard extends StatelessWidget {
   const PlanCard({
+    super.key,
     required this.title,
     required this.price,
     required this.subtitle,
@@ -51,7 +52,7 @@ class PlanCard extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: primary.withOpacity(0.18),
+                  color: primary.withValues(alpha: 0.18),
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: Text(
@@ -128,7 +129,7 @@ class PlanCard extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.check_circle,
-                    color: primary.withOpacity(0.9),
+                    color: primary.withValues(alpha: 0.9),
                     size: 15,
                   ),
                   const SizedBox(width: 8),

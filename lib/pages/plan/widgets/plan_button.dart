@@ -5,6 +5,7 @@ enum PlanButtonStyle { primary, secondary }
 
 class PlanButton extends StatelessWidget {
   const PlanButton({
+    super.key,
     required this.label,
     required this.style,
     required this.primary,

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class PlanBillingToggle extends StatelessWidget {
   const PlanBillingToggle({
+    super.key,
     required this.surfaceContainerHigh,
     required this.onSurface,
     required this.onSurfaceMuted,
