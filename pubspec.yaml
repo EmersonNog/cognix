@@ -29,6 +29,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  shared_preferences_platform_interface: ^2.4.1
+  firebase_core_platform_interface: ^6.0.3
   flutter_launcher_icons: ^0.14.4
   flutter_lints: ^5.0.0
 
