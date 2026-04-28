@@ -2,7 +2,6 @@ part of '../../study_plan_screen.dart';
 
 class _StudyPlanFormContent extends StatelessWidget {
   const _StudyPlanFormContent({
-    this.leading,
     required this.palette,
     required this.plan,
     required this.displayPlan,
@@ -18,7 +17,6 @@ class _StudyPlanFormContent extends StatelessWidget {
     this.onLockedTap,
   });
 
-  final Widget? leading;
   final _StudyPlanPalette palette;
   final StudyPlanData plan;
   final StudyPlanData displayPlan;
@@ -40,7 +38,6 @@ class _StudyPlanFormContent extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 140),
       children: [
-        if (leading != null) ...[leading!, const SizedBox(height: 16)],
         _PlanHeroCard(
           palette: palette,
           configured: plan.configured,
