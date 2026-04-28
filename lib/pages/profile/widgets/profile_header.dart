@@ -35,6 +35,8 @@ class ProfileHeader extends StatefulWidget {
     required this.primary,
     required this.primaryDim,
     required this.onRefreshProfile,
+    this.previewMode = false,
+    this.onLockedTap,
   });
 
   final String userName;
@@ -60,6 +62,8 @@ class ProfileHeader extends StatefulWidget {
   final Color primary;
   final Color primaryDim;
   final Future<void> Function() onRefreshProfile;
+  final bool previewMode;
+  final VoidCallback? onLockedTap;
 
   @override
   State<ProfileHeader> createState() => _ProfileHeaderState();
@@ -67,6 +71,11 @@ class ProfileHeader extends StatefulWidget {
 
 class _ProfileHeaderState extends State<ProfileHeader> {
   void _openAvatarSelector() {
+    if (widget.previewMode) {
+      widget.onLockedTap?.call();
+      return;
+    }
+
     final colors = context.cognixColors;
     showGeneralDialog<Object?>(
       context: context,
@@ -131,19 +140,41 @@ class _ProfileHeaderState extends State<ProfileHeader> {
 
   @override
   Widget build(BuildContext context) {
-    final levelAccent = profileHeaderLevelAccent(widget.level, widget.primary);
-    final levelEmoji = profileHeaderLevelEmoji(widget.level);
-    final displayedLevel = profileHeaderDisplayLevel(widget.level);
-    final recentIndexView = buildProfileHeaderRecentIndexView(
-      recentIndex: widget.recentIndex,
-      recentIndexReady: widget.recentIndexReady,
+    final levelAccent = profileHeaderLevelAccent(
+      widget.previewMode ? 'dedicado' : widget.level,
+      widget.primary,
     );
-    final coinsLabel = formatCoinsLabel(widget.coinsBalance);
-    final nextLevelMessage = buildProfileHeaderNextLevelMessage(
-      nextLevel: widget.nextLevel,
-      pointsToNextLevel: widget.pointsToNextLevel,
-    );
-    final scoreLabel = widget.exactScore > 0
+    final levelEmoji = widget.previewMode
+        ? ''
+        : profileHeaderLevelEmoji(widget.level);
+    final displayedLevel = widget.previewMode
+        ? 'Acesso premium'
+        : profileHeaderDisplayLevel(widget.level);
+    final recentIndexView = widget.previewMode
+        ? ProfileHeaderRecentIndexViewData(
+            label: 'Disponível com assinatura',
+            description:
+                'Desbloqueie o painel para acompanhar seu índice recente, entender seu momento e ajustar o ritmo de estudo.',
+            index: 0,
+            isLocked: true,
+            accent: widget.primary,
+          )
+        : buildProfileHeaderRecentIndexView(
+            recentIndex: widget.recentIndex,
+            recentIndexReady: widget.recentIndexReady,
+          );
+    final coinsLabel = widget.previewMode
+        ? 'PREMIUM'
+        : formatCoinsLabel(widget.coinsBalance);
+    final nextLevelMessage = widget.previewMode
+        ? 'Desbloqueie score, frequência e progresso para acompanhar sua evolução com mais clareza.'
+        : buildProfileHeaderNextLevelMessage(
+            nextLevel: widget.nextLevel,
+            pointsToNextLevel: widget.pointsToNextLevel,
+          );
+    final scoreLabel = widget.previewMode
+        ? ''
+        : widget.exactScore > 0
         ? widget.exactScore.toStringAsFixed(1)
         : widget.score.toString();
 
@@ -157,47 +188,51 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           scoreLabel: scoreLabel,
           coinsLabel: coinsLabel,
           avatarSeed: widget.equippedAvatarSeed,
-          activeDaysLast30: widget.activeDaysLast30,
+          activeDaysLast30: widget.previewMode ? 0 : widget.activeDaysLast30,
           consistencyWindowDays: widget.consistencyWindowDays,
-          completedSessions: widget.completedSessions,
+          completedSessions: widget.previewMode ? 0 : widget.completedSessions,
           nextLevelMessage: nextLevelMessage,
           recentIndexView: recentIndexView,
           onSurface: widget.onSurface,
           onSurfaceMuted: widget.onSurfaceMuted,
           primaryDim: widget.primaryDim,
           onAvatarTap: _openAvatarSelector,
+          previewMode: widget.previewMode,
         ),
         const SizedBox(height: 18),
         Row(
           children: <Widget>[
             ProfileStatsBox(
-              value: widget.questionsCount,
+              value: widget.previewMode ? '' : widget.questionsCount,
               label: 'QUESTÕES',
               icon: Icons.quiz_rounded,
               surfaceContainer: widget.surfaceContainer,
               onSurface: widget.onSurface,
               onSurfaceMuted: widget.onSurfaceMuted,
               primary: widget.primary,
+              previewMode: widget.previewMode,
             ),
             const SizedBox(width: 12),
             ProfileStatsBox(
-              value: widget.studyHoursLabel,
+              value: widget.previewMode ? '' : widget.studyHoursLabel,
               label: 'TEMPO',
               icon: Icons.schedule_rounded,
               surfaceContainer: widget.surfaceContainer,
               onSurface: widget.onSurface,
               onSurfaceMuted: widget.onSurfaceMuted,
               primary: widget.primary,
+              previewMode: widget.previewMode,
             ),
             const SizedBox(width: 12),
             ProfileStatsBox(
-              value: widget.accuracyLabel,
+              value: widget.previewMode ? '' : widget.accuracyLabel,
               label: 'PRECISÃO',
               icon: Icons.track_changes_rounded,
               surfaceContainer: widget.surfaceContainer,
               onSurface: widget.onSurface,
               onSurfaceMuted: widget.onSurfaceMuted,
               primary: widget.primary,
+              previewMode: widget.previewMode,
             ),
           ],
         ),

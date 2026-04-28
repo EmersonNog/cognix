@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../services/core/api_client.dart' show isSubscriptionRequiredError;
 import '../../services/profile/profile_api.dart';
 import '../../theme/cognix_theme_colors.dart';
 import 'profile_details_screen.dart';
@@ -41,6 +42,8 @@ class ProfileTab extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
+        final subscriptionRequired =
+            snapshot.hasError && isSubscriptionRequiredError(snapshot.error);
         final profile = snapshot.data ?? const ProfileScoreData.empty();
 
         return RefreshIndicator(
@@ -53,7 +56,8 @@ class ProfileTab extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (snapshot.hasError) ...[
+                if (snapshot.hasError &&
+                    !isSubscriptionRequiredError(snapshot.error)) ...[
                   _ProfileErrorBanner(onSurface: onSurface),
                   const SizedBox(height: 16),
                 ],
@@ -82,17 +86,22 @@ class ProfileTab extends StatelessWidget {
                   primary: primary,
                   primaryDim: primaryDim,
                   onRefreshProfile: onRefresh,
+                  previewMode: subscriptionRequired,
+                  onLockedTap: () =>
+                      Navigator.of(context).pushNamed('subscription'),
                 ),
                 const SizedBox(height: 18),
                 _ProfileSectionHeader(
                   onSurface: onSurface,
                   onSurfaceMuted: onSurfaceMuted,
+                  previewMode: subscriptionRequired,
                 ),
                 const SizedBox(height: 16),
                 ProfileDisciplineGrid(
                   items: profile.questionsByDiscipline,
                   onSurface: onSurface,
                   onSurfaceMuted: onSurfaceMuted,
+                  previewMode: subscriptionRequired,
                 ),
                 const SizedBox(height: 18),
                 ProfileOpenPanelCard(
@@ -178,10 +187,12 @@ class _ProfileSectionHeader extends StatelessWidget {
   const _ProfileSectionHeader({
     required this.onSurface,
     required this.onSurfaceMuted,
+    this.previewMode = false,
   });
 
   final Color onSurface;
   final Color onSurfaceMuted;
+  final bool previewMode;
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +200,7 @@ class _ProfileSectionHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Painel pessoal',
+          previewMode ? 'Painel premium' : 'Painel pessoal',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             color: onSurface,
             fontWeight: FontWeight.w800,
@@ -197,7 +208,9 @@ class _ProfileSectionHeader extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          'Acompanhe sua distribuição de questões e a consistência da sua rotina.',
+          previewMode
+              ? 'Desbloqueie score por disciplina, consistência e evolução da sua rotina.'
+              : 'Acompanhe sua distribuição de questões e a consistência da sua rotina.',
           style: Theme.of(
             context,
           ).textTheme.bodyMedium?.copyWith(color: onSurfaceMuted, height: 1.4),

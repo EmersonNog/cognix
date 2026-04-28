@@ -6,11 +6,15 @@ class MomentIndicatorsSection extends StatelessWidget {
     required this.view,
     required this.onSurface,
     required this.onSurfaceMuted,
+    this.previewMode = false,
   });
 
   final PerformanceViewData view;
   final Color onSurface;
   final Color onSurfaceMuted;
+  final bool previewMode;
+
+  static const String _lockedHelper = 'Disponível com assinatura premium.';
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +41,14 @@ class MomentIndicatorsSection extends StatelessWidget {
               Expanded(
                 child: PerformanceMetricCard(
                   label: 'Pontos de atenção',
-                  value: hasAttentionBase
+                  value: previewMode
+                      ? ''
+                      : hasAttentionBase
                       ? '${view.attentionSubcategoriesCount}'
                       : '--',
-                  helper: !hasAttentionBase || weakestSubcategory == null
+                  helper: previewMode
+                      ? _lockedHelper
+                      : !hasAttentionBase || weakestSubcategory == null
                       ? 'Ainda não há disciplinas com base suficiente para identificar alertas.'
                       : view.attentionSubcategoriesCount == 0
                       ? 'Nenhuma disciplina ficou abaixo de ${view.attentionAccuracyThreshold.toStringAsFixed(0)}% de acerto.'
@@ -51,16 +59,21 @@ class MomentIndicatorsSection extends StatelessWidget {
                   accent: const Color(0xFF7C9BFF),
                   onSurface: onSurface,
                   onSurfaceMuted: onSurfaceMuted,
+                  isLocked: previewMode,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: PerformanceMetricCard(
                   label: 'Maior acerto',
-                  value: !hasComparisonBase || strongestSubcategory == null
+                  value: previewMode
+                      ? ''
+                      : !hasComparisonBase || strongestSubcategory == null
                       ? '--'
                       : '${strongestSubcategory.accuracyPercent.toStringAsFixed(0)}%',
-                  helper: !hasComparisonBase || strongestSubcategory == null
+                  helper: previewMode
+                      ? _lockedHelper
+                      : !hasComparisonBase || strongestSubcategory == null
                       ? 'Ainda não há disciplinas com base suficiente para comparar.'
                       : performanceSubcategoryHelper(
                           discipline: strongestSubcategory.discipline,
@@ -71,6 +84,7 @@ class MomentIndicatorsSection extends StatelessWidget {
                   accent: const Color(0xFFC28BFF),
                   onSurface: onSurface,
                   onSurfaceMuted: onSurfaceMuted,
+                  isLocked: previewMode,
                 ),
               ),
             ],
@@ -84,24 +98,33 @@ class MomentIndicatorsSection extends StatelessWidget {
               Expanded(
                 child: PerformanceMetricCard(
                   label: 'Tempo por simulado',
-                  value: performanceFormatSeconds(view.secondsPerSimulation),
-                  helper: view.completedSessions == 0
+                  value: previewMode
+                      ? ''
+                      : performanceFormatSeconds(view.secondsPerSimulation),
+                  helper: previewMode
+                      ? _lockedHelper
+                      : view.completedSessions == 0
                       ? 'Conclua simulados para liberar essa média.'
                       : 'Média sobre ${view.completedSessions} simulados concluídos.',
                   icon: Icons.flag_rounded,
                   accent: const Color(0xFFFFC857),
                   onSurface: onSurface,
                   onSurfaceMuted: onSurfaceMuted,
+                  isLocked: previewMode,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: PerformanceMetricCard(
                   label: 'Menor acerto',
-                  value: !hasComparisonBase || weakestSubcategory == null
+                  value: previewMode
+                      ? ''
+                      : !hasComparisonBase || weakestSubcategory == null
                       ? '--'
                       : '${weakestSubcategory.accuracyPercent.toStringAsFixed(0)}%',
-                  helper: !hasComparisonBase || weakestSubcategory == null
+                  helper: previewMode
+                      ? _lockedHelper
+                      : !hasComparisonBase || weakestSubcategory == null
                       ? 'Ainda não há disciplinas com base suficiente para comparar.'
                       : performanceSubcategoryHelper(
                           discipline: weakestSubcategory.discipline,
@@ -112,6 +135,7 @@ class MomentIndicatorsSection extends StatelessWidget {
                   accent: const Color(0xFF4ED7A6),
                   onSurface: onSurface,
                   onSurfaceMuted: onSurfaceMuted,
+                  isLocked: previewMode,
                 ),
               ),
             ],

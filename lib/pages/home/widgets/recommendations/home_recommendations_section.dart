@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../services/core/api_client.dart'
+    show isSubscriptionRequiredError;
 import '../../../../services/recommendations/home_recommendations_api.dart';
 import '../../../../theme/cognix_theme_colors.dart';
+import '../../../../widgets/subscription/subscription_required_card.dart';
 import '../../../subjects/subjects_data.dart';
 import '../../../training/detail/training_detail_screen.dart';
 part 'home_recommendations_section_actions.dart';
@@ -86,6 +89,14 @@ class HomeRecommendationsSection extends StatelessWidget {
                 onSurfaceMuted: onSurfaceMuted,
                 surfaceContainerHigh: surfaceContainerHigh,
                 primary: primary,
+              )
+            else if (snapshot.hasError &&
+                isSubscriptionRequiredError(snapshot.error))
+              const SubscriptionRequiredCard(
+                title: 'Recomendações premium',
+                message:
+                    'Ative seu acesso para receber prioridades reais com base no seu desempenho.',
+                compact: true,
               )
             else if (snapshot.hasError)
               _RecommendationsMessageCard(

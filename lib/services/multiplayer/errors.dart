@@ -1,9 +1,16 @@
+import '../core/api_client.dart'
+    show isSubscriptionRequiredError, readableApiErrorMessage;
+
 String humanizeMultiplayerError(
   Object error, {
   String fallback =
       'Não deu para concluir agora. Tente novamente em instantes.',
 }) {
-  final rawMessage = error.toString().trim();
+  if (isSubscriptionRequiredError(error)) {
+    return readableApiErrorMessage(error);
+  }
+
+  final rawMessage = readableApiErrorMessage(error).trim();
   final withoutExceptionPrefix = rawMessage.replaceFirst(
     RegExp(r'^Exception:\s*'),
     '',

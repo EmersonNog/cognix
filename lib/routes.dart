@@ -10,6 +10,7 @@ import 'pages/writing/result/writing_result_screen.dart';
 import 'pages/writing/theme/writing_theme_screen.dart';
 import 'services/multiplayer/models.dart';
 import 'pages/study_plan/study_plan_screen.dart';
+import 'pages/subscription/subscription_screen.dart';
 import 'pages/support/support_screen.dart';
 import 'pages/auth/forgot_password.dart';
 import 'package:flutter/cupertino.dart';
@@ -59,6 +60,7 @@ class Routes {
         },
         'plan': (context) => const PlanScreen(),
         'study-plan': (context) => const StudyPlanScreen(),
+        'subscription': (context) => const SubscriptionScreen(),
         'support': (context) => const SupportScreen(),
       };
 

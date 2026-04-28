@@ -140,6 +140,7 @@ class _ProfileHeaderRecentIndexCardNativeState
                             accent: widget.view.accent,
                             index: widget.view.index,
                             indexLabel: widget.view.indexLabel,
+                            isLocked: widget.view.isLocked,
                             onSurface: widget.onSurface,
                             onSurfaceMuted: widget.onSurfaceMuted,
                           ),
@@ -176,6 +177,7 @@ class _NativeRecentIndexBadge extends StatelessWidget {
     required this.accent,
     required this.index,
     required this.indexLabel,
+    required this.isLocked,
     required this.onSurface,
     required this.onSurfaceMuted,
   });
@@ -183,6 +185,7 @@ class _NativeRecentIndexBadge extends StatelessWidget {
   final Color accent;
   final int index;
   final String? indexLabel;
+  final bool isLocked;
   final Color onSurface;
   final Color onSurfaceMuted;
 
@@ -230,15 +233,22 @@ class _NativeRecentIndexBadge extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 7),
-          Text(
-            indexLabel ?? '$index/100',
-            style: GoogleFonts.manrope(
-              color: onSurface,
-              fontSize: 17,
-              fontWeight: FontWeight.w900,
-              height: 1.0,
+          if (isLocked)
+            Icon(
+              Icons.lock_rounded,
+              color: onSurface.withValues(alpha: 0.82),
+              size: 18,
+            )
+          else
+            Text(
+              indexLabel ?? '$index/100',
+              style: GoogleFonts.manrope(
+                color: onSurface,
+                fontSize: 17,
+                fontWeight: FontWeight.w900,
+                height: 1.0,
+              ),
             ),
-          ),
         ],
       ),
     );

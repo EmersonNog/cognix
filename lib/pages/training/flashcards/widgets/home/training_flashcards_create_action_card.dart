@@ -12,6 +12,7 @@ class TrainingFlashcardsCreateActionCard extends StatelessWidget {
     required this.primary,
     required this.totalFlashcards,
     required this.onCreateFlashcard,
+    this.previewMode = false,
   });
 
   final Color surfaceContainer;
@@ -20,15 +21,24 @@ class TrainingFlashcardsCreateActionCard extends StatelessWidget {
   final Color primary;
   final int totalFlashcards;
   final VoidCallback onCreateFlashcard;
+  final bool previewMode;
 
   @override
   Widget build(BuildContext context) {
-    final headline = totalFlashcards == 0
+    final headline = previewMode
+        ? 'Criação premium'
+        : totalFlashcards == 0
         ? 'Criar flashcard'
         : 'Continue seus flashcards';
-    final description = totalFlashcards == 0
+    final description = previewMode
+        ? 'Ative seu acesso para criar decks por matéria, revisar conceitos e acompanhar seu progresso.'
+        : totalFlashcards == 0
         ? 'Adicione perguntas e respostas para revisar.'
         : '$totalFlashcards cards prontos para revisar.';
+    final buttonLabel = previewMode ? 'Desbloquear criação' : 'Criar flashcard';
+    final buttonIcon = previewMode
+        ? Icons.lock_outline_rounded
+        : Icons.add_rounded;
 
     return CustomPaint(
       painter: TrainingFlashcardsDashedRoundedRectPainter(
@@ -99,9 +109,9 @@ class TrainingFlashcardsCreateActionCard extends StatelessWidget {
               width: double.infinity,
               child: FilledButton.icon(
                 onPressed: onCreateFlashcard,
-                icon: const Icon(Icons.add_rounded, size: 18),
+                icon: Icon(buttonIcon, size: 18),
                 label: Text(
-                  'Criar flashcard',
+                  buttonLabel,
                   style: GoogleFonts.manrope(
                     fontSize: 14.5,
                     fontWeight: FontWeight.w900,

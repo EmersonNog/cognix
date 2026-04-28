@@ -5,6 +5,15 @@ Widget _buildCreateRoomScreen(
   BuildContext context,
 ) {
   final palette = MultiplayerPalette.fromContext(context);
+  final showSubscriptionGate =
+      state._room == null && state._isSubscriptionRequired;
+  final title = showSubscriptionGate ? 'Multiplayer premium' : 'Criar sala';
+  final subtitle = showSubscriptionGate
+      ? 'Ative sua assinatura para abrir salas e jogar com amigos em tempo real.'
+      : 'Compartilhe o PIN e aguarde os participantes.';
+  final leadingIcon = showSubscriptionGate
+      ? Icons.workspace_premium_rounded
+      : Icons.groups_2_rounded;
 
   return PopScope(
     canPop: false,
@@ -17,9 +26,9 @@ Widget _buildCreateRoomScreen(
       body: Stack(
         children: [
           MultiplayerScaffold(
-            title: 'Criar sala',
-            subtitle: 'Compartilhe o PIN e aguarde os participantes.',
-            leadingIcon: Icons.groups_2_rounded,
+            title: title,
+            subtitle: subtitle,
+            leadingIcon: leadingIcon,
             palette: palette,
             onBack: () {
               _handleCreateRoomBack(state);
@@ -59,6 +68,18 @@ List<Widget> _buildCreateRoomContent(
   }
 
   if (room == null) {
+    if (state._isSubscriptionRequired) {
+      return [
+        MultiplayerSubscriptionGate(
+          palette: palette,
+          message: state._errorMessage,
+          onPressed: () {
+            Navigator.of(state.context).pushNamed('subscription');
+          },
+        ),
+      ];
+    }
+
     return [
       MultiplayerErrorPanel(
         palette: palette,
@@ -86,7 +107,7 @@ List<Widget> _buildCreateRoomContent(
       title: room.isInProgress ? 'Partida iniciada' : 'Sala em espera',
       subtitle: room.isInProgress
           ? 'O lobby já foi fechado para iniciar o jogo.'
-          : 'A lista atualiza automaticamente. Você pode remover participantes antes de iniciar.',
+          : 'A lista atualiza automaticamente. Voce pode remover participantes antes de iniciar.',
       icon: room.isInProgress
           ? Icons.play_circle_fill_rounded
           : Icons.hourglass_top_rounded,

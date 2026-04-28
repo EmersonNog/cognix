@@ -6,6 +6,7 @@ Future<void> _joinRoom(_MultiplayerJoinRoomScreenState state) async {
   state._update(() {
     state._isJoining = true;
     state._errorMessage = null;
+    state._isSubscriptionRequired = false;
     state._wasRemoved = false;
     state._isOpeningMatch = false;
   });
@@ -24,7 +25,17 @@ Future<void> _joinRoom(_MultiplayerJoinRoomScreenState state) async {
     _startJoinRoomPolling(state);
   } catch (error) {
     if (!state.mounted) return;
-    state._update(() => state._errorMessage = humanizeMultiplayerError(error));
+    if (isSubscriptionRequiredError(error)) {
+      state._update(() {
+        state._errorMessage = humanizeMultiplayerError(error);
+        state._isSubscriptionRequired = true;
+      });
+      return;
+    }
+    state._update(() {
+      state._errorMessage = humanizeMultiplayerError(error);
+      state._isSubscriptionRequired = false;
+    });
   } finally {
     if (state.mounted && !state._isOpeningMatch) {
       state._update(() => state._isJoining = false);

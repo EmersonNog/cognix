@@ -23,6 +23,10 @@ class SupportScreen extends StatelessWidget {
     Navigator.of(context).pushNamed('study-plan');
   }
 
+  void _openSubscription(BuildContext context) {
+    Navigator.of(context).pushNamed('subscription');
+  }
+
   Future<void> _openPerformance(
     BuildContext context,
     _SupportPalette palette,
@@ -108,6 +112,16 @@ class SupportScreen extends StatelessWidget {
                   'Ritmo semanal, volume de estudo e prioridades do seu planejamento.',
               accent: palette.secondary,
               onTap: () => _openStudyPlan(context),
+            ),
+            const SizedBox(height: 12),
+            _SupportTopicCard(
+              palette: palette,
+              icon: Icons.workspace_premium_rounded,
+              title: 'Assinatura',
+              subtitle:
+                  'Consulte seu plano atual e cancele novas cobranças quando precisar.',
+              accent: palette.primary,
+              onTap: () => _openSubscription(context),
             ),
             const SizedBox(height: 12),
             _SupportTopicCard(

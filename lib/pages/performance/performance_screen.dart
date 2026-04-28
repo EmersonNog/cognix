@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../services/core/api_client.dart' show isSubscriptionRequiredError;
 import '../../services/profile/profile_api.dart';
 import '../../theme/cognix_theme_colors.dart';
 import '../../utils/api_datetime.dart';
+import '../../widgets/subscription/subscription_required_card.dart';
 import 'utils/performance_utils.dart';
 import 'widgets/performance_sections.dart';
 import 'widgets/performance_widgets.dart';
@@ -68,6 +70,28 @@ class PerformanceScreen extends StatelessWidget {
                 );
         }
 
+        if (!snapshot.hasData &&
+            snapshot.hasError &&
+            isSubscriptionRequiredError(snapshot.error)) {
+          return _PerformanceScreenFrame(
+            profile: const ProfileScoreData.empty(),
+            onSurface: onSurface,
+            onSurfaceMuted: onSurfaceMuted,
+            primary: primary,
+            surface: colors.surface,
+            surfaceContainerHigh: colors.surfaceContainerHigh,
+            embedded: _embedded,
+            onRefresh: onRefresh,
+            previewMode: true,
+            leading: const SubscriptionRequiredCard(
+              title: 'Análise premium',
+              message:
+                  'Esta é uma prévia. Ative seu acesso para ver desempenho, eficiência e leitura por área.',
+              compact: true,
+            ),
+          );
+        }
+
         if (!snapshot.hasData) {
           return _PerformanceErrorState(
             embedded: _embedded,
@@ -102,6 +126,8 @@ class _PerformanceScreenFrame extends StatelessWidget {
     required this.surfaceContainerHigh,
     required this.embedded,
     required this.onRefresh,
+    this.previewMode = false,
+    this.leading,
   });
 
   final ProfileScoreData profile;
@@ -112,6 +138,8 @@ class _PerformanceScreenFrame extends StatelessWidget {
   final Color surfaceContainerHigh;
   final bool embedded;
   final RefreshCallback? onRefresh;
+  final bool previewMode;
+  final Widget? leading;
 
   @override
   Widget build(BuildContext context) {
@@ -123,6 +151,8 @@ class _PerformanceScreenFrame extends StatelessWidget {
       surfaceContainerHigh: surfaceContainerHigh,
       embedded: embedded,
       onRefresh: onRefresh,
+      previewMode: previewMode,
+      leading: leading,
     );
 
     if (embedded) {
@@ -155,6 +185,8 @@ class _PerformanceScreenContent extends StatelessWidget {
     required this.surfaceContainerHigh,
     required this.embedded,
     required this.onRefresh,
+    this.previewMode = false,
+    this.leading,
   });
 
   final ProfileScoreData profile;
@@ -164,6 +196,8 @@ class _PerformanceScreenContent extends StatelessWidget {
   final Color surfaceContainerHigh;
   final bool embedded;
   final RefreshCallback? onRefresh;
+  final bool previewMode;
+  final Widget? leading;
 
   @override
   Widget build(BuildContext context) {
@@ -179,10 +213,12 @@ class _PerformanceScreenContent extends StatelessWidget {
         embedded ? 120 : 30,
       ),
       children: [
+        if (leading != null) ...[leading!, const SizedBox(height: 16)],
         MomentIndicatorsSection(
           view: view,
           onSurface: onSurface,
           onSurfaceMuted: onSurfaceMuted,
+          previewMode: previewMode,
         ),
         DisciplineSection(
           view: view,
@@ -193,6 +229,7 @@ class _PerformanceScreenContent extends StatelessWidget {
           view: view,
           onSurface: onSurface,
           onSurfaceMuted: onSurfaceMuted,
+          previewMode: previewMode,
         ),
         PerformanceInsightCard(
           title: insight?.title ?? 'Leitura do cenário',
@@ -217,6 +254,7 @@ class _PerformanceScreenContent extends StatelessWidget {
           onSurface: onSurface,
           onSurfaceMuted: onSurfaceMuted,
           surfaceContainerHigh: surfaceContainerHigh,
+          previewMode: previewMode,
         ),
       ],
     );

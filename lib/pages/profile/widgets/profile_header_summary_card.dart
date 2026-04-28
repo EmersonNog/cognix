@@ -27,6 +27,7 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
     required this.onSurfaceMuted,
     required this.primaryDim,
     required this.onAvatarTap,
+    this.previewMode = false,
   });
 
   final String userName;
@@ -45,10 +46,15 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
   final Color onSurfaceMuted;
   final Color primaryDim;
   final VoidCallback onAvatarTap;
+  final bool previewMode;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.cognixColors;
+    final badgeText = previewMode
+        ? 'PREMIUM'
+        : '$levelEmoji ${displayedLevel.toUpperCase()}';
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 22, 20, 24),
@@ -108,7 +114,7 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                '$levelEmoji ${displayedLevel.toUpperCase()}',
+                                badgeText,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.plusJakartaSans(
@@ -121,29 +127,31 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: colors.accent.withValues(alpha: 0.16),
-                            borderRadius: BorderRadius.circular(999),
-                            border: Border.all(
-                              color: colors.accent.withValues(alpha: 0.28),
+                        if (!previewMode) ...[
+                          const SizedBox(width: 12),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: colors.accent.withValues(alpha: 0.16),
+                              borderRadius: BorderRadius.circular(999),
+                              border: Border.all(
+                                color: colors.accent.withValues(alpha: 0.28),
+                              ),
+                            ),
+                            child: Text(
+                              coinsLabel.toUpperCase(),
+                              style: GoogleFonts.plusJakartaSans(
+                                color: colors.accent,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.5,
+                              ),
                             ),
                           ),
-                          child: Text(
-                            coinsLabel.toUpperCase(),
-                            style: GoogleFonts.plusJakartaSans(
-                              color: colors.accent,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
+                        ],
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -158,7 +166,9 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Nível definido por questões, precisão, simulados concluídos e consistência diária.',
+                      previewMode
+                          ? 'Disponível com assinatura premium.'
+                          : 'Nivel definido por questões, precisão, simulados concluídos e consistência diária.',
                       style: GoogleFonts.inter(
                         color: onSurfaceMuted,
                         fontSize: 13,
@@ -179,24 +189,29 @@ class ProfileHeaderSummaryCard extends StatelessWidget {
                   value: '$scoreLabel/100',
                   accent: levelAccent,
                   onSurface: onSurface,
+                  isLocked: previewMode,
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: ProfileHeaderMetricPill(
                   label: 'Frequência',
-                  value: '$activeDaysLast30/$consistencyWindowDays dias',
+                  value: previewMode
+                      ? ''
+                      : '$activeDaysLast30/$consistencyWindowDays dias',
                   accent: levelAccent,
                   onSurface: onSurface,
+                  isLocked: previewMode,
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: ProfileHeaderMetricPill(
                   label: 'Simulados',
-                  value: completedSessions.toString(),
+                  value: previewMode ? '' : completedSessions.toString(),
                   accent: levelAccent,
                   onSurface: onSurface,
+                  isLocked: previewMode,
                 ),
               ),
             ],

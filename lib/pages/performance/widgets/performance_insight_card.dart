@@ -20,6 +20,7 @@ class PerformanceInsightCard extends StatelessWidget {
     required this.onSurface,
     required this.onSurfaceMuted,
     required this.surfaceContainerHigh,
+    this.previewMode = false,
     super.key,
   });
 
@@ -34,6 +35,7 @@ class PerformanceInsightCard extends StatelessWidget {
   final Color onSurface;
   final Color onSurfaceMuted;
   final Color surfaceContainerHigh;
+  final bool previewMode;
 
   @override
   Widget build(BuildContext context) {
@@ -81,16 +83,40 @@ class PerformanceInsightCard extends StatelessWidget {
                 color: colors.onSurfaceMuted.withValues(alpha: 0.12),
               ),
             ),
-            child: Text(
-              description,
-              style: GoogleFonts.inter(
-                color: onSurfaceMuted,
-                fontSize: 12.6,
-                height: 1.55,
-              ),
-            ),
+            child: previewMode
+                ? Row(
+                    children: [
+                      Icon(
+                        Icons.lock_rounded,
+                        color: onSurface.withValues(alpha: 0.82),
+                        size: 20,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          'Disponível com assinatura premium.',
+                          style: GoogleFonts.inter(
+                            color: onSurfaceMuted,
+                            fontSize: 12.6,
+                            height: 1.55,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : Text(
+                    description,
+                    style: GoogleFonts.inter(
+                      color: onSurfaceMuted,
+                      fontSize: 12.6,
+                      height: 1.55,
+                    ),
+                  ),
           ),
-          if (priority != null || riskLevel != null || confidence != null) ...[
+          if (!previewMode &&
+              (priority != null ||
+                  riskLevel != null ||
+                  confidence != null)) ...[
             const SizedBox(height: 12),
             PerformanceInsightMetrics(
               priority: priority,
@@ -98,7 +124,7 @@ class PerformanceInsightCard extends StatelessWidget {
               onSurface: onSurface,
             ),
           ],
-          if (nextAction != null) ...[
+          if (!previewMode && nextAction != null) ...[
             const SizedBox(height: 12),
             PerformanceInsightActionCard(
               nextAction: nextAction!,
@@ -106,7 +132,7 @@ class PerformanceInsightCard extends StatelessWidget {
               onSurface: onSurface,
             ),
           ],
-          if (confidence != null) ...[
+          if (!previewMode && confidence != null) ...[
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),

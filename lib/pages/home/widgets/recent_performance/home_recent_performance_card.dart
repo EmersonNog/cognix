@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../services/core/api_client.dart'
+    show isSubscriptionRequiredError;
 import '../../../../services/profile/profile_api.dart';
+import '../../../../widgets/subscription/subscription_required_card.dart';
 part 'home_recent_performance_card_content.dart';
 part 'home_recent_performance_card_utils.dart';
 
@@ -112,6 +115,16 @@ class _HomeRecentPerformanceCardState extends State<HomeRecentPerformanceCard>
                 child: _RecentPerformanceLoadingState(
                   surfaceContainerHigh: widget.surfaceContainerHigh,
                 ),
+              );
+            }
+
+            if (snapshot.hasError &&
+                isSubscriptionRequiredError(snapshot.error)) {
+              return const SubscriptionRequiredCard(
+                title: 'Desempenho premium',
+                message:
+                    'Ative seu acesso para acompanhar seus resultados reais.',
+                compact: true,
               );
             }
 

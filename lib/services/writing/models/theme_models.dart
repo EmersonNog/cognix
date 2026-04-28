@@ -48,3 +48,19 @@ class WritingThemesData {
   final bool hasMore;
   final WritingTheme? monthlyTheme;
 }
+
+class WritingThemesAccessResult {
+  const WritingThemesAccessResult({
+    required this.data,
+    required this.requiresSubscription,
+  });
+
+  const WritingThemesAccessResult.available(WritingThemesData data)
+    : this(data: data, requiresSubscription: false);
+
+  const WritingThemesAccessResult.locked(WritingThemesData data)
+    : this(data: data, requiresSubscription: true);
+
+  final WritingThemesData data;
+  final bool requiresSubscription;
+}

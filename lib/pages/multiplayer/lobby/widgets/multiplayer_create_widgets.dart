@@ -108,12 +108,16 @@ class MultiplayerErrorPanel extends StatelessWidget {
     required this.title,
     required this.message,
     required this.onRetry,
+    this.actionLabel = 'Tentar novamente',
+    this.actionIcon = Icons.refresh_rounded,
   });
 
   final MultiplayerPalette palette;
   final String title;
   final String message;
   final VoidCallback onRetry;
+  final String actionLabel;
+  final IconData actionIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -142,8 +146,8 @@ class MultiplayerErrorPanel extends StatelessWidget {
           const SizedBox(height: 14),
           FilledButton.icon(
             onPressed: onRetry,
-            icon: const Icon(Icons.refresh_rounded),
-            label: const Text('Tentar novamente'),
+            icon: Icon(actionIcon),
+            label: Text(actionLabel),
           ),
         ],
       ),

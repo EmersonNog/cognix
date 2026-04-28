@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../services/core/api_client.dart'
+    show isSubscriptionRequiredError;
 import '../../../../services/multiplayer/errors.dart';
 import '../../../../services/multiplayer/models.dart';
 import '../../../../services/multiplayer/requests.dart';
@@ -48,6 +50,7 @@ class _MultiplayerCreateRoomScreenState
   bool _isStarting = false;
   bool _isClosing = false;
   bool _isOpeningMatch = false;
+  bool _isSubscriptionRequired = false;
   bool _connectionInterrupted = false;
   bool _awaitingReconnectConfirmation = false;
   bool _handledConnectionTimeoutRedirect = false;

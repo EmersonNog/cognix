@@ -35,6 +35,7 @@ Future<void> _createRoom(_MultiplayerCreateRoomScreenState state) async {
   state._update(() {
     state._isLoading = true;
     state._errorMessage = null;
+    state._isSubscriptionRequired = false;
   });
 
   try {
@@ -51,6 +52,7 @@ Future<void> _createRoom(_MultiplayerCreateRoomScreenState state) async {
     if (!state.mounted) return;
     state._update(() {
       state._errorMessage = humanizeMultiplayerError(error);
+      state._isSubscriptionRequired = isSubscriptionRequiredError(error);
       state._isLoading = false;
     });
   }

@@ -13,6 +13,7 @@ class ProfileStatsBox extends StatelessWidget {
     required this.onSurface,
     required this.onSurfaceMuted,
     required this.primary,
+    this.previewMode = false,
   });
 
   final String value;
@@ -22,6 +23,7 @@ class ProfileStatsBox extends StatelessWidget {
   final Color onSurface;
   final Color onSurfaceMuted;
   final Color primary;
+  final bool previewMode;
 
   @override
   Widget build(BuildContext context) {
@@ -54,14 +56,21 @@ class ProfileStatsBox extends StatelessWidget {
               child: Icon(icon, color: primary, size: 18),
             ),
             const SizedBox(height: 10),
-            Text(
-              value,
-              style: GoogleFonts.manrope(
-                color: onSurface,
-                fontSize: 21,
-                fontWeight: FontWeight.w800,
+            if (previewMode)
+              Icon(
+                Icons.lock_rounded,
+                color: onSurface.withValues(alpha: 0.82),
+                size: 22,
+              )
+            else
+              Text(
+                value,
+                style: GoogleFonts.manrope(
+                  color: onSurface,
+                  fontSize: 21,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
-            ),
             const SizedBox(height: 4),
             Text(
               label,
@@ -72,6 +81,17 @@ class ProfileStatsBox extends StatelessWidget {
                 letterSpacing: 0.8,
               ),
             ),
+            if (previewMode) ...[
+              const SizedBox(height: 6),
+              Text(
+                'Premium',
+                style: GoogleFonts.inter(
+                  color: primary,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
           ],
         ),
       ),

@@ -8,12 +8,14 @@ class ProfileHeaderMetricPill extends StatelessWidget {
     required this.value,
     required this.accent,
     required this.onSurface,
+    this.isLocked = false,
   });
 
   final String label;
   final String value;
   final Color accent;
   final Color onSurface;
+  final bool isLocked;
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +43,21 @@ class ProfileHeaderMetricPill extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            value,
-            style: GoogleFonts.manrope(
-              color: onSurface,
-              fontSize: 14,
-              fontWeight: FontWeight.w800,
+          if (isLocked)
+            Icon(
+              Icons.lock_rounded,
+              color: onSurface.withValues(alpha: 0.82),
+              size: 16,
+            )
+          else
+            Text(
+              value,
+              style: GoogleFonts.manrope(
+                color: onSurface,
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+              ),
             ),
-          ),
         ],
       ),
     );

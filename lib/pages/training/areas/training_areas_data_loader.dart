@@ -1,4 +1,6 @@
 import '../../../services/questions/questions_api.dart';
+import '../../../services/core/api_client.dart'
+    show isSubscriptionRequiredError;
 import '../../subjects/subjects_data.dart';
 import 'training_area_models.dart';
 
@@ -15,7 +17,10 @@ class TrainingAreasDataLoader {
           0,
           (sum, subcategory) => sum + subcategory.total,
         );
-      } catch (_) {
+      } catch (error) {
+        if (isSubscriptionRequiredError(error)) {
+          rethrow;
+        }
         totals[item.area] = 0;
       }
     }

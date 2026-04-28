@@ -9,7 +9,7 @@ class _StudyPlanFooterBar extends StatelessWidget {
 
   final _StudyPlanPalette palette;
   final bool isSaving;
-  final VoidCallback onSave;
+  final VoidCallback? onSave;
 
   @override
   Widget build(BuildContext context) {

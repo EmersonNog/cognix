@@ -12,6 +12,7 @@ class PerformanceMetricCard extends StatelessWidget {
     required this.accent,
     required this.onSurface,
     required this.onSurfaceMuted,
+    this.isLocked = false,
     super.key,
   });
 
@@ -22,6 +23,7 @@ class PerformanceMetricCard extends StatelessWidget {
   final Color accent;
   final Color onSurface;
   final Color onSurfaceMuted;
+  final bool isLocked;
 
   static const double _minCardHeight = 176;
 
@@ -65,16 +67,23 @@ class PerformanceMetricCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 6),
-            Text(
-              value,
-              style: GoogleFonts.manrope(
-                color: onSurface,
-                fontSize: 22,
-                fontWeight: FontWeight.w800,
+            if (isLocked)
+              Icon(
+                Icons.lock_rounded,
+                color: onSurface.withValues(alpha: 0.82),
+                size: 22,
+              )
+            else
+              Text(
+                value,
+                style: GoogleFonts.manrope(
+                  color: onSurface,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
             const SizedBox(height: 12),
             Text(
               helper,

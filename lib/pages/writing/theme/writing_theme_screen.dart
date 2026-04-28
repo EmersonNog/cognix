@@ -3,17 +3,21 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../services/core/api_client.dart'
+    show isSubscriptionRequiredError;
 import '../../../services/writing/writing_api.dart';
 import '../../../theme/cognix_theme_colors.dart';
 import '../models/writing_route_args.dart';
 
-part 'category_filter.dart';
-part 'entrance_section.dart';
-part 'featured_cards.dart';
-part 'search_toolbar.dart';
-part 'state_cards.dart';
-part 'theme_list_widgets.dart';
-part 'theme_styles.dart';
+part 'filters/category_filter.dart';
+part 'shared/entrance_section.dart';
+part 'featured/featured_history_card.dart';
+part 'featured/featured_monthly_card.dart';
+part 'filters/search_toolbar.dart';
+part 'shared/state_cards.dart';
+part 'list/theme_list_cards.dart';
+part 'list/theme_list_summary.dart';
+part 'shared/theme_styles.dart';
 
 class WritingThemeScreen extends StatefulWidget {
   const WritingThemeScreen({super.key});
@@ -36,6 +40,7 @@ class _WritingThemeScreenState extends State<WritingThemeScreen> {
   String _searchQuery = '';
   bool _hasMore = false;
   bool _isLoadingMore = false;
+  bool _isSubscriptionBlocked = false;
   int _total = 0;
 
   @override
@@ -53,7 +58,7 @@ class _WritingThemeScreenState extends State<WritingThemeScreen> {
   }
 
   Future<void> _reloadThemes() async {
-    final data = await fetchWritingThemes(
+    final result = await fetchWritingThemesWithAccess(
       category: _selectedCategory,
       search: _searchQuery,
       limit: _pageSize,
@@ -63,11 +68,12 @@ class _WritingThemeScreenState extends State<WritingThemeScreen> {
       return;
     }
     setState(() {
-      _items = data.items;
-      _categories = data.categories;
-      _monthlyTheme = data.monthlyTheme;
-      _hasMore = data.hasMore;
-      _total = data.total;
+      _items = result.data.items;
+      _categories = result.data.categories;
+      _monthlyTheme = result.data.monthlyTheme;
+      _hasMore = result.data.hasMore;
+      _total = result.data.total;
+      _isSubscriptionBlocked = result.requiresSubscription;
     });
   }
 
@@ -81,7 +87,7 @@ class _WritingThemeScreenState extends State<WritingThemeScreen> {
     });
 
     try {
-      final data = await fetchWritingThemes(
+      final result = await fetchWritingThemesWithAccess(
         category: _selectedCategory,
         search: _searchQuery,
         limit: _pageSize,
@@ -91,11 +97,12 @@ class _WritingThemeScreenState extends State<WritingThemeScreen> {
         return;
       }
       setState(() {
-        _items = [..._items, ...data.items];
-        _categories = data.categories;
-        _monthlyTheme = data.monthlyTheme;
-        _hasMore = data.hasMore;
-        _total = data.total;
+        _items = [..._items, ...result.data.items];
+        _categories = result.data.categories;
+        _monthlyTheme = result.data.monthlyTheme;
+        _hasMore = result.data.hasMore;
+        _total = result.data.total;
+        _isSubscriptionBlocked = result.requiresSubscription;
       });
     } finally {
       if (mounted) {
@@ -130,6 +137,10 @@ class _WritingThemeScreenState extends State<WritingThemeScreen> {
     Navigator.of(
       context,
     ).pushNamed('writing-editor', arguments: WritingEditorArgs(theme: theme));
+  }
+
+  void _openSubscription() {
+    Navigator.of(context).pushNamed('subscription');
   }
 
   @override
@@ -179,7 +190,9 @@ class _WritingThemeScreenState extends State<WritingThemeScreen> {
                   const SizedBox(height: 16),
                   if (isLoading)
                     const _LoadingCard()
-                  else if (snapshot.hasError && _items.isEmpty)
+                  else if (snapshot.hasError &&
+                      _items.isEmpty &&
+                      !isSubscriptionRequiredError(snapshot.error))
                     const _InfoCard(
                       title: 'Não consegui carregar os temas agora',
                       subtitle:
@@ -198,15 +211,22 @@ class _WritingThemeScreenState extends State<WritingThemeScreen> {
                       delay: 140,
                       child: _MonthlyThemeCard(
                         theme: _monthlyTheme,
-                        onOpenTheme: _openTheme,
+                        onOpenTheme: _isSubscriptionBlocked
+                            ? (_) => _openSubscription()
+                            : _openTheme,
+                        previewMode: _isSubscriptionBlocked,
                       ),
                     ),
                     const SizedBox(height: 16),
                     _EntranceSection(
                       delay: 160,
                       child: _HistoryShortcutCard(
-                        onTap: () =>
-                            Navigator.of(context).pushNamed('writing-history'),
+                        onTap: _isSubscriptionBlocked
+                            ? _openSubscription
+                            : () => Navigator.of(
+                                context,
+                              ).pushNamed('writing-history'),
+                        previewMode: _isSubscriptionBlocked,
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -216,6 +236,7 @@ class _WritingThemeScreenState extends State<WritingThemeScreen> {
                         visibleCount: _items.length,
                         totalCount: _total,
                         hasActiveSearch: _searchQuery.isNotEmpty,
+                        previewMode: _isSubscriptionBlocked,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -224,7 +245,10 @@ class _WritingThemeScreenState extends State<WritingThemeScreen> {
                         delay: 220 + (index * 22),
                         child: _ThemeCard(
                           theme: _items[index],
-                          onTap: () => _openTheme(_items[index]),
+                          onTap: _isSubscriptionBlocked
+                              ? _openSubscription
+                              : () => _openTheme(_items[index]),
+                          previewMode: _isSubscriptionBlocked,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -235,6 +259,7 @@ class _WritingThemeScreenState extends State<WritingThemeScreen> {
                         remainingCount: _total - _items.length,
                         isLoading: _isLoadingMore,
                         onTap: _loadMore,
+                        previewMode: _isSubscriptionBlocked,
                       ),
                     ],
                   ],

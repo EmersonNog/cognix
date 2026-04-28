@@ -6,6 +6,7 @@ class ProfileHeaderRecentIndexViewData {
     required this.description,
     required this.index,
     this.indexLabel,
+    this.isLocked = false,
     required this.accent,
   });
 
@@ -13,6 +14,7 @@ class ProfileHeaderRecentIndexViewData {
   final String description;
   final int index;
   final String? indexLabel;
+  final bool isLocked;
   final Color accent;
 }
 

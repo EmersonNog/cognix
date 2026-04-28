@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../services/core/api_client.dart'
+    show isSubscriptionRequiredError, readableApiErrorMessage;
 import '../../services/questions/questions_api.dart';
 import '../../services/study_plan/study_plan_api.dart';
 import '../../services/study_plan/study_plan_refresh_notifier.dart';
@@ -12,11 +14,21 @@ import 'widgets/study_plan_widgets.dart';
 
 part 'screen/study_plan_screen_actions.dart';
 part 'screen/study_plan_screen_body.dart';
+part 'screen/study_plan_screen_body/error_state.dart';
+part 'screen/study_plan_screen_body/form_content.dart';
+part 'screen/study_plan_screen_body/form_section_helpers.dart';
+part 'screen/study_plan_screen_body/form_section_priorities.dart';
+part 'screen/study_plan_screen_body/form_section_strategy.dart';
+part 'screen/study_plan_screen_body/form_section_structure.dart';
+part 'screen/study_plan_screen_body/subsection_grid.dart';
 part 'screen/study_plan_screen_models.dart';
 part 'screen/study_plan_screen_shell.dart';
 part 'screen/study_plan_screen_shell/background.dart';
 part 'screen/study_plan_screen_shell/footer.dart';
 part 'screen/study_plan_screen_shell/hero_card.dart';
+part 'screen/study_plan_screen_shell/hero_card/header.dart';
+part 'screen/study_plan_screen_shell/hero_card/progress.dart';
+part 'screen/study_plan_screen_shell/hero_card/stats.dart';
 
 class StudyPlanScreen extends StatefulWidget {
   const StudyPlanScreen({super.key});
@@ -39,6 +51,7 @@ class _StudyPlanScreenState extends State<StudyPlanScreen> {
 
   bool _isLoading = true;
   bool _isSaving = false;
+  bool _isSubscriptionRequired = false;
   String? _errorMessage;
   List<String> _availableDisciplines = const [];
   StudyPlanData _plan = const StudyPlanData.empty();
@@ -98,7 +111,9 @@ class _StudyPlanScreenState extends State<StudyPlanScreen> {
                 _StudyPlanFooterBar(
                   palette: palette,
                   isSaving: _isSaving,
-                  onSave: () => _saveForState(this),
+                  onSave: _isLoading || _errorMessage != null
+                      ? null
+                      : () => _saveForState(this),
                 ),
               ],
             ),

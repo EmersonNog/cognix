@@ -9,13 +9,29 @@ void _throwIfUnexpectedStatus(
     return;
   }
 
+  if (response.statusCode == 403) {
+    final subscriptionMessage = _subscriptionRequiredMessageFromResponse(
+      response,
+    );
+    if (subscriptionMessage != null) {
+      throw SubscriptionRequiredException(
+        subscriptionMessage,
+        statusCode: response.statusCode,
+      );
+    }
+  }
+
   if (response.statusCode == 422) {
-    throw Exception(
+    throw ApiException(
       _validationMessageFromResponse(response) ?? '$errorMessage (422).',
+      statusCode: response.statusCode,
     );
   }
 
-  throw Exception('$errorMessage (${response.statusCode}).');
+  throw ApiException(
+    '$errorMessage (${response.statusCode}).',
+    statusCode: response.statusCode,
+  );
 }
 
 Map<String, dynamic> _decodeJsonObject(http.Response response) {

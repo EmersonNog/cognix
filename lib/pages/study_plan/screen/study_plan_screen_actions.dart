@@ -4,6 +4,7 @@ Future<void> _loadForState(_StudyPlanScreenState state) async {
   state._previewRequestToken += 1;
   state._applyState(() {
     state._isLoading = true;
+    state._isSubscriptionRequired = false;
     state._errorMessage = null;
   });
 
@@ -25,13 +26,17 @@ Future<void> _loadForState(_StudyPlanScreenState state) async {
       state._availableDisciplines = disciplines;
       state._isLoading = false;
     });
-  } catch (_) {
+  } catch (error) {
     if (!state.mounted) {
       return;
     }
+    final subscriptionRequired = isSubscriptionRequiredError(error);
     state._applyState(() {
       state._isLoading = false;
-      state._errorMessage = 'Não foi possível carregar seu plano agora.';
+      state._isSubscriptionRequired = subscriptionRequired;
+      state._errorMessage = subscriptionRequired
+          ? readableApiErrorMessage(error)
+          : 'Não foi possível carregar seu plano agora.';
     });
   }
 }
@@ -64,8 +69,15 @@ Future<void> _saveForState(_StudyPlanScreenState state) async {
       'Plano de estudos salvo. Sua semana já foi atualizada.',
       type: CognixMessageType.success,
     );
-  } catch (_) {
+  } catch (error) {
     if (!state.mounted) {
+      return;
+    }
+    if (isSubscriptionRequiredError(error)) {
+      state._applyState(() {
+        state._isSubscriptionRequired = true;
+        state._errorMessage = readableApiErrorMessage(error);
+      });
       return;
     }
     showCognixMessage(
