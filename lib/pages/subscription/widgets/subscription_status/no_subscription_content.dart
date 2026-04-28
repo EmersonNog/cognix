@@ -17,7 +17,7 @@ class _NoSubscriptionContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final trialExpired = status.isTrialExpired;
     final title = status.trialAvailable
-        ? 'Experiência Cognix 3 dias'
+        ? 'Experiência Cognix'
         : trialExpired
         ? 'Experiência encerrada'
         : 'Nenhuma assinatura ativa';
@@ -36,36 +36,22 @@ class _NoSubscriptionContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Status do acesso',
-                    style: GoogleFonts.inter(
-                      color: colors.onSurfaceMuted,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    title,
-                    style: GoogleFonts.manrope(
-                      color: colors.onSurface,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 12),
-            _StatusPill(label: pillLabel, color: pillColor),
-          ],
+        _SubscriptionStatusHeader(
+          colors: colors,
+          eyebrow: 'STATUS DO ACESSO',
+          title: title,
+          description: status.trialAvailable
+              ? 'Ative sua experiência quando quiser e libere todos os recursos por 3 dias.'
+              : trialExpired
+              ? 'Seu período gratuito terminou. Você pode seguir com um plano pago quando quiser.'
+              : 'Nenhum acesso premium está ativo no momento.',
+          icon: status.trialAvailable
+              ? Icons.auto_awesome_rounded
+              : trialExpired
+              ? Icons.schedule_rounded
+              : Icons.lock_outline_rounded,
+          accent: pillColor,
+          status: _StatusPill(label: pillLabel, color: pillColor),
         ),
         const SizedBox(height: 18),
         _SubscriptionSummaryPanel(
@@ -74,10 +60,10 @@ class _NoSubscriptionContent extends StatelessWidget {
             _SubscriptionSummaryRowData(
               label: 'Acesso',
               value: status.trialAvailable
-                  ? 'Todas as funções por 3 dias'
+                  ? 'Disponível por 3 dias'
                   : trialExpired
                   ? 'Trial encerrado'
-                  : 'Não liberado',
+                  : 'Nãro liberado',
             ),
             _SubscriptionSummaryRowData(
               label: 'Cobrança',
@@ -90,10 +76,10 @@ class _NoSubscriptionContent extends StatelessWidget {
         const SizedBox(height: 14),
         Text(
           status.trialAvailable
-              ? 'Ative quando quiser iniciar seu período gratuito.'
+              ? 'Ative agora para começar seu período gratuito sem cobrança.'
               : trialEndLabel == null
-              ? 'Assine um plano para liberar novamente.'
-              : 'Sua experiência terminou em $trialEndLabel. Assine um plano para liberar novamente.',
+              ? 'Assine um plano para voltar a liberar os recursos premium.'
+              : 'Sua experiência terminou em $trialEndLabel. Assine um plano para voltar a liberar os recursos premium.',
           style: GoogleFonts.inter(
             color: colors.onSurfaceMuted,
             fontSize: 12.5,
@@ -101,7 +87,7 @@ class _NoSubscriptionContent extends StatelessWidget {
           ),
         ),
         if (status.trialAvailable) ...[
-          const SizedBox(height: 14),
+          const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             child: FilledButton.icon(
@@ -128,9 +114,10 @@ class _NoSubscriptionContent extends StatelessWidget {
                   alpha: 0.16,
                 ),
                 disabledForegroundColor: colors.onSurfaceMuted,
-                padding: const EdgeInsets.symmetric(vertical: 13),
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(vertical: 15),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(16),
                 ),
               ),
             ),

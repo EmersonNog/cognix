@@ -10,18 +10,28 @@ class _SubscriptionHeaderCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: colors.surfaceContainer,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(24),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color.alphaBlend(
+              colors.primary.withValues(alpha: isDark ? 0.04 : 0.03),
+              colors.surfaceContainer,
+            ),
+            colors.surfaceContainerHigh.withValues(alpha: 0.94),
+          ],
+        ),
         border: Border.all(
           color: colors.onSurfaceMuted.withValues(alpha: isDark ? 0.12 : 0.16),
         ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.07 : 0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
+            blurRadius: 14,
+            offset: const Offset(0, 7),
           ),
         ],
       ),
@@ -29,19 +39,17 @@ class _SubscriptionHeaderCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 42,
-            height: 42,
+            width: 46,
+            height: 46,
             decoration: BoxDecoration(
-              color: colors.surfaceContainerHigh,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: colors.onSurfaceMuted.withValues(alpha: 0.12),
-              ),
+              color: colors.primary.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: colors.primary.withValues(alpha: 0.16)),
             ),
             child: Icon(
               Icons.receipt_long_rounded,
               color: colors.primary,
-              size: 21,
+              size: 22,
             ),
           ),
           const SizedBox(width: 12),
@@ -53,13 +61,13 @@ class _SubscriptionHeaderCard extends StatelessWidget {
                   'Plano e cobrança',
                   style: GoogleFonts.manrope(
                     color: colors.onSurface,
-                    fontSize: 18,
+                    fontSize: 18.5,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Status, acesso e cobranças do plano.',
+                  'Status, acesso e cobranças do seu plano.',
                   style: GoogleFonts.inter(
                     color: colors.onSurfaceMuted,
                     fontSize: 12.5,

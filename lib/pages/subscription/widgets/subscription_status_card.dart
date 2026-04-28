@@ -44,46 +44,105 @@ class _SubscriptionStatusCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: colors.surfaceContainer,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(26),
         border: Border.all(
           color: colors.onSurfaceMuted.withValues(alpha: isDark ? 0.12 : 0.16),
         ),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color.alphaBlend(
+              colors.primary.withValues(alpha: isDark ? 0.05 : 0.035),
+              colors.surfaceContainer,
+            ),
+            colors.surfaceContainerHigh.withValues(alpha: 0.98),
+          ],
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.08 : 0.03),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+            color: Colors.black.withValues(alpha: isDark ? 0.10 : 0.04),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
-      child: switch (_mode) {
-        _SubscriptionStatusCardMode.loading => _SubscriptionLoadingContent(
-          colors: colors,
-        ),
-        _SubscriptionStatusCardMode.error => _StatusMessage(
-          colors: colors,
-          icon: Icons.wifi_off_rounded,
-          accent: colors.danger,
-          title: 'Não foi possível carregar',
-          subtitle: 'Verifique sua conexão e tente novamente.',
-          action: OutlinedButton(
-            onPressed: onRetry,
-            style: OutlinedButton.styleFrom(
-              foregroundColor: colors.primary,
-              side: BorderSide(color: colors.primary.withValues(alpha: 0.34)),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+      child: Stack(
+        children: [
+          Positioned(
+            top: -54,
+            right: -24,
+            child: IgnorePointer(
+              child: Container(
+                width: 160,
+                height: 160,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      colors.primary.withValues(alpha: isDark ? 0.16 : 0.12),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
               ),
             ),
-            child: const Text('Tentar novamente'),
           ),
-        ),
-        _SubscriptionStatusCardMode.loaded => _buildLoaded(context),
-      },
+          Positioned(
+            bottom: -68,
+            left: -30,
+            child: IgnorePointer(
+              child: Container(
+                width: 170,
+                height: 170,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      colors.accent.withValues(alpha: isDark ? 0.12 : 0.09),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(22),
+            child: switch (_mode) {
+              _SubscriptionStatusCardMode.loading =>
+                _SubscriptionLoadingContent(colors: colors),
+              _SubscriptionStatusCardMode.error => _StatusMessage(
+                colors: colors,
+                icon: Icons.wifi_off_rounded,
+                accent: colors.danger,
+                title: 'Não foi possível carregar',
+                subtitle: 'Verifique sua conexão e tente novamente.',
+                action: OutlinedButton(
+                  onPressed: onRetry,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: colors.primary,
+                    side: BorderSide(
+                      color: colors.primary.withValues(alpha: 0.34),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 13,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: const Text('Tentar novamente'),
+                ),
+              ),
+              _SubscriptionStatusCardMode.loaded => _buildLoaded(context),
+            },
+          ),
+        ],
+      ),
     );
   }
 

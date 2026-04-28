@@ -10,10 +10,10 @@ class _SubscriptionSummaryPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: colors.surfaceContainerHigh.withValues(alpha: 0.62),
-        borderRadius: BorderRadius.circular(18),
+        color: colors.surfaceContainerHigh.withValues(alpha: 0.72),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: colors.onSurfaceMuted.withValues(alpha: 0.10),
+          color: colors.onSurfaceMuted.withValues(alpha: 0.09),
         ),
       ),
       child: Column(
@@ -48,18 +48,19 @@ class _SubscriptionSummaryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 88,
+            width: 82,
             child: Text(
-              data.label,
+              data.label.toUpperCase(),
               style: GoogleFonts.inter(
                 color: colors.onSurfaceMuted,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
+                fontSize: 10.8,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.28,
               ),
             ),
           ),
@@ -70,7 +71,7 @@ class _SubscriptionSummaryRow extends StatelessWidget {
               textAlign: TextAlign.right,
               style: GoogleFonts.inter(
                 color: colors.onSurface,
-                fontSize: 13,
+                fontSize: 13.2,
                 height: 1.35,
                 fontWeight: FontWeight.w700,
               ),

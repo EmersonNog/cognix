@@ -18,36 +18,15 @@ class _ActiveSubscriptionContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Assinatura atual',
-                    style: GoogleFonts.inter(
-                      color: colors.onSurfaceMuted,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    _planTitle(subscription.planId),
-                    style: GoogleFonts.manrope(
-                      color: colors.onSurface,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 12),
-            _StatusBadge(colors: colors, status: subscription),
-          ],
+        _SubscriptionStatusHeader(
+          colors: colors,
+          eyebrow: 'PLANO ATIVO',
+          title: _planTitle(subscription.planId),
+          description:
+              'Seu acesso premium está liberado e a cobrança segue conforme o ciclo do plano.',
+          icon: Icons.workspace_premium_rounded,
+          accent: subscription.isActive ? colors.success : colors.primary,
+          status: _StatusBadge(colors: colors, status: subscription),
         ),
         const SizedBox(height: 18),
         _SubscriptionSummaryPanel(
@@ -62,7 +41,7 @@ class _ActiveSubscriptionContent extends StatelessWidget {
               value: _currentPeriodLabel(subscription),
             ),
             _SubscriptionSummaryRowData(
-              label: 'Cobranãa',
+              label: 'Cobrança',
               value: subscription.canCancel
                   ? 'Renovação ativa'
                   : 'Aguardando confirmação',
@@ -107,9 +86,9 @@ class _ActiveSubscriptionContent extends StatelessWidget {
                   alpha: 0.70,
                 ),
                 side: BorderSide(color: colors.danger.withValues(alpha: 0.34)),
-                padding: const EdgeInsets.symmetric(vertical: 13),
+                padding: const EdgeInsets.symmetric(vertical: 15),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(16),
                 ),
               ),
             ),

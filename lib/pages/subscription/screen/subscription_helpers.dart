@@ -36,7 +36,7 @@ String? _cancelledAccessLabel(SubscriptionStatus status) {
   }
 
   return status.hasAccess
-      ? 'Disponível ate $accessEndLabel'
+      ? 'Disponível até $accessEndLabel'
       : 'Encerrado em $accessEndLabel';
 }
 
@@ -47,7 +47,7 @@ String? _trialAccessLabel(EntitlementStatus status) {
   }
 
   return status.hasFullAccess
-      ? 'Disponível ate $trialEndLabel'
+      ? 'Disponível até $trialEndLabel'
       : 'Encerrado em $trialEndLabel';
 }
 

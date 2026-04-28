@@ -13,36 +13,15 @@ class _TrialActiveContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Status da assinatura',
-                    style: GoogleFonts.inter(
-                      color: colors.onSurfaceMuted,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Experiência Cognix ativa',
-                    style: GoogleFonts.manrope(
-                      color: colors.onSurface,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 12),
-            _StatusPill(label: 'Ativa', color: colors.success),
-          ],
+        _SubscriptionStatusHeader(
+          colors: colors,
+          eyebrow: 'PERÍODO GRATUITO',
+          title: 'Experiência Cognix',
+          description:
+              'Seu acesso gratuito está ativo agora, com todos os recursos premium liberados.',
+          icon: Icons.bolt_rounded,
+          accent: colors.success,
+          status: _StatusPill(label: 'Ativa', color: colors.success),
         ),
         const SizedBox(height: 18),
         _SubscriptionSummaryPanel(
@@ -60,7 +39,7 @@ class _TrialActiveContent extends StatelessWidget {
         ),
         const SizedBox(height: 14),
         Text(
-          'Todas as funções ficam liberadas durante a experiência.',
+          'Aproveite este período para testar escrita, desempenho, plano de estudos e multiplayer.',
           style: GoogleFonts.inter(
             color: colors.onSurfaceMuted,
             fontSize: 12.5,
