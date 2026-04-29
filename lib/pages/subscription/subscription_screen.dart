@@ -1,12 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../services/core/api_client.dart' show readableApiErrorMessage;
 import '../../services/entitlements/entitlements_api.dart';
+import '../../services/subscription/google_play/billing_service.dart';
 import '../../services/subscription/subscription_api.dart';
 import '../../theme/cognix_theme_colors.dart';
 import '../../widgets/cognix/cognix_messages.dart';
 
 part 'screen/subscription_helpers.dart';
+part 'screen/subscription_screen_actions.dart';
+part 'screen/subscription_screen_lifecycle.dart';
 part 'widgets/subscription_header_card.dart';
 part 'widgets/subscription_loading.dart';
 part 'widgets/subscription_status_card.dart';
@@ -24,135 +30,34 @@ class SubscriptionScreen extends StatefulWidget {
   State<SubscriptionScreen> createState() => _SubscriptionScreenState();
 }
 
-class _SubscriptionScreenState extends State<SubscriptionScreen> {
+class _SubscriptionScreenState extends State<SubscriptionScreen>
+    with WidgetsBindingObserver {
   late Future<EntitlementStatus> _statusFuture;
+  late final GooglePlayBillingService _googlePlayBilling;
   bool _isCancelling = false;
   bool _isStartingTrial = false;
+  bool _shouldRefreshAfterGooglePlay = false;
+  bool _isRefreshingAfterGooglePlay = false;
+
+  void _applyState(VoidCallback update) {
+    setState(update);
+  }
 
   @override
   void initState() {
     super.initState();
-    _statusFuture = fetchCurrentEntitlements();
+    _initSubscriptionScreenState(this);
   }
 
-  Future<void> _refresh() async {
-    setState(() {
-      _statusFuture = fetchCurrentEntitlements();
-    });
-    await _statusFuture;
+  @override
+  void dispose() {
+    _disposeSubscriptionScreenState(this);
+    super.dispose();
   }
 
-  Future<void> _confirmCancellation(SubscriptionStatus status) async {
-    final accessEndLabel = _formatDate(status.accessEndsAt);
-    final shouldCancel = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        final colors = context.cognixColors;
-        return AlertDialog(
-          title: const Text('Cancelar assinatura?'),
-          content: Text(
-            accessEndLabel == null
-                ? 'O cancelamento interrompe novas cobranças. Essa ação não pode ser desfeita pela AbacatePay.'
-                : 'O cancelamento interrompe novas cobranças. Seu acesso segue ate $accessEndLabel.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Voltar'),
-            ),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: colors.danger,
-                foregroundColor: Colors.white,
-              ),
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Cancelar assinatura'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (shouldCancel != true || !mounted) {
-      return;
-    }
-
-    await _cancelSubscription();
-  }
-
-  Future<void> _cancelSubscription() async {
-    setState(() {
-      _isCancelling = true;
-    });
-
-    try {
-      await cancelCurrentSubscription();
-      if (!mounted) {
-        return;
-      }
-      showCognixMessage(
-        context,
-        'Assinatura cancelada. Seu acesso segue ate o fim do período.',
-        type: CognixMessageType.success,
-      );
-      setState(() {
-        _statusFuture = fetchCurrentEntitlements();
-      });
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      showCognixMessage(
-        context,
-        'Não foi possível cancelar sua assinatura agora.',
-        type: CognixMessageType.error,
-      );
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isCancelling = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _startTrial() async {
-    setState(() {
-      _isStartingTrial = true;
-    });
-
-    try {
-      final status = await startTrialEntitlement();
-      if (!mounted) {
-        return;
-      }
-      final endLabel = _formatDate(status.trialEndsAt);
-      showCognixMessage(
-        context,
-        endLabel == null
-            ? 'Experiência Cognix ativada.'
-            : 'Experiência Cognix ativada até $endLabel.',
-        type: CognixMessageType.success,
-      );
-      setState(() {
-        _statusFuture = Future<EntitlementStatus>.value(status);
-      });
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      showCognixMessage(
-        context,
-        'Não foi possível ativar a experiência agora.',
-        type: CognixMessageType.error,
-      );
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isStartingTrial = false;
-        });
-      }
-    }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _handleSubscriptionScreenLifecycleStateChange(this, state);
   }
 
   @override
@@ -172,7 +77,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       body: RefreshIndicator(
         color: colors.primary,
         backgroundColor: colors.surfaceContainerHigh,
-        onRefresh: _refresh,
+        onRefresh: () => _refreshSubscriptionStatusForState(this),
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 34),
           children: [
@@ -188,7 +93,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 if (snapshot.hasError) {
                   return _SubscriptionStatusCard.error(
                     colors: colors,
-                    onRetry: _refresh,
+                    onRetry: () => _refreshSubscriptionStatusForState(this),
                   );
                 }
 
@@ -204,6 +109,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         canCancel: false,
                       ),
                     );
+                final subscription = status.subscription;
 
                 return _SubscriptionStatusCard(
                   colors: colors,
@@ -211,10 +117,21 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   isCancelling: _isCancelling,
                   isStartingTrial: _isStartingTrial,
                   onStartTrial: status.trialAvailable && !_isStartingTrial
-                      ? _startTrial
+                      ? () => _startTrialForState(this)
                       : null,
-                  onCancel: status.subscription.canCancel && !_isCancelling
-                      ? () => _confirmCancellation(status.subscription)
+                  onManageGooglePlaySubscription:
+                      subscription.isGooglePlay &&
+                          _googlePlayBilling.isSupported
+                      ? () => _manageGooglePlaySubscriptionForState(
+                          this,
+                          subscription,
+                        )
+                      : null,
+                  onCancel:
+                      subscription.canCancel &&
+                          !_isCancelling &&
+                          !subscription.isGooglePlay
+                      ? () => _confirmCancellationForState(this, subscription)
                       : null,
                 );
               },

@@ -15,6 +15,7 @@ import 'widgets/auth_shell.dart';
 import 'widgets/auth_social_section.dart';
 import 'widgets/fields_label.dart';
 import 'widgets/primary_buttons.dart';
+import '../home/home.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -61,7 +62,10 @@ class _SignInState extends State<SignIn> {
       );
       await prepareAuthenticatedBackendSession();
       if (mounted) {
-        Navigator.of(context).pushReplacementNamed('home');
+        Navigator.of(context).pushReplacementNamed(
+          'home',
+          arguments: const HomeRouteArgs(showPlanOnStart: true),
+        );
       }
     } on FirebaseAuthException catch (e) {
       _showMessage(authErrorMessage(e.code, action: AuthAction.signIn));
@@ -82,7 +86,10 @@ class _SignInState extends State<SignIn> {
       }
       await prepareAuthenticatedBackendSession();
       if (mounted) {
-        Navigator.of(context).pushReplacementNamed('home');
+        Navigator.of(context).pushReplacementNamed(
+          'home',
+          arguments: const HomeRouteArgs(showPlanOnStart: true),
+        );
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'missing-google-id-token') {

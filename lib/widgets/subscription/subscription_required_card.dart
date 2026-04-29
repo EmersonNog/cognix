@@ -78,25 +78,25 @@ class SubscriptionRequiredCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: compact ? 12 : 16),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton.icon(
-              onPressed:
-                  onPressed ??
-                  () => Navigator.of(context).pushNamed('subscription'),
-              icon: const Icon(Icons.card_membership_rounded, size: 18),
-              label: Text(buttonLabel),
-              style: FilledButton.styleFrom(
-                backgroundColor: colors.primary,
-                foregroundColor: colors.surface,
-                padding: EdgeInsets.symmetric(vertical: compact ? 11 : 13),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+          if (onPressed != null) ...[
+            SizedBox(height: compact ? 12 : 16),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: onPressed,
+                icon: const Icon(Icons.card_membership_rounded, size: 18),
+                label: Text(buttonLabel),
+                style: FilledButton.styleFrom(
+                  backgroundColor: colors.primary,
+                  foregroundColor: colors.surface,
+                  padding: EdgeInsets.symmetric(vertical: compact ? 11 : 13),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );

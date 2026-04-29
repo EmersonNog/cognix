@@ -1,209 +1,114 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'widgets/plan_widgets.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
+
+import '../../services/core/api_client.dart' show readableApiErrorMessage;
+import '../../services/entitlements/entitlements_api.dart';
+import '../../services/subscription/google_play/billing_errors.dart';
+import '../../services/subscription/google_play/billing_service.dart';
+import '../../services/subscription/google_play/purchase_verifier.dart';
+import '../../services/subscription/google_play/subscription_product.dart';
+import '../../services/subscription/subscription_api.dart';
+import '../../theme/cognix_theme_colors.dart';
+import '../../widgets/cognix/cognix_messages.dart';
+import '../support/support_screen.dart';
+import 'widgets/plan_benefit_item.dart';
+import 'widgets/plan_billing_toggle.dart';
+import 'widgets/plan_button.dart';
+import 'widgets/plan_card.dart';
+import 'widgets/plan_help_modal.dart';
+import 'widgets/plan_top_icon_button.dart';
+
+part 'screen/plan_screen_actions.dart';
+part 'screen/plan_screen_lifecycle.dart';
+part 'screen/plan_screen_pricing.dart';
+part 'screen/plan_screen_view.dart';
+part 'widgets/plan_status_message.dart';
 
 class PlanScreen extends StatefulWidget {
-  const PlanScreen({super.key});
+  const PlanScreen({super.key, this.showSkipAction = false});
+
+  final bool showSkipAction;
 
   @override
   State<PlanScreen> createState() => _PlanScreenState();
 }
 
+class PlanScreenArgs {
+  const PlanScreenArgs({this.showSkipAction = false});
+
+  final bool showSkipAction;
+}
+
 class _PlanScreenState extends State<PlanScreen> {
+  static const _fallbackCurrencyPrefix = 'R\$';
+  static const _monthlyFallbackPriceValue = '19,90';
+  static const _monthlyFallbackRegularPriceLabel = 'R\$ 19,90';
+  static const _annualFallbackMonthlyPriceValue = '16,65';
+  static const _annualFallbackRegularPriceLabel = 'R\$ 199,90';
+
+  late final GooglePlayBillingService _googlePlayBilling;
+  StreamSubscription<List<PurchaseDetails>>? _purchaseSubscription;
+  Timer? _purchaseSheetFallbackTimer;
+
   String _selectedBillingPeriod = 'mensal';
+  List<GooglePlaySubscriptionProduct> _plans = const [];
+  EntitlementStatus? _currentEntitlements;
+  bool _isLoadingPlans = false;
+  bool _isLoadingEntitlements = true;
+  bool _isVerifyingPurchase = false;
+  String? _plansError;
+  String? _selectedProductId;
+  String? _subscriptionConflictNotice;
+
+  void _applyState(VoidCallback update) {
+    setState(update);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initPlanScreenState(this);
+  }
+
+  @override
+  void dispose() {
+    _disposePlanScreenState(this);
+    super.dispose();
+  }
+
+  GooglePlaySubscriptionProduct? get _selectedPlan {
+    final productId = _selectedBillingPeriod == 'anual'
+        ? googlePlaySubscriptionAnnualProductId
+        : googlePlaySubscriptionMonthlyProductId;
+
+    for (final plan in _plans) {
+      if (plan.productId == productId) {
+        return plan;
+      }
+    }
+    return null;
+  }
+
+  bool get _isPurchaseBusy =>
+      _selectedProductId != null || _isVerifyingPurchase;
+  bool get _hasSubscriptionAccess =>
+      _currentEntitlements?.subscription.hasAccess == true;
+  bool get _subscriptionWillEnd =>
+      _currentEntitlements?.subscription.isCancelled == true ||
+      _currentEntitlements?.subscription.willCancelAtPeriodEnd == true;
+  String? get _activeSubscriptionPlanId =>
+      _currentEntitlements?.subscription.planId;
+  bool get _monthlyIntroOfferEligible =>
+      _currentEntitlements?.eligibleForMonthlyIntroOffer == true;
+  String? get _billingApplicationUserName =>
+      FirebaseAuth.instance.currentUser?.uid;
 
   @override
   Widget build(BuildContext context) {
-    const surface = Color(0xFF060E20);
-    const surfaceContainer = Color(0xFF0F1930);
-    const surfaceContainerHigh = Color(0xFF141F38);
-    const onSurface = Color(0xFFDEE5FF);
-    const onSurfaceMuted = Color(0xFF9AA6C5);
-    const primary = Color(0xFFA3A6FF);
-    const primaryDim = Color(0xFF6063EE);
-
-    return Scaffold(
-      backgroundColor: surface,
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 18, 20, 30),
-          children: [
-            Row(
-              children: [
-                PlanTopIconButton(
-                  icon: Icons.arrow_back_rounded,
-                  onTap: () => Navigator.of(context).pop(),
-                  background: surfaceContainerHigh,
-                  iconColor: onSurfaceMuted,
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  'COGNIX',
-                  style: GoogleFonts.plusJakartaSans(
-                    color: primary,
-                    fontSize: 15,
-                    letterSpacing: 1.6,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const Spacer(),
-                PlanTopIconButton(
-                  icon: Icons.help_outline_rounded,
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      barrierColor: Colors.black.withValues(alpha: 0.3),
-                      builder: (BuildContext context) {
-                        return PlanHelpModal(
-                          primary: primary,
-                          primaryDim: primaryDim,
-                          onSurface: onSurface,
-                          onSurfaceMuted: onSurfaceMuted,
-                        );
-                      },
-                    );
-                  },
-                  background: surfaceContainerHigh,
-                  iconColor: onSurfaceMuted,
-                ),
-              ],
-            ),
-            const SizedBox(height: 18),
-            Text(
-              'Escolha seu Plano',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.manrope(
-                color: onSurface,
-                fontSize: 25,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              'Eleve seu preparo a um novo patamar\n'
-              'com acesso ilimitado e ferramentas\n'
-              'exclusivas.',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.inter(
-                color: onSurfaceMuted,
-                fontSize: 14,
-                height: 1.45,
-              ),
-            ),
-            const SizedBox(height: 16),
-            PlanBillingToggle(
-              surfaceContainerHigh: surfaceContainerHigh,
-              onSurface: onSurface,
-              onSurfaceMuted: onSurfaceMuted,
-              selectedPeriod: _selectedBillingPeriod,
-              onChanged: (period) {
-                setState(() {
-                  _selectedBillingPeriod = period;
-                });
-              },
-            ),
-            const SizedBox(height: 16),
-            if (_selectedBillingPeriod == 'mensal')
-              PlanCard(
-                title: 'Mensal',
-                price: '49,90',
-                subtitle: '/mês',
-                background: surfaceContainer,
-                onSurface: onSurface,
-                onSurfaceMuted: onSurfaceMuted,
-                primary: primary,
-                features: const [
-                  'Acesso a 20.000+ questões',
-                  'Análise de desempenho',
-                ],
-                buttonStyle: PlanButtonStyle.secondary,
-              ),
-            if (_selectedBillingPeriod == 'semestral')
-              PlanCard(
-                title: 'Semestral',
-                price: '39,90',
-                subtitle: '/mês',
-                badge: 'MAIS POPULAR',
-                background: surfaceContainer,
-                onSurface: onSurface,
-                onSurfaceMuted: onSurfaceMuted,
-                primary: primary,
-                primaryDim: primaryDim,
-                features: const [
-                  'Acesso a 20.000+ questões',
-                  'Trilha de estudo personalizadas',
-                  'Acesso offline completo',
-                ],
-                footer: 'TOTAL R\$ 239,40',
-                buttonStyle: PlanButtonStyle.primary,
-              ),
-            if (_selectedBillingPeriod == 'anual')
-              PlanCard(
-                title: 'Anual',
-                price: '29,90',
-                subtitle: '/mês',
-                background: surfaceContainer,
-                onSurface: onSurface,
-                onSurfaceMuted: onSurfaceMuted,
-                primary: primary,
-                primaryDim: primaryDim,
-                features: const [
-                  'Acesso a 20.000+ questões',
-                  'Análise de desempenho detalhado',
-                  'Trilha inteligente',
-                  'Acesso offline completo',
-                ],
-                footer: 'TOTAL R\$ 318,40',
-                buttonStyle: PlanButtonStyle.secondary,
-              ),
-            const SizedBox(height: 32),
-            Text(
-              'Benefícios Principais',
-              style: GoogleFonts.manrope(
-                color: onSurface,
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 20),
-            PlanBenefitItem(
-              icon: Icons.library_books_rounded,
-              title: '20k+ Questões',
-              subtitle: 'Banco de dados completo',
-              onSurfaceMuted: onSurfaceMuted,
-              onSurface: onSurface,
-              surfaceContainer: surfaceContainer,
-            ),
-            const SizedBox(height: 16),
-            PlanBenefitItem(
-              icon: Icons.trending_up_rounded,
-              title: 'Analytics',
-              subtitle: 'Desempenho detalhado',
-              onSurfaceMuted: onSurfaceMuted,
-              onSurface: onSurface,
-              surfaceContainer: surfaceContainer,
-            ),
-            const SizedBox(height: 16),
-            PlanBenefitItem(
-              icon: Icons.school_rounded,
-              title: 'Personalizado',
-              subtitle: 'Trilhas inteligentes',
-              onSurfaceMuted: onSurfaceMuted,
-              onSurface: onSurface,
-              surfaceContainer: surfaceContainer,
-            ),
-            const SizedBox(height: 16),
-            PlanBenefitItem(
-              icon: Icons.cloud_off_rounded,
-              title: 'Acesso Offline',
-              subtitle: 'Estude em qualquer lugar',
-              onSurfaceMuted: onSurfaceMuted,
-              onSurface: onSurface,
-              surfaceContainer: surfaceContainer,
-            ),
-          ],
-        ),
-      ),
-    );
+    return _buildPlanScreenView(this, context);
   }
 }

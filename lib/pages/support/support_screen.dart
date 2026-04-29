@@ -1,7 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../services/core/api_client.dart' show readableApiErrorMessage;
 import '../../services/profile/profile_api.dart';
+import '../../services/subscription/google_play/billing_errors.dart';
+import '../../services/subscription/google_play/billing_service.dart';
+import '../../services/subscription/google_play/restore_purchases.dart';
 import '../../theme/cognix_theme_colors.dart';
 import '../../widgets/cognix/cognix_messages.dart';
 import '../performance/performance_screen.dart';
@@ -11,20 +16,66 @@ part 'support_screen/support_cards.dart';
 part 'support_screen/support_faq.dart';
 part 'support_screen/support_models.dart';
 part 'support_screen/support_palette.dart';
+part 'support_screen/support_restore_purchases.dart';
 
-class SupportScreen extends StatelessWidget {
-  const SupportScreen({super.key});
+class SupportScreen extends StatefulWidget {
+  const SupportScreen({super.key, this.initialFaqKey});
 
-  void _openAccountSecurity(BuildContext context) {
-    Navigator.of(context).pushNamed('account-security');
+  final String? initialFaqKey;
+
+  @override
+  State<SupportScreen> createState() => _SupportScreenState();
+}
+
+class SupportScreenArgs {
+  const SupportScreenArgs({this.initialFaqKey});
+
+  final String? initialFaqKey;
+}
+
+class _SupportScreenState extends State<SupportScreen> {
+  late final GooglePlayBillingService _googlePlayBilling;
+  final _initialFaqCardKey = GlobalKey();
+  bool _isRestoringPurchases = false;
+  int? _expandedFaqIndex;
+
+  String? get _billingApplicationUserName =>
+      FirebaseAuth.instance.currentUser?.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    _googlePlayBilling = GooglePlayBillingService();
+    if (_googlePlayBilling.isSupported &&
+        widget.initialFaqKey ==
+            _SupportFaqKeys.googlePlayExistingSubscription) {
+      _expandedFaqIndex = 0;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToInitialFaqCard();
+      });
+    }
+  }
+
+  void _scrollToInitialFaqCard() {
+    if (!mounted) {
+      return;
+    }
+
+    final faqCardContext = _initialFaqCardKey.currentContext;
+    if (faqCardContext == null) {
+      return;
+    }
+
+    Scrollable.ensureVisible(
+      faqCardContext,
+      alignment: 0.30,
+      duration: const Duration(milliseconds: 420),
+      curve: Curves.easeOutCubic,
+    );
   }
 
   void _openStudyPlan(BuildContext context) {
     Navigator.of(context).pushNamed('study-plan');
-  }
-
-  void _openSubscription(BuildContext context) {
-    Navigator.of(context).pushNamed('subscription');
   }
 
   Future<void> _openPerformance(
@@ -66,9 +117,70 @@ class SupportScreen extends StatelessWidget {
     }
   }
 
+  Future<void> _restorePurchases() async {
+    if (_isRestoringPurchases) {
+      return;
+    }
+
+    setState(() {
+      _isRestoringPurchases = true;
+    });
+
+    try {
+      final result = await restoreGooglePlayPurchases(
+        applicationUserName: _billingApplicationUserName,
+        billingService: _googlePlayBilling,
+      );
+      if (!mounted) {
+        return;
+      }
+      _handleRestorePurchasesResult(result);
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _showRestorePurchasesError(error);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isRestoringPurchases = false;
+        });
+      }
+    }
+  }
+
+  List<_SupportFaqItem> _buildFaqItems() {
+    return [
+      if (_googlePlayBilling.isSupported)
+        const _SupportFaqItem(
+          faqKey: _SupportFaqKeys.googlePlayExistingSubscription,
+          question:
+              'Por que aparece que a conta Google Play já tem assinatura?',
+          answer:
+              'Isso acontece quando a conta Google Play usada no checkout já possui uma assinatura ativa do Cognix.\n\n'
+              'A assinatura fica vinculada a uma conta Cognix por vez. Para usar o Premium, entre na conta Cognix onde ela foi ativada.\n\n'
+              'Se quiser assinar nesta conta, cancele a assinatura atual no Google Play e aguarde o fim do período pago antes de assinar novamente.',
+        ),
+      if (_googlePlayBilling.isSupported)
+        _SupportFaqItem(
+          question:
+              'Comprei no Google Play, por que o acesso não foi liberado?',
+          answer:
+              'Se a compra já foi concluída, mas o acesso ainda não apareceu no app, você pode tentar restaurar a assinatura vinculada a está conta Google Play.',
+          actionLabel: 'Restaurar compra agora',
+          actionLoadingLabel: 'Restaurando compra...',
+          actionIcon: Icons.restore_rounded,
+          onActionTap: _isRestoringPurchases ? null : _restorePurchases,
+          isActionLoading: _isRestoringPurchases,
+        ),
+      ..._supportFaqItems,
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final palette = _SupportPalette.fromContext(context);
+    final faqItems = _buildFaqItems();
 
     return Scaffold(
       backgroundColor: palette.surface,
@@ -91,17 +203,7 @@ class SupportScreen extends StatelessWidget {
               palette: palette,
               title: 'Temas principais',
               subtitle:
-                  'Atalhos para os assuntos que mais ajudam a destravar sua rotina.',
-            ),
-            const SizedBox(height: 12),
-            _SupportTopicCard(
-              palette: palette,
-              icon: Icons.key_rounded,
-              title: 'Segurança da conta',
-              subtitle:
-                  'Senha, exclusão da conta e proteção do acesso do seu usuário.',
-              accent: palette.primary,
-              onTap: () => _openAccountSecurity(context),
+                  'Atalhos para os assuntos que mais ajudam no uso diário do app.',
             ),
             const SizedBox(height: 12),
             _SupportTopicCard(
@@ -112,16 +214,6 @@ class SupportScreen extends StatelessWidget {
                   'Ritmo semanal, volume de estudo e prioridades do seu planejamento.',
               accent: palette.secondary,
               onTap: () => _openStudyPlan(context),
-            ),
-            const SizedBox(height: 12),
-            _SupportTopicCard(
-              palette: palette,
-              icon: Icons.workspace_premium_rounded,
-              title: 'Assinatura',
-              subtitle:
-                  'Consulte seu plano atual e cancele novas cobranças quando precisar.',
-              accent: palette.primary,
-              onTap: () => _openSubscription(context),
             ),
             const SizedBox(height: 12),
             _SupportTopicCard(
@@ -141,10 +233,24 @@ class SupportScreen extends StatelessWidget {
                   'Respostas rápidas para os pontos mais comuns do seu uso diário.',
             ),
             const SizedBox(height: 12),
-            ..._supportFaqItems.map(
-              (item) => Padding(
+            ...faqItems.indexed.map(
+              (entry) => Padding(
+                key: entry.$2.faqKey == widget.initialFaqKey
+                    ? _initialFaqCardKey
+                    : null,
                 padding: const EdgeInsets.only(bottom: 12),
-                child: _SupportFaqCard(palette: palette, item: item),
+                child: _SupportFaqCard(
+                  palette: palette,
+                  item: entry.$2,
+                  isExpanded: _expandedFaqIndex == entry.$1,
+                  onTap: () {
+                    setState(() {
+                      _expandedFaqIndex = _expandedFaqIndex == entry.$1
+                          ? null
+                          : entry.$1;
+                    });
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 12),

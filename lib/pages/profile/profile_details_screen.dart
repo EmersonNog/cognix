@@ -48,35 +48,27 @@ class ProfileDetailsScreen extends StatelessWidget {
             const SizedBox(height: 12),
             Column(
               children: [
-                // ProfileMenuItem(
-                //   icon: Icons.description_rounded,
-                //   title: 'Meus Planos',
-                //   subtitle: 'Plano atual e histórico de cobrança',
-                //   onTap: () {
-                //     Navigator.of(context).pushNamed('plan');
-                //   },
-                //   surfaceContainer: surfaceContainer,
-                //   onSurface: onSurface,
-                //   onSurfaceMuted: onSurfaceMuted,
-                //   primary: primary,
-                //   highlightText: 'PRO',
-                // ),
-                // const SizedBox(height: 12),
                 ProfileMenuItem(
-                  icon: Icons.flag_rounded,
-                  title: 'Metas de Estudo',
-                  subtitle:
-                      'Defina objetivos de ritmo, volume e foco para guiar sua rotina',
+                  icon: Icons.key_rounded,
+                  title: 'Segurança da conta',
+                  subtitle: 'Senha, acesso e proteção da sua conta.',
                   onTap: () {
-                    Navigator.of(context).pushNamed('study-plan');
+                    Navigator.of(context).pushNamed('account-security');
                   },
                   surfaceContainer: surfaceContainer,
                   onSurface: onSurface,
                   onSurfaceMuted: onSurfaceMuted,
                   primary: primary,
-                  highlightText: 'META',
+                  highlightText: 'CONTA',
                 ),
               ],
+            ),
+            const SizedBox(height: 16),
+            _PremiumPlanCta(
+              surfaceContainer: surfaceContainer,
+              onSurface: onSurface,
+              onSurfaceMuted: onSurfaceMuted,
+              primary: primary,
             ),
             const SizedBox(height: 24),
             _SectionTitle(
@@ -101,6 +93,35 @@ class ProfileDetailsScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _PremiumPlanCta extends StatelessWidget {
+  const _PremiumPlanCta({
+    required this.surfaceContainer,
+    required this.onSurface,
+    required this.onSurfaceMuted,
+    required this.primary,
+  });
+
+  final Color surfaceContainer;
+  final Color onSurface;
+  final Color onSurfaceMuted;
+  final Color primary;
+
+  @override
+  Widget build(BuildContext context) {
+    return ProfileMenuItem(
+      icon: Icons.workspace_premium_rounded,
+      title: 'Plano e assinatura',
+      subtitle: 'Compare os planos premium e acompanhe a sua assinatura atual.',
+      onTap: () => Navigator.of(context).pushNamed('plan-hub'),
+      surfaceContainer: surfaceContainer,
+      onSurface: onSurface,
+      onSurfaceMuted: onSurfaceMuted,
+      primary: primary,
+      highlightText: 'PLANO',
     );
   }
 }

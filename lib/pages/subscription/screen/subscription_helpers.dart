@@ -2,18 +2,18 @@ part of '../subscription_screen.dart';
 
 String _planTitle(String? planId) {
   return switch (planId) {
-    'mensal' => 'Plano mensal',
+    'mensal' || googlePlaySubscriptionMonthlyProductId => 'Plano mensal',
     'semestral' => 'Plano semestral',
-    'anual' => 'Plano anual',
+    'anual' || googlePlaySubscriptionAnnualProductId => 'Plano anual',
     _ => 'Assinatura Cognix',
   };
 }
 
 String _billingCycleLabel(String? planId) {
   return switch (planId) {
-    'mensal' => 'Cobrança mensal',
+    'mensal' || googlePlaySubscriptionMonthlyProductId => 'Cobrança mensal',
     'semestral' => 'Cobrança semestral',
-    'anual' => 'Cobrança anual',
+    'anual' || googlePlaySubscriptionAnnualProductId => 'Cobrança anual',
     _ => 'Plano ativo',
   };
 }
@@ -36,7 +36,7 @@ String? _cancelledAccessLabel(SubscriptionStatus status) {
   }
 
   return status.hasAccess
-      ? 'Disponível até $accessEndLabel'
+      ? 'Disponível ate $accessEndLabel'
       : 'Encerrado em $accessEndLabel';
 }
 
@@ -47,7 +47,7 @@ String? _trialAccessLabel(EntitlementStatus status) {
   }
 
   return status.hasFullAccess
-      ? 'Disponível até $trialEndLabel'
+      ? 'Disponível ate $trialEndLabel'
       : 'Encerrado em $trialEndLabel';
 }
 

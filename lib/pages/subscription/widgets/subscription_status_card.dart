@@ -8,6 +8,7 @@ class _SubscriptionStatusCard extends StatelessWidget {
     required this.isStartingTrial,
     required this.onCancel,
     required this.onStartTrial,
+    required this.onManageGooglePlaySubscription,
   }) : onRetry = null,
        _mode = _SubscriptionStatusCardMode.loaded;
 
@@ -17,6 +18,7 @@ class _SubscriptionStatusCard extends StatelessWidget {
       isStartingTrial = false,
       onCancel = null,
       onStartTrial = null,
+      onManageGooglePlaySubscription = null,
       onRetry = null,
       _mode = _SubscriptionStatusCardMode.loading;
 
@@ -28,6 +30,7 @@ class _SubscriptionStatusCard extends StatelessWidget {
        isStartingTrial = false,
        onCancel = null,
        onStartTrial = null,
+       onManageGooglePlaySubscription = null,
        _mode = _SubscriptionStatusCardMode.error;
 
   final CognixThemeColors colors;
@@ -36,6 +39,7 @@ class _SubscriptionStatusCard extends StatelessWidget {
   final bool isStartingTrial;
   final VoidCallback? onCancel;
   final VoidCallback? onStartTrial;
+  final VoidCallback? onManageGooglePlaySubscription;
   final VoidCallback? onRetry;
   final _SubscriptionStatusCardMode _mode;
 
@@ -177,6 +181,7 @@ class _SubscriptionStatusCard extends StatelessWidget {
       subscription: subscription,
       isCancelling: isCancelling,
       onCancel: onCancel,
+      onManageGooglePlay: onManageGooglePlaySubscription,
     );
   }
 }

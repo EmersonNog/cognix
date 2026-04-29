@@ -1,10 +1,30 @@
 part of '../support_screen.dart';
 
+abstract final class _SupportFaqKeys {
+  static const googlePlayExistingSubscription =
+      'google_play_existing_subscription';
+}
+
 class _SupportFaqItem {
-  const _SupportFaqItem({required this.question, required this.answer});
+  const _SupportFaqItem({
+    required this.question,
+    required this.answer,
+    this.faqKey,
+    this.actionLabel,
+    this.actionLoadingLabel,
+    this.actionIcon,
+    this.onActionTap,
+    this.isActionLoading = false,
+  });
 
   final String question;
   final String answer;
+  final String? faqKey;
+  final String? actionLabel;
+  final String? actionLoadingLabel;
+  final IconData? actionIcon;
+  final VoidCallback? onActionTap;
+  final bool isActionLoading;
 }
 
 const _supportFaqItems = <_SupportFaqItem>[

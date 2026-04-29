@@ -46,47 +46,51 @@ bool _looksLikeConnectionError(Object error) {
       message.contains('connection failed');
 }
 
-String? _validationMessageFromResponse(http.Response response) {
+Map<String, dynamic>? _decodeResponseMapOrNull(http.Response response) {
   try {
     final payload = jsonDecode(response.body);
-    if (payload is! Map<String, dynamic>) {
-      return null;
-    }
-
-    final detail = payload['detail'];
-    if (detail is String && detail.trim().isNotEmpty) {
-      return detail.trim();
-    }
-    if (detail is List && detail.isNotEmpty) {
-      final first = detail.first;
-      if (first is Map && first['msg'] is String) {
-        return first['msg'].toString().trim();
-      }
-    }
+    return payload is Map<String, dynamic> ? payload : null;
   } catch (_) {
     return null;
+  }
+}
+
+Object? _responseDetail(http.Response response) {
+  return _decodeResponseMapOrNull(response)?['detail'];
+}
+
+String? _trimmedStringValue(Object? value) {
+  if (value is! String) {
+    return null;
+  }
+
+  final trimmed = value.trim();
+  return trimmed.isEmpty ? null : trimmed;
+}
+
+String? _detailMessageFromResponse(http.Response response) {
+  final detail = _responseDetail(response);
+  if (detail is String) {
+    return _trimmedStringValue(detail);
+  }
+  if (detail is Map<String, dynamic>) {
+    return _trimmedStringValue(detail['message']);
+  }
+  if (detail is List && detail.isNotEmpty) {
+    final first = detail.first;
+    if (first is Map) {
+      return _trimmedStringValue(first['msg']);
+    }
   }
   return null;
 }
 
 String? _subscriptionRequiredMessageFromResponse(http.Response response) {
-  try {
-    final payload = jsonDecode(response.body);
-    if (payload is! Map<String, dynamic>) {
-      return null;
-    }
-
-    final detail = payload['detail'];
-    if (detail is Map<String, dynamic> &&
-        detail['code'] == 'subscription_required') {
-      final message = detail['message'];
-      if (message is String && message.trim().isNotEmpty) {
-        return message.trim();
-      }
-      return 'Evolua sua experiência com um plano de assinatura.';
-    }
-  } catch (_) {
-    return null;
+  final detail = _responseDetail(response);
+  if (detail is Map<String, dynamic> &&
+      detail['code'] == 'subscription_required') {
+    return _trimmedStringValue(detail['message']) ??
+        'Evolua sua experiência com um plano de assinatura.';
   }
   return null;
 }

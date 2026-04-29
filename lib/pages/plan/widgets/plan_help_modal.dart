@@ -9,12 +9,14 @@ class PlanHelpModal extends StatelessWidget {
     required this.primaryDim,
     required this.onSurface,
     required this.onSurfaceMuted,
+    required this.background,
   });
 
   final Color primary;
   final Color primaryDim;
   final Color onSurface;
   final Color onSurfaceMuted;
+  final Color background;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class PlanHelpModal extends StatelessWidget {
           ),
           child: Container(
             decoration: BoxDecoration(
-              color: const Color(0xFF0F1930),
+              color: background,
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(

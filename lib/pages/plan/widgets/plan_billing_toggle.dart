@@ -7,6 +7,8 @@ class PlanBillingToggle extends StatelessWidget {
     required this.surfaceContainerHigh,
     required this.onSurface,
     required this.onSurfaceMuted,
+    required this.selectedBackground,
+    required this.selectedForeground,
     required this.selectedPeriod,
     required this.onChanged,
   });
@@ -14,6 +16,8 @@ class PlanBillingToggle extends StatelessWidget {
   final Color surfaceContainerHigh;
   final Color onSurface;
   final Color onSurfaceMuted;
+  final Color selectedBackground;
+  final Color selectedForeground;
   final String selectedPeriod;
   final Function(String) onChanged;
 
@@ -34,7 +38,7 @@ class PlanBillingToggle extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                   color: selectedPeriod == 'mensal'
-                      ? const Color(0xFF1B2440)
+                      ? selectedBackground
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -43,32 +47,7 @@ class PlanBillingToggle extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: GoogleFonts.plusJakartaSans(
                     color: selectedPeriod == 'mensal'
-                        ? onSurface
-                        : onSurfaceMuted,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: GestureDetector(
-              onTap: () => onChanged('semestral'),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  color: selectedPeriod == 'semestral'
-                      ? const Color(0xFF1B2440)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  'Semestral',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.plusJakartaSans(
-                    color: selectedPeriod == 'semestral'
-                        ? onSurface
+                        ? selectedForeground
                         : onSurfaceMuted,
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
@@ -84,7 +63,7 @@ class PlanBillingToggle extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                   color: selectedPeriod == 'anual'
-                      ? const Color(0xFF1B2440)
+                      ? selectedBackground
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -93,7 +72,7 @@ class PlanBillingToggle extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: GoogleFonts.plusJakartaSans(
                     color: selectedPeriod == 'anual'
-                        ? onSurface
+                        ? selectedForeground
                         : onSurfaceMuted,
                     fontSize: 12,
                     fontWeight: FontWeight.w700,

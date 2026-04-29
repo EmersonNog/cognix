@@ -10,6 +10,7 @@ class PlanBenefitItem extends StatelessWidget {
     required this.onSurfaceMuted,
     required this.onSurface,
     required this.surfaceContainer,
+    required this.primary,
   });
 
   final IconData icon;
@@ -18,6 +19,7 @@ class PlanBenefitItem extends StatelessWidget {
   final Color onSurfaceMuted;
   final Color onSurface;
   final Color surfaceContainer;
+  final Color primary;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class PlanBenefitItem extends StatelessWidget {
             color: surfaceContainer,
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(icon, color: const Color(0xFFA3A6FF), size: 24),
+          child: Icon(icon, color: primary, size: 24),
         ),
         const SizedBox(width: 16),
         Expanded(

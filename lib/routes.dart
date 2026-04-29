@@ -14,6 +14,7 @@ import 'pages/subscription/subscription_screen.dart';
 import 'pages/support/support_screen.dart';
 import 'pages/auth/forgot_password.dart';
 import 'package:flutter/cupertino.dart';
+import 'pages/plan/plan_hub_screen.dart';
 import 'pages/plan/plan_screen.dart';
 import 'pages/auth/signin.dart';
 import 'pages/auth/signup.dart';
@@ -26,7 +27,14 @@ class Routes {
         'register': (context) => const SignUp(),
         'forgot': (context) => const ForgotPassword(),
         'account-security': (context) => const AccountSecurityScreen(),
-        'home': (context) => const Home(),
+        'home': (context) {
+          final argument = ModalRoute.of(context)?.settings.arguments;
+          return Home(
+            showPlanOnStart: argument is HomeRouteArgs
+                ? argument.showPlanOnStart
+                : false,
+          );
+        },
         'multiplayer-create': (context) => const MultiplayerCreateRoomScreen(),
         'multiplayer-join': (context) => const MultiplayerJoinRoomScreen(),
         'multiplayer-match': (context) {
@@ -58,10 +66,25 @@ class Routes {
           }
           return const WritingThemeScreen();
         },
-        'plan': (context) => const PlanScreen(),
+        'plan-hub': (context) => const PlanHubScreen(),
+        'plan': (context) {
+          final argument = ModalRoute.of(context)?.settings.arguments;
+          return PlanScreen(
+            showSkipAction: argument is PlanScreenArgs
+                ? argument.showSkipAction
+                : false,
+          );
+        },
         'study-plan': (context) => const StudyPlanScreen(),
         'subscription': (context) => const SubscriptionScreen(),
-        'support': (context) => const SupportScreen(),
+        'support': (context) {
+          final argument = ModalRoute.of(context)?.settings.arguments;
+          return SupportScreen(
+            initialFaqKey: argument is SupportScreenArgs
+                ? argument.initialFaqKey
+                : null,
+          );
+        },
       };
 
   static String initialRoute = 'login';

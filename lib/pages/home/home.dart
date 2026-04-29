@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:cognix/widgets/cognix_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../navigation/app_route_observer.dart';
+import '../../services/entitlements/entitlements_api.dart';
 import '../../services/recommendations/home_recommendations_api.dart';
 import '../../services/profile/profile_api.dart';
 import '../../services/profile/profile_refresh_notifier.dart';
@@ -14,20 +17,30 @@ import '../../theme/cognix_theme_colors.dart';
 import 'home_tab.dart';
 import 'widgets/shell/home_shell_widgets.dart';
 import '../performance/performance_screen.dart';
+import '../plan/plan_screen.dart';
 import '../profile/profile.dart';
 import '../training/tab/training_tab.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  const Home({super.key, this.showPlanOnStart = false});
+
+  final bool showPlanOnStart;
 
   @override
   State<Home> createState() => _HomeState();
+}
+
+class HomeRouteArgs {
+  const HomeRouteArgs({this.showPlanOnStart = false});
+
+  final bool showPlanOnStart;
 }
 
 class _HomeState extends State<Home> with RouteAware {
   bool _isLoading = false;
   int _currentIndex = 0;
   late Future<ProfileScoreData> _profileFuture;
+  late Future<EntitlementStatus> _entitlementsFuture;
   late Future<HomeRecommendationsData> _recommendationsFuture;
   late Future<StudyPlanData> _studyPlanFuture;
   bool _isRouteObserverSubscribed = false;
@@ -36,8 +49,20 @@ class _HomeState extends State<Home> with RouteAware {
   void initState() {
     super.initState();
     _profileFuture = _fetchSharedProfileScore();
+    _entitlementsFuture = _fetchSharedEntitlements();
     _recommendationsFuture = _fetchSharedRecommendations();
     _studyPlanFuture = _fetchSharedStudyPlan();
+    if (widget.showPlanOnStart) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        Navigator.of(context).pushNamed(
+          'plan',
+          arguments: const PlanScreenArgs(showSkipAction: true),
+        );
+      });
+    }
   }
 
   @override
@@ -55,6 +80,10 @@ class _HomeState extends State<Home> with RouteAware {
     return fetchProfileScore();
   }
 
+  Future<EntitlementStatus> _fetchSharedEntitlements() async {
+    return fetchCurrentEntitlements();
+  }
+
   Future<StudyPlanData> _fetchSharedStudyPlan() async {
     return fetchStudyPlan();
   }
@@ -65,11 +94,13 @@ class _HomeState extends State<Home> with RouteAware {
 
   Future<void> _refreshSharedHubData() async {
     final nextProfileFuture = _fetchSharedProfileScore();
+    final nextEntitlementsFuture = _fetchSharedEntitlements();
     final nextRecommendationsFuture = _fetchSharedRecommendations();
     final nextStudyPlanFuture = _fetchSharedStudyPlan();
     if (mounted) {
       setState(() {
         _profileFuture = nextProfileFuture;
+        _entitlementsFuture = nextEntitlementsFuture;
         _recommendationsFuture = nextRecommendationsFuture;
         _studyPlanFuture = nextStudyPlanFuture;
       });
@@ -77,6 +108,9 @@ class _HomeState extends State<Home> with RouteAware {
 
     try {
       await nextProfileFuture;
+    } catch (_) {}
+    try {
+      await nextEntitlementsFuture;
     } catch (_) {}
     try {
       await nextRecommendationsFuture;
@@ -91,7 +125,14 @@ class _HomeState extends State<Home> with RouteAware {
     final shouldRefreshProfile = profileRefreshNotifier.consumeDirty();
     final shouldRefreshStudyPlan = studyPlanRefreshNotifier.consumeDirty();
     if (shouldRefreshProfile || shouldRefreshStudyPlan) {
-      _refreshSharedHubData();
+      unawaited(_refreshSharedHubData());
+      return;
+    }
+
+    if (mounted) {
+      setState(() {
+        _entitlementsFuture = _fetchSharedEntitlements();
+      });
     }
   }
 
@@ -123,6 +164,14 @@ class _HomeState extends State<Home> with RouteAware {
     setState(() => _currentIndex = index);
   }
 
+  void _openPremiumPlans() {
+    Navigator.of(context).pushNamed('plan');
+  }
+
+  void _openSubscriptionOverview() {
+    Navigator.of(context).pushNamed('subscription');
+  }
+
   String get _userName {
     final currentUser = FirebaseAuth.instance.currentUser;
     return currentUser?.displayName ?? 'Usuário';
@@ -132,6 +181,7 @@ class _HomeState extends State<Home> with RouteAware {
     return <Widget>[
       HomeTab(
         profileFuture: _profileFuture,
+        entitlementsFuture: _entitlementsFuture,
         recommendationsFuture: _recommendationsFuture,
         studyPlanFuture: _studyPlanFuture,
         surfaceContainer: palette.surfaceContainer,
@@ -145,6 +195,8 @@ class _HomeState extends State<Home> with RouteAware {
         danger: palette.danger,
         userName: _userName,
         onRefresh: _refreshSharedHubData,
+        onOpenPremium: _openPremiumPlans,
+        onManageSubscription: _openSubscriptionOverview,
       ),
       TrainingTab(
         surfaceContainer: palette.surfaceContainer,

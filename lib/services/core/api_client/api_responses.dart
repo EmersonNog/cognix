@@ -5,33 +5,24 @@ void _throwIfUnexpectedStatus(
   required String errorMessage,
   Set<int> expectedStatusCodes = const {200},
 }) {
-  if (expectedStatusCodes.contains(response.statusCode)) {
+  final statusCode = response.statusCode;
+  if (expectedStatusCodes.contains(statusCode)) {
     return;
   }
 
-  if (response.statusCode == 403) {
+  if (statusCode == 403) {
     final subscriptionMessage = _subscriptionRequiredMessageFromResponse(
       response,
     );
     if (subscriptionMessage != null) {
       throw SubscriptionRequiredException(
         subscriptionMessage,
-        statusCode: response.statusCode,
+        statusCode: statusCode,
       );
     }
   }
 
-  if (response.statusCode == 422) {
-    throw ApiException(
-      _validationMessageFromResponse(response) ?? '$errorMessage (422).',
-      statusCode: response.statusCode,
-    );
-  }
-
-  throw ApiException(
-    '$errorMessage (${response.statusCode}).',
-    statusCode: response.statusCode,
-  );
+  throw _apiExceptionForUnexpectedStatus(response, errorMessage: errorMessage);
 }
 
 Map<String, dynamic> _decodeJsonObject(http.Response response) {
@@ -39,4 +30,25 @@ Map<String, dynamic> _decodeJsonObject(http.Response response) {
     return const <String, dynamic>{};
   }
   return jsonDecode(response.body) as Map<String, dynamic>;
+}
+
+ApiException _apiExceptionForUnexpectedStatus(
+  http.Response response, {
+  required String errorMessage,
+}) {
+  final statusCode = response.statusCode;
+  final detailMessage = _detailMessageFromResponse(response);
+
+  if (statusCode == 422) {
+    return ApiException(
+      detailMessage ?? '$errorMessage (422).',
+      statusCode: statusCode,
+    );
+  }
+
+  if (detailMessage != null) {
+    return ApiException(detailMessage, statusCode: statusCode);
+  }
+
+  return ApiException('$errorMessage ($statusCode).', statusCode: statusCode);
 }

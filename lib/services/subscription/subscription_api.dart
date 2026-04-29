@@ -1,6 +1,14 @@
 import '../../utils/api_datetime.dart';
 import '../core/api_client.dart' show apiBaseUrl, getJson, postJson;
 
+const googlePlayPackageName = 'com.cognixhub.app';
+const googlePlaySubscriptionMonthlyProductId = 'cognix_premium_monthly';
+const googlePlaySubscriptionAnnualProductId = 'cognix_premium_annual';
+const googlePlaySubscriptionProductIds = {
+  googlePlaySubscriptionMonthlyProductId,
+  googlePlaySubscriptionAnnualProductId,
+};
+
 class SubscriptionStatus {
   const SubscriptionStatus({
     required this.status,
@@ -9,6 +17,7 @@ class SubscriptionStatus {
     this.accessEndsAt,
     this.willCancelAtPeriodEnd = false,
     this.planId,
+    this.provider,
   });
 
   final String status;
@@ -17,10 +26,14 @@ class SubscriptionStatus {
   final DateTime? accessEndsAt;
   final bool willCancelAtPeriodEnd;
   final String? planId;
+  final String? provider;
 
   bool get hasSubscription => status != 'none';
   bool get isActive => status == 'active';
   bool get isCancelled => status == 'cancelled';
+  bool get isGooglePlay =>
+      provider == 'google_play' ||
+      googlePlaySubscriptionProductIds.contains(planId);
 
   factory SubscriptionStatus.fromJson(Map<String, dynamic> json) {
     final status = '${json['status'] ?? 'none'}';
@@ -31,6 +44,7 @@ class SubscriptionStatus {
       accessEndsAt: parseApiDateTime(json['accessEndsAt']?.toString()),
       willCancelAtPeriodEnd: json['willCancelAtPeriodEnd'] == true,
       planId: json['planId'] is String ? json['planId'] as String : null,
+      provider: json['provider'] is String ? json['provider'] as String : null,
     );
   }
 }

@@ -63,7 +63,7 @@ class _NoSubscriptionContent extends StatelessWidget {
                   ? 'Disponível por 3 dias'
                   : trialExpired
                   ? 'Trial encerrado'
-                  : 'Nãro liberado',
+                  : 'Não liberado',
             ),
             _SubscriptionSummaryRowData(
               label: 'Cobrança',
@@ -78,8 +78,8 @@ class _NoSubscriptionContent extends StatelessWidget {
           status.trialAvailable
               ? 'Ative agora para começar seu período gratuito sem cobrança.'
               : trialEndLabel == null
-              ? 'Assine um plano para voltar a liberar os recursos premium.'
-              : 'Sua experiência terminou em $trialEndLabel. Assine um plano para voltar a liberar os recursos premium.',
+              ? 'Para contratar um plano, volte ao painel pessoal e toque em Assinar premium.'
+              : 'Sua experiência terminou em $trialEndLabel. Para contratar um plano, volte ao painel pessoal e toque em Assinar premium.',
           style: GoogleFonts.inter(
             color: colors.onSurfaceMuted,
             fontSize: 12.5,
