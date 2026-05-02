@@ -1,20 +1,21 @@
-import 'pages/multiplayer/lobby/multiplayer_create_room_screen.dart';
-import 'pages/multiplayer/join_pin/multiplayer_join_room_screen.dart';
-import 'pages/account_security/account_security_screen.dart';
-import 'pages/multiplayer/match/multiplayer_match_screen.dart';
-import 'pages/writing/editor/writing_editor_screen.dart';
-import 'pages/writing/history/writing_history_screen.dart';
 import 'pages/writing/history_detail/writing_history_detail_screen.dart';
-import 'pages/writing/models/writing_route_args.dart';
+import 'pages/multiplayer/join_pin/multiplayer_join_room_screen.dart';
+import 'pages/multiplayer/lobby/multiplayer_create_room_screen.dart';
+import 'pages/multiplayer/match/multiplayer_match_screen.dart';
+import 'pages/account_security/account_security_screen.dart';
+import 'pages/writing/history/writing_history_screen.dart';
 import 'pages/writing/result/writing_result_screen.dart';
+import 'pages/writing/editor/writing_editor_screen.dart';
 import 'pages/writing/theme/writing_theme_screen.dart';
-import 'services/multiplayer/models.dart';
-import 'pages/study_plan/study_plan_screen.dart';
+import 'pages/writing/models/writing_route_args.dart';
+import 'pages/writing/mode/writing_mode_screen.dart';
 import 'pages/subscription/subscription_screen.dart';
+import 'pages/study_plan/study_plan_screen.dart';
 import 'pages/support/support_screen.dart';
+import 'services/multiplayer/models.dart';
 import 'pages/auth/forgot_password.dart';
-import 'package:flutter/cupertino.dart';
 import 'pages/plan/plan_hub_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'pages/plan/plan_screen.dart';
 import 'pages/auth/signin.dart';
 import 'pages/auth/signup.dart';
@@ -44,6 +45,13 @@ class Routes {
           );
         },
         'writing': (context) => const WritingThemeScreen(),
+        'writing-mode': (context) {
+          final argument = ModalRoute.of(context)?.settings.arguments;
+          if (argument is WritingModeSelectionArgs) {
+            return WritingModeScreen(args: argument);
+          }
+          return const WritingThemeScreen();
+        },
         'writing-history': (context) => const WritingHistoryScreen(),
         'writing-history-detail': (context) {
           final argument = ModalRoute.of(context)?.settings.arguments;

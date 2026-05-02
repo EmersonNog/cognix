@@ -1,17 +1,21 @@
-part of 'writing_editor_screen.dart';
+part of '../writing_editor_screen.dart';
 
 class _QuickOverview extends StatelessWidget {
   const _QuickOverview({
     required this.wordCount,
     required this.paragraphCount,
-    required this.completedCount,
-    required this.totalChecklist,
+    required this.statusIcon,
+    required this.statusLabel,
+    required this.statusValue,
+    this.statusAccent,
   });
 
   final int wordCount;
   final int paragraphCount;
-  final int completedCount;
-  final int totalChecklist;
+  final IconData statusIcon;
+  final String statusLabel;
+  final String statusValue;
+  final Color? statusAccent;
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +41,10 @@ class _QuickOverview extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(
           child: _OverviewCard(
-            icon: Icons.task_alt_rounded,
-            label: 'Checklist',
-            value: '$completedCount/$totalChecklist',
-            accent: colors.success,
+            icon: statusIcon,
+            label: statusLabel,
+            value: statusValue,
+            accent: statusAccent ?? colors.success,
           ),
         ),
       ],

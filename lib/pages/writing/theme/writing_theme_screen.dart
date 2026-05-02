@@ -134,9 +134,10 @@ class _WritingThemeScreenState extends State<WritingThemeScreen> {
   }
 
   void _openTheme(WritingTheme theme) {
-    Navigator.of(
-      context,
-    ).pushNamed('writing-editor', arguments: WritingEditorArgs(theme: theme));
+    Navigator.of(context).pushNamed(
+      'writing-mode',
+      arguments: WritingModeSelectionArgs(theme: theme),
+    );
   }
 
   void _openSubscription() {

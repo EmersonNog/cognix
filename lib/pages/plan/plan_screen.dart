@@ -26,6 +26,9 @@ part 'screen/plan_screen_actions.dart';
 part 'screen/plan_screen_lifecycle.dart';
 part 'screen/plan_screen_pricing.dart';
 part 'screen/plan_screen_view.dart';
+part 'screen/pricing/plan_pricing_calculations.dart';
+part 'screen/pricing/plan_pricing_display.dart';
+part 'screen/pricing/plan_pricing_footer.dart';
 part 'widgets/plan_status_message.dart';
 
 class PlanScreen extends StatefulWidget {
@@ -45,10 +48,12 @@ class PlanScreenArgs {
 
 class _PlanScreenState extends State<PlanScreen> {
   static const _fallbackCurrencyPrefix = 'R\$';
-  static const _monthlyFallbackPriceValue = '19,90';
-  static const _monthlyFallbackRegularPriceLabel = 'R\$ 19,90';
-  static const _annualFallbackMonthlyPriceValue = '16,65';
-  static const _annualFallbackRegularPriceLabel = 'R\$ 199,90';
+  static const _monthlyFallbackIntroPriceValue = '19,90';
+  static const _monthlyFallbackIntroPriceLabel = 'R\$ 19,90';
+  static const _monthlyFallbackPriceValue = '29,90';
+  static const _monthlyFallbackRegularPriceLabel = 'R\$ 29,90';
+  static const _annualFallbackMonthlyPriceValue = '24,91';
+  static const _annualFallbackRegularPriceLabel = 'R\$ 299,00';
 
   late final GooglePlayBillingService _googlePlayBilling;
   StreamSubscription<List<PurchaseDetails>>? _purchaseSubscription;

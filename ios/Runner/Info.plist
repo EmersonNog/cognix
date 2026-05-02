@@ -47,6 +47,8 @@
 		<true/>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>O Cognix precisa acessar sua galeria para adicionar imagens.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>O Cognix precisa acessar a câmera para escanear sua redação com IA.</string>
 		<key>NSAppTransportSecurity</key>
 		<dict>
 			<key>NSAllowsLocalNetworking</key>

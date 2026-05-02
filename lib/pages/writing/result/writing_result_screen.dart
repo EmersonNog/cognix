@@ -72,6 +72,7 @@ class WritingResultScreen extends StatelessWidget {
                   arguments: WritingEditorArgs(
                     theme: args.draft.theme,
                     initialDraft: args.draft,
+                    mode: args.editorMode,
                   ),
                 );
               },

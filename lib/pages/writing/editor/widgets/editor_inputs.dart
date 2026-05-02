@@ -1,4 +1,4 @@
-part of 'writing_editor_screen.dart';
+part of '../writing_editor_screen.dart';
 
 class _WritingInput extends StatelessWidget {
   const _WritingInput({

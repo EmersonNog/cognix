@@ -1,7 +1,12 @@
-part of 'writing_editor_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class _ThemeHero extends StatelessWidget {
-  const _ThemeHero({required this.theme});
+import '../../../services/writing/writing_api.dart';
+import '../../../theme/app_theme.dart';
+import '../../../theme/cognix_theme_colors.dart';
+
+class WritingThemeHero extends StatelessWidget {
+  const WritingThemeHero({super.key, required this.theme});
 
   final WritingTheme theme;
 
@@ -32,13 +37,13 @@ class _ThemeHero extends StatelessWidget {
         children: [
           Row(
             children: [
-              _HeroPill(
+              _WritingThemeHeroPill(
                 icon: Icons.label_rounded,
                 label: theme.category.toUpperCase(),
                 accent: colors.accent,
               ),
               const SizedBox(width: 8),
-              _HeroPill(
+              _WritingThemeHeroPill(
                 icon: Icons.bar_chart_rounded,
                 label: _formatDifficultyLabel(theme.difficulty),
                 accent: _difficultyAccent(theme.difficulty),
@@ -70,8 +75,8 @@ class _ThemeHero extends StatelessWidget {
   }
 }
 
-class _HeroPill extends StatelessWidget {
-  const _HeroPill({
+class _WritingThemeHeroPill extends StatelessWidget {
+  const _WritingThemeHeroPill({
     required this.icon,
     required this.label,
     required this.accent,
@@ -109,73 +114,31 @@ class _HeroPill extends StatelessWidget {
   }
 }
 
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({
-    required this.eyebrow,
-    required this.title,
-    required this.subtitle,
-  });
-
-  final String eyebrow;
-  final String title;
-  final String subtitle;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.cognixColors;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          eyebrow.toUpperCase(),
-          style: GoogleFonts.plusJakartaSans(
-            color: colors.accent,
-            fontSize: 10,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 0.8,
-          ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          title,
-          style: GoogleFonts.manrope(
-            color: colors.onSurface,
-            fontSize: 22,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          subtitle,
-          style: GoogleFonts.inter(
-            color: colors.onSurfaceMuted,
-            fontSize: 12.8,
-            height: 1.38,
-          ),
-        ),
-      ],
-    );
+Color _difficultyAccent(String value) {
+  switch (value.trim().toLowerCase()) {
+    case 'facil':
+    case 'fácil':
+      return const Color(0xFF65E6A5);
+    case 'dificil':
+    case 'difícil':
+      return const Color(0xFFFF8E9D);
+    default:
+      return AppTheme.darkColors.accent;
   }
 }
 
-class _GuideCard extends StatelessWidget {
-  const _GuideCard({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.cognixColors;
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: colors.surfaceContainer,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: colors.primary.withValues(alpha: 0.1)),
-      ),
-      child: child,
-    );
+String _formatDifficultyLabel(String value) {
+  switch (value.trim().toLowerCase()) {
+    case 'facil':
+    case 'fácil':
+      return 'Fácil';
+    case 'medio':
+    case 'médio':
+      return 'Médio';
+    case 'dificil':
+    case 'difícil':
+      return 'Difícil';
+    default:
+      return value.trim().isEmpty ? 'Médio' : value.trim();
   }
 }

@@ -30,3 +30,9 @@ int? _parseNullableInt(Object? value) {
   if (value is int) return value;
   return int.tryParse('$value');
 }
+
+double _parseDouble(Object? value) {
+  if (value is double) return value;
+  if (value is int) return value.toDouble();
+  return double.tryParse('$value') ?? 0;
+}
