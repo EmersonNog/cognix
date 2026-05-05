@@ -112,6 +112,11 @@ class HomeBottomNavigationBar extends StatelessWidget {
     const destinations = <_HomeDestination>[
       _HomeDestination(label: 'Início', icon: Icons.grid_view_rounded),
       _HomeDestination(label: 'Treino', icon: Icons.timer_rounded),
+      _HomeDestination(
+        label: 'Chat',
+        icon: Icons.auto_awesome_rounded,
+        featured: true,
+      ),
       _HomeDestination(label: 'Análise', icon: Icons.insights_rounded),
       _HomeDestination(label: 'Perfil', icon: Icons.person_rounded),
     ];
@@ -132,17 +137,24 @@ class HomeBottomNavigationBar extends StatelessWidget {
           ],
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: List<Widget>.generate(destinations.length, (index) {
+          children: List<Widget>.generate(destinations.length * 2 - 1, (slot) {
+            if (slot.isOdd) {
+              return const SizedBox(width: 4);
+            }
+
+            final index = slot ~/ 2;
             final destination = destinations[index];
-            return _HomeNavItem(
-              label: destination.label,
-              icon: destination.icon,
-              selected: currentIndex == index,
-              onTap: () => onSelected(index),
-              primary: primary,
-              muted: onSurfaceMuted,
-              selectedBackground: surfaceContainerHigh,
+            return Expanded(
+              child: _HomeNavItem(
+                label: destination.label,
+                icon: destination.icon,
+                selected: currentIndex == index,
+                onTap: () => onSelected(index),
+                primary: primary,
+                muted: onSurfaceMuted,
+                selectedBackground: surfaceContainerHigh,
+                featured: destination.featured,
+              ),
             );
           }),
         ),
@@ -152,10 +164,15 @@ class HomeBottomNavigationBar extends StatelessWidget {
 }
 
 class _HomeDestination {
-  const _HomeDestination({required this.label, required this.icon});
+  const _HomeDestination({
+    required this.label,
+    required this.icon,
+    this.featured = false,
+  });
 
   final String label;
   final IconData icon;
+  final bool featured;
 }
 
 class _HomeNavItem extends StatelessWidget {
@@ -167,6 +184,7 @@ class _HomeNavItem extends StatelessWidget {
     required this.primary,
     required this.muted,
     required this.selectedBackground,
+    required this.featured,
   });
 
   final String label;
@@ -176,23 +194,36 @@ class _HomeNavItem extends StatelessWidget {
   final Color primary;
   final Color muted;
   final Color selectedBackground;
+  final bool featured;
 
   @override
   Widget build(BuildContext context) {
+    final backgroundColor = selected ? selectedBackground : Colors.transparent;
+    final border = selected && featured
+        ? Border.all(color: primary.withValues(alpha: 0.34))
+        : null;
+    final activeColor = selected ? primary : muted;
+    final iconSize = selected && featured ? 21.0 : 20.0;
+    final labelWeight = selected && featured
+        ? FontWeight.w800
+        : FontWeight.w600;
+
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        constraints: const BoxConstraints(minHeight: 58),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
         decoration: BoxDecoration(
-          color: selected ? selectedBackground : Colors.transparent,
+          color: backgroundColor,
           borderRadius: BorderRadius.circular(16),
+          border: border,
           boxShadow: selected
               ? <BoxShadow>[
                   BoxShadow(
-                    color: primary.withValues(alpha: 0.22),
-                    blurRadius: 16,
+                    color: primary.withValues(alpha: featured ? 0.32 : 0.22),
+                    blurRadius: featured ? 20 : 16,
                     offset: const Offset(0, 8),
                   ),
                 ]
@@ -201,14 +232,16 @@ class _HomeNavItem extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Icon(icon, size: 20, color: selected ? primary : muted),
+            Icon(icon, size: iconSize, color: activeColor),
             const SizedBox(height: 6),
             Text(
               label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: selected ? primary : muted,
+                fontWeight: labelWeight,
+                color: activeColor,
                 letterSpacing: 0.3,
               ),
             ),

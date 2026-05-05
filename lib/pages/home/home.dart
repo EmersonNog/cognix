@@ -14,6 +14,7 @@ import '../../services/study_plan/study_plan_refresh_notifier.dart';
 import '../../theme/app_theme_controller.dart';
 import '../../theme/app_theme_scope.dart';
 import '../../theme/cognix_theme_colors.dart';
+import '../ai_chat/ai_chat_screen.dart';
 import 'home_tab.dart';
 import 'widgets/shell/home_shell_widgets.dart';
 import '../performance/performance_screen.dart';
@@ -206,6 +207,7 @@ class _HomeState extends State<Home> with RouteAware {
         primary: palette.primary,
         onRefreshHubData: _refreshSharedHubData,
       ),
+      AiChatScreen.embedded(userName: _userName),
       PerformanceScreen.embedded(
         profileFuture: _profileFuture,
         onSurface: palette.onSurface,
