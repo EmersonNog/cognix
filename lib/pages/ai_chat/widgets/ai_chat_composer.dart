@@ -5,14 +5,24 @@ class _AiChatComposer extends StatelessWidget {
     required this.controller,
     required this.focusNode,
     required this.isSending,
+    required this.isListening,
+    required this.attachments,
     required this.canSend,
+    required this.onOpenAttachments,
+    required this.onRemoveAttachment,
+    required this.onVoiceInput,
     required this.onSend,
   });
 
   final TextEditingController controller;
   final FocusNode focusNode;
   final bool isSending;
+  final bool isListening;
+  final List<AiChatAttachment> attachments;
   final bool canSend;
+  final VoidCallback? onOpenAttachments;
+  final ValueChanged<int> onRemoveAttachment;
+  final VoidCallback? onVoiceInput;
   final VoidCallback onSend;
 
   @override
@@ -51,6 +61,13 @@ class _AiChatComposer extends StatelessWidget {
               ),
               child: Column(
                 children: [
+                  if (attachments.isNotEmpty) ...[
+                    _AiChatAttachmentPreviewStrip(
+                      attachments: attachments,
+                      onRemove: onRemoveAttachment,
+                    ),
+                    const SizedBox(height: 10),
+                  ],
                   TextField(
                     controller: controller,
                     focusNode: focusNode,
@@ -88,12 +105,19 @@ class _AiChatComposer extends StatelessWidget {
                     children: [
                       _AiChatComposerIconButton(
                         icon: Icons.add_rounded,
-                        onPressed: null,
+                        tooltip: 'Adicionar anexo',
+                        onPressed: onOpenAttachments,
                       ),
                       const SizedBox(width: 8),
                       _AiChatComposerIconButton(
-                        icon: Icons.mic_none_rounded,
-                        onPressed: null,
+                        icon: isListening
+                            ? Icons.mic_rounded
+                            : Icons.mic_none_rounded,
+                        tooltip: isListening
+                            ? 'Parar ditado'
+                            : 'Ditado por voz',
+                        active: isListening,
+                        onPressed: onVoiceInput,
                       ),
                       const Spacer(),
                       SizedBox(
@@ -154,11 +178,15 @@ class _AiChatComposer extends StatelessWidget {
 class _AiChatComposerIconButton extends StatelessWidget {
   const _AiChatComposerIconButton({
     required this.icon,
+    required this.tooltip,
     required this.onPressed,
+    this.active = false,
   });
 
   final IconData icon;
+  final String tooltip;
   final VoidCallback? onPressed;
+  final bool active;
 
   @override
   Widget build(BuildContext context) {
@@ -169,13 +197,16 @@ class _AiChatComposerIconButton extends StatelessWidget {
       height: 38,
       child: IconButton(
         onPressed: onPressed,
+        tooltip: tooltip,
         icon: Icon(icon),
         iconSize: 21,
         padding: EdgeInsets.zero,
         style: IconButton.styleFrom(
-          backgroundColor: colors.surface,
+          backgroundColor: active
+              ? colors.primary.withValues(alpha: 0.14)
+              : colors.surface,
           disabledBackgroundColor: colors.surface,
-          foregroundColor: colors.onSurfaceMuted,
+          foregroundColor: active ? colors.primary : colors.onSurfaceMuted,
           disabledForegroundColor: colors.onSurfaceMuted.withValues(
             alpha: 0.75,
           ),

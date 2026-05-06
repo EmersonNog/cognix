@@ -45,10 +45,19 @@
 		<true/>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
+		<key>UIBackgroundModes</key>
+		<array>
+			<string>fetch</string>
+			<string>remote-notification</string>
+		</array>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>O Cognix precisa acessar sua galeria para adicionar imagens.</string>
 		<key>NSCameraUsageDescription</key>
 		<string>O Cognix precisa acessar a câmera para escanear sua redação com IA.</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>O Cognix usa o microfone para transformar sua fala em texto no chat.</string>
+		<key>NSSpeechRecognitionUsageDescription</key>
+		<string>O Cognix usa reconhecimento de fala para preencher mensagens no chat.</string>
 		<key>NSAppTransportSecurity</key>
 		<dict>
 			<key>NSAllowsLocalNetworking</key>

@@ -43,16 +43,28 @@ class _AiChatBubble extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _AiChatFormattedText(
-                text: message.content,
-                style: GoogleFonts.inter(
-                  color: foreground,
-                  fontSize: 13.4,
-                  height: 1.45,
-                  fontWeight: FontWeight.w500,
+              if (message.attachments.isNotEmpty) ...[
+                _AiChatBubbleAttachments(
+                  attachments: message.attachments,
+                  foreground: foreground,
+                  muted: metadataColor,
                 ),
-              ),
-              const SizedBox(height: 5),
+                const SizedBox(height: 8),
+              ],
+              if (message.content.trim().isNotEmpty)
+                _AiChatFormattedText(
+                  text: message.content,
+                  style: GoogleFonts.inter(
+                    color: foreground,
+                    fontSize: 13.4,
+                    height: 1.45,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              if (message.content.trim().isNotEmpty)
+                const SizedBox(height: 5)
+              else
+                const SizedBox(height: 1),
               Text(
                 _formatMessageTime(message.createdAt),
                 style: GoogleFonts.plusJakartaSans(

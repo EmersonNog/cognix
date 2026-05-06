@@ -9,7 +9,11 @@ Future<AiChatMessage> sendAiChatMessage({
     Uri.parse('${apiBaseUrl()}/ai/chat'),
     body: {
       'messages': messages
-          .where((message) => message.content.trim().isNotEmpty)
+          .where(
+            (message) =>
+                message.content.trim().isNotEmpty ||
+                message.attachments.isNotEmpty,
+          )
           .map((message) => message.toRequestJson())
           .toList(),
     },
